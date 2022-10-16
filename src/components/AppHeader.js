@@ -14,9 +14,8 @@ import {
 import CIcon from "@coreui/icons-react";
 import { cilBell, cilEnvelopeOpen, cilList, cilMenu } from "@coreui/icons";
 
-import { AppBreadcrumb } from "./index";
 import { AppHeaderDropdown } from "./header/index";
-import { logo } from "src/assets/brand/logo";
+// import { logo } from "src/assets/brand/logo";
 
 const AppHeader = () => {
   const dispatch = useDispatch();
@@ -33,7 +32,7 @@ const AppHeader = () => {
         </CHeaderToggler>
 
         <CHeaderBrand className="mx-auto d-md-none" to="/">
-          <CIcon icon={logo} height={48} alt="Logo" />
+          {/* <CIcon icon={logo} height={48} alt="Logo" /> */}
         </CHeaderBrand>
 
         <CHeaderNav className="d-none d-md-flex me-auto">
@@ -72,7 +71,7 @@ const AppHeader = () => {
       </CContainer>
       <CHeaderDivider />
       <CContainer fluid>
-        <AppBreadcrumb />
+        {/* <AppBreadcrumb /> */}
       </CContainer>
     </CHeader>
   );
