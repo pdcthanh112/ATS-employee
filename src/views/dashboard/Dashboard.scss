@@ -1,0 +1,37 @@
+.search-container {
+  background-color: #fff;
+  display: inline-flex;
+  padding: 1rem 2rem;
+  justify-content: center;
+  width: 100vw;
+
+  .search-item{
+    border: 1px solid #36CB3E;
+    margin: 0 1rem;
+    padding-top: 0.3rem;
+  }
+
+  .btn-search {
+    width: 8rem;
+    height: 2.5rem;
+    border-radius: 0.3rem;
+    margin-left: 1rem;
+  }
+
+  
+}
+
+.search-error {
+  background-color: #fddac6;
+  color: rgb(247, 10, 10);
+  font-size: 1.2rem;
+  padding: 0.5rem 2rem;
+}
+
+.pagination-container {
+  //background-color: #fff;
+  display: flex; 
+  justify-content: center;
+
+  margin: 0 1rem 1rem 1rem;
+}

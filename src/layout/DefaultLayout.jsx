@@ -1,20 +1,20 @@
 import React from 'react'
-import AppHeader from '../components/AppHeader/AppHeader'
-import AppFooter from '../components/AppFooter/AppFooter'
-import AppContent from '../components/AppContent/AppContent'
-import AppSidebar from '../components/AppSidebar/AppSidebar'
+import AppContent from '../component/AppContent/AppContent'
+import AppFooter from '../component/AppFooter/AppFooter'
+import AppHeader from '../component/AppHeader/AppHeader'
+import AppSidebar from '../component/AppSidebar/AppSidebar'
 
-const DefaultLayout = () => {
+function DefaultLayout() {
   return (
-    <div>
-      <AppSidebar />
-      <div className="wrapper d-flex flex-column min-vh-100 bg-light">
-        <AppHeader />
-        <div className="body flex-grow-1 px-3">
+    <div className="wrapper d-flex flex-column min-vh-100 bg-light">
+      <AppHeader />
+      <div className="bg-neutral-200 inline-flex">
+        <AppSidebar />
+        <div style={{ width: '84%' }}>
           <AppContent />
         </div>
-        <AppFooter />
       </div>
+      <AppFooter />
     </div>
   )
 }

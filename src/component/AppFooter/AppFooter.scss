@@ -1,0 +1,21 @@
+.footer-container {
+  background-image: linear-gradient(to right, #fff, #40d040);
+  width: 100%;
+  height: 220px;
+  padding: 20px 160px;
+  display: inline-flex;
+
+  .footer-left {  
+    width: 40%;
+    padding: 30px auto;
+  }
+
+  .footer-right {
+    width: 60%;
+
+    .footer-right__element{
+      margin: 0.5rem 0;
+      font-weight: 500;
+    }
+  }
+}
