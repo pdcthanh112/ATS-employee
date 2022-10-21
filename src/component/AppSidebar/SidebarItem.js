@@ -1,9 +1,11 @@
 import React from "react";
 import home from "../../assets/icon/home.png";
 import Recruitment from "../../assets/icon/recruitment.png";
-import Candidates from "../../assets/icon/cv.png";
+import Candidates from "../../assets/icon/candidate.png";
 import Schedules from "../../assets/icon/calendar.png";
 import Settings from "../../assets/icon/settings.png";
+import IconUp from "../../assets/icon/caret-arrow-up.png";
+import IconDown from "../../assets/icon/caret-arrow-down.png";
 
 export const SidebarItem = [
   {
@@ -15,8 +17,8 @@ export const SidebarItem = [
     title: "Recruitment",
     path: "/#/recruitment",
     icon: <img src={Recruitment} alt="" width={"20rem"} />,
-    iconClosed: <img src={home} alt="" width={"10rem"} />,
-    iconOpened: <img src={home} alt="" width={"10rem"} />,
+    iconClosed: <img src={IconDown} alt="" width={"15rem"} />,
+    iconOpened: <img src={IconUp} alt="" width={"15rem"} />,
 
     subNav: [
       {
@@ -35,8 +37,8 @@ export const SidebarItem = [
     title: "Candidates",
     path: "/candidate",
     icon: <img src={Candidates} alt="" width={"30rem"} />,
-    iconClosed: <img src={home} alt="" width={"10rem"} />,
-    iconOpened: <img src={home} alt="" width={"10rem"} />,
+    iconClosed: <img src={IconDown} alt="" width={"15rem"} />,
+    iconOpened: <img src={IconUp} alt="" width={"15rem"} />,
 
     subNav: [
       {

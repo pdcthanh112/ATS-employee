@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './AppSidebar.scss'
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import { SidebarItem } from './SidebarItem';
 import SubMenu from './SubMenu';
 import { IconContext } from 'react-icons/lib';
