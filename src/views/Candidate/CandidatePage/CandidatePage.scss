@@ -1,0 +1,32 @@
+.candidatepage-container{
+  background-color: #fff;
+
+  .title-container{
+    display: inline-flex;
+    padding: 2rem 5rem;
+    width: 100%;
+  }
+
+  .search-container {
+    display: flex;
+    justify-content: center;
+    
+    .inputName {
+      border: 1px solid rgb(71, 71, 71);
+      border-radius: 5px;
+      font-size: 1rem;
+      font-weight: 400;
+      margin-right: 2rem;
+      height: 2.4rem;
+      line-height: 2.2rem;
+      width: 20rem;
+    }
+  }
+
+  .pagination-container {
+    display: flex; 
+    justify-content: center; 
+    margin: 0 1rem 1rem 1rem;
+  }
+}
+

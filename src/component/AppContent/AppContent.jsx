@@ -5,6 +5,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import routes from '../../routes'
 
 const AppContent = () => {
+
   return (
     <React.Fragment>
       <Suspense>
@@ -23,6 +24,7 @@ const AppContent = () => {
             )
           })}
           <Route path="/" element={<Navigate to="dashboard" replace />} />
+          
         </Routes>
       </Suspense>
     </React.Fragment>
