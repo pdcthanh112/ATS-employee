@@ -1,4 +1,4 @@
-.candidatepage-container{
+.recruitmentrequest-container{
   background-color: #fff;
 
   .title-container{
@@ -7,14 +7,14 @@
     width: 100%;
   }
 
-  .create-candidate {
+  .create-request {
     display: flex;
     font-weight: 500;
     font-size: 1.15rem;
     margin: 0.5rem 0.5rem 2rem 5rem;
     color: #0F6E00;
   }
-  .create-candidate:hover {
+  .create-request:hover {
     cursor: pointer;
   }
 
