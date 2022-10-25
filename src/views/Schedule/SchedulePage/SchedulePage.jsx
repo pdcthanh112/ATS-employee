@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import './RecruitmentRequestPage.scss'
+import React, { useEffect, useState } from 'react'
+import './SchedulePage.scss'
 
 import ReactLoading from 'react-loading'
-
-import RequestIcon from '../../../../assets/icon/request.png'
-import SearchIcon from '../../../../assets/icon/filter.png'
-import AddIcon from '../../../../assets/icon/plus.png'
-
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete } from '@mui/material';
-import { getAllRecruimentRequest } from '../../../../apis/recruimentRequestApi'
-import ListRecruitmentRequest from '../ListRecruitmentRequest/ListRecruitmentRequest'
 
-const RecruitmentRequestPage = () => {
+import RequestIcon from '../../../assets/icon/request.png'
+import SearchIcon from '../../../assets/icon/filter.png'
+import AddIcon from '../../../assets/icon/plus.png'
+
+const SchedulePage = () => {
 
   const [listRecruitmentRequest, setListRecruitmentRequest] = useState([])
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
@@ -30,17 +27,17 @@ const RecruitmentRequestPage = () => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      const response = await getAllRecruimentRequest(pagination.currentPage - 1, 2);
-      if (response) {
-        console.log(response.data);
-        setListRecruitmentRequest(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPages })
-        setIsLoading(false)
-      }
-    }
-    fetchData();
+    // const fetchData = async () => {
+    //   setIsLoading(true)
+    //   //const response = await getAllRecruimentRequest(pagination.currentPage - 1, 2);
+    //   if (response) {
+    //     console.log(response.data);
+    //     setListRecruitmentRequest(response.data.responseList)
+    //     setPagination({ ...pagination, totalPage: response.data.totalPages })
+    //     setIsLoading(false)
+    //   }
+    // }
+    // fetchData();
   }, [pagination.currentPage])
 
   const handleChangeSearchObject = (id, value) => {
@@ -66,14 +63,14 @@ const RecruitmentRequestPage = () => {
 
   return (
     <React.Fragment>
-      <div className='recruitmentrequest-container'>
+      <div className='schedule-container'>
         <div className='title-container'>
-          <span className='font-medium text-3xl mr-3'>Recruitment Request</span>
+          <span className='font-medium text-3xl mr-3'>Schedule</span>
           <img src={RequestIcon} alt='' width={'30rem'} />
         </div>
 
-        <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
-          <span className='mr-1'>Create recruitment request</span>
+        <div className='create-schedule' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
+          <span className='mr-1'>Create a schedule</span>
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' /></span>
         </div>
 
@@ -81,13 +78,6 @@ const RecruitmentRequestPage = () => {
           <div className='inputName'>
             <input type={'text'} className='form-control' placeholder='Nhập tên ứng viên...' onChange={(event) => { handleChangeSearchObject('name', event.target.value) }} />
           </div>
-          <Autocomplete
-            blurOnSelect={true}
-            //options={typeOfWorkData()}
-            size={'small'}
-            sx={{ width: 170, marginRight: 2 }}
-            renderInput={(params) => <TextField {...params} label="Loại công việc" />}
-            onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
 
           <Autocomplete
             blurOnSelect={true}
@@ -96,11 +86,19 @@ const RecruitmentRequestPage = () => {
             sx={{ width: 170, marginRight: 2 }}
             renderInput={(params) => <TextField {...params} label="Loại công việc" />}
             onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
+
+          <div className='mr-5'>
+            <input type={'date'} className='form-control' onChange={(event) => { handleChangeSearchObject('fromDate', event.target.value) }} />
+          </div>
+
+          <div className='mr-5'>
+            <input type={'date'} className='form-control' onChange={(event) => { handleChangeSearchObject('toDate', event.target.value) }} />
+          </div>
 
           <img src={SearchIcon} alt="" width={'50rem'} title='Search' onClick={() => onHandleSearch()} />
         </div>
 
-        {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListRecruitmentRequest listRecruitmentRequest={listRecruitmentRequest} />}
+        {/* {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListRecruitmentRequest listRecruitmentRequest={listRecruitmentRequest} />} */}
 
         <div className='pagination-container'>
           <Stack spacing={2}>
@@ -124,4 +122,4 @@ const RecruitmentRequestPage = () => {
   )
 }
 
-export default RecruitmentRequestPage
+export default SchedulePage

@@ -1,0 +1,42 @@
+.schedule-container{
+  background-color: #fff;
+
+  .title-container{
+    display: inline-flex;
+    padding: 2rem 5rem 0 2rem;
+    width: 100%;
+  }
+
+  .create-schedule {
+    display: flex;
+    font-weight: 500;
+    font-size: 1.15rem;
+    margin: 0.5rem 0.5rem 2rem 5rem;
+    color: #0F6E00;
+  }
+  .create-schedule:hover {
+    cursor: pointer;
+  }
+
+  .filter-container {
+    display: flex;
+    justify-content: center;
+    
+    .inputName {
+      border: 1px solid rgb(71, 71, 71);
+      border-radius: 5px;
+      font-size: 1rem;
+      font-weight: 400;
+      margin-right: 2rem;
+      height: 2.4rem;
+      line-height: 2.2rem;
+      width: 20rem;
+    }
+  }
+
+  .pagination-container {
+    display: flex; 
+    justify-content: center; 
+    margin: 0 1rem 1rem 1rem;
+  }
+}
