@@ -12,7 +12,10 @@
   }
   .candidate-content {
     padding: 0 1rem;
-    .candidate-content__name {
+    border: 1px solid #000;
+    border-radius: 0.5rem;
+    margin: 2rem 0;
+    .candidate-content__field {
       border: 1.2px solid #00CA0E;
       border-radius: 1rem;
       margin: 0 1rem;

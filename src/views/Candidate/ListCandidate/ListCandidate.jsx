@@ -5,10 +5,13 @@ import ScheduleIcon from '../../../assets/icon/calendar.png'
 import folderIcon from '../../../assets/icon/folder-icon.png'
 
 import { Box, Modal } from '@mui/material';
+import { getInterviewByCandidateId } from '../../../apis/interview';
+import { useSelector } from 'react-redux';
 
 const ListCandidate = ({ listCandidate }) => {
-
-  const [openModalSchedule, setOpenModalSchedule] = useState({ status: false, candidateId: -1 });
+  const currentUser = useSelector((state) => state.auth.login.currentUser.data);
+  const [openModalSchedule, setOpenModalSchedule] = useState(false);
+  const [interviewSchedule, setInterviewSchedule] = useState();
 
   const style = {
     position: 'absolute',
@@ -17,9 +20,22 @@ const ListCandidate = ({ listCandidate }) => {
     transform: 'translate(-50%, -50%)',
     width: 500,
     bgcolor: 'background.paper',
-    border: '1px solid #0F6B14',
+    //border: '1px solid #0F6B14',
     boxShadow: 24,
   };
+
+
+  const getCandidateInterview = async (candidateId) => {
+    setOpenModalSchedule(true)
+    const schedule = await getInterviewByCandidateId(candidateId, currentUser.token);
+    if (schedule.data === undefined) {
+      setInterviewSchedule(null)
+    } else {
+      setInterviewSchedule(schedule.data);
+    }
+  }
+
+
 
   return (
     <React.Fragment>
@@ -47,7 +63,7 @@ const ListCandidate = ({ listCandidate }) => {
                 <td className='text-center'>IT/BA</td>
                 <td className='text-center'>{item.phone}</td>
                 <td className=''>{item.email}</td>
-                <td><img src={folderIcon} alt='' title='Schedule' width={'30rem'} className='m-auto' /></td>
+                <td><img src={folderIcon} alt='' title='CV' width={'30rem'} className='m-auto hover:cursor-pointer' /></td>
                 <td className='text-center'>
                   {item.status === 'ACTIVATE' ? <span className='status-active'>Active</span> : <span className='status-disable'>Disable</span>}
                 </td>
@@ -56,34 +72,64 @@ const ListCandidate = ({ listCandidate }) => {
                   <a href='/#/' className=''><i title='Delete' className="fa-solid fa-trash-can text-2xl text-[#FF5353]"></i></a>
                 </td>
                 <td>
-                  <img src={ScheduleIcon} alt='' title='Schedule' width={'30rem'} className='m-auto' onClick={() => setOpenModalSchedule({ status: true, candidateId: item.id })} />
+                  <img src={ScheduleIcon} alt='' title='Schedule' width={'30rem'} className='m-auto hover:cursor-pointer' onClick={() => getCandidateInterview(item.id)} />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <Modal open={openModalSchedule.status} onClose={() => setOpenModalSchedule({ status: false, candidateId: -1 })}>
+
+      <Modal open={openModalSchedule} onClose={() => setOpenModalSchedule(false)}>
         <Box sx={style}>
           <div className='modal-container'>
             <div className='modal-title'>
               <span className='font-medium text-3xl mr-3'>Candidate</span>
               <img src={ScheduleIcon} alt='' width={'28rem'} />
             </div>
-            <div className='candidate-content'>
-              <div>
-                <span className='font-medium text-lg'>Candidate name</span>
-                <div className='candidate-content__name'>Pham Dao Cong Thanh</div>
-              </div>
-              <div>
-                <span className='font-medium text-lg'>Mail</span>
-                <div className='candidate-content__name'>pdcthanh112.dev@gmail.com</div>
-              </div>
-              <div>
-                <span className='font-medium text-lg'>Position</span>
-                <div className='candidate-content__name'>IT/BA</div>
-              </div>
-            </div>
+            {/* {interviewSchedule === null ? <div> asfdasfsf</div> : <React.Fragment>
+              {interviewSchedule.map((item, id) => (
+                <div key={id} className='candidate-content'>
+                  <div>
+                    <span className='font-medium text-base'>Candidate name</span>
+                    <div className='candidate-content__field'>{item.candidateName}</div>
+                  </div>
+                  <div>
+                    <span className='font-medium text-base'>Position</span>
+                    <div className='candidate-content__field'>{item.jobApply.recruitmentRequest.industry}</div>
+                  </div>
+                  <div className='grid grid-cols-2'>
+                    <div>
+                      <span className='font-medium text-base'>Date</span>
+                      <div className='candidate-content__field'>{item.date}</div>
+                    </div>
+                    <div>
+                      <span className='font-medium text-base'>Time</span>
+                      <div className='candidate-content__field'>{item.date}</div>
+                    </div>
+                  </div>
+                  {item.type === 'OFFLINE' ? <div>
+                    <span className='font-medium text-2xl'>Offline</span>
+                    <div>
+                      <span className='font-medium text-base'>Room</span>
+                      <div className='candidate-content__field'>{item.room}</div>
+                    </div>
+                    <div>
+                      <span className='font-medium text-base'>Location</span>
+                      <div className='candidate-content__field'>{item.address}</div>
+                    </div>
+                  </div> : <div>
+                    <span className='font-medium text-2xl'>Online</span>
+                    <div>
+                      <span className='font-medium text-base'>Google meet link</span>
+                      <div className='candidate-content__field'>{item.linkMeeting}</div>
+                    </div>
+                  </div>}
+                </div>
+              ))
+            }
+            </React.Fragment>
+            } */}
           </div>
         </Box>
       </Modal>

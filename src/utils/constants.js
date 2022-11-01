@@ -1,5 +1,6 @@
 export const responseStatus = {
     SUCCESS: 'SUCCESS',
-    FAILURE: 'FAILURE',
-   
+    FAILURE: 'FAILURE',  
 };
+
+export const DEFAULT_PASSWORD = 12345678
