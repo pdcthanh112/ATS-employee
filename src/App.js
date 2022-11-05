@@ -15,7 +15,7 @@ const Page404 = React.lazy(() => import("./views/pages/page404/Page404"));
 const Page500 = React.lazy(() => import("./views/pages/page500/Page500"));
 
 const App = () => {
-  const currentUser = useSelector((state) => state.auth.login.currentUser.data);
+  const currentUser = useSelector((state) => state.auth.login.currentUser);
 
   return (
     <HashRouter>
