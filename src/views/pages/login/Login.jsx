@@ -48,7 +48,7 @@ const Login = () => {
             <label className='text-lg'>Email</label><br />
             <div className='field-input'>
               <i className="fa-solid fa-envelope mx-2 my-auto" style={{ color: "#116835", fontSize: '22px' }}></i>
-              <input type={'text'} className=' input-tag focus:outline-none focus:bg-white' name='email' placeholder='Nhập email của bạn' value={formik.values.email} onChange={formik.handleChange} /><br />
+              <input type={'text'} className='input-tag focus:outline-none focus:bg-white' name='email' placeholder='Nhập email của bạn' value={formik.values.email} onChange={formik.handleChange} /><br />
             </div>
             {formik.errors.email && formik.touched.email && (
               <div className='text-[#ec5555]'>{formik.errors.email}</div>
@@ -59,7 +59,7 @@ const Login = () => {
             <div className='field-input'>
               <i className="fa-solid fa-lock mx-2 my-auto" style={{ color: "#116835", fontSize: '22px' }}></i>
               <input type={isShowPassword ? 'text' : 'password'} className='input-tag focus:outline-none' name='password' placeholder='Nhập mật khẩu' value={formik.values.password} onChange={formik.handleChange} />
-              <span className='hideShowPassword mx-3 my-auto' onClick={() => { setIsShowPassword(!isShowPassword) }}>
+              <span className='mx-3 my-auto' onClick={() => { setIsShowPassword(!isShowPassword) }}>
                 <i className={isShowPassword ? 'far fa-eye' : 'far fa-eye-slash'}></i>
               </span>
             </div>
