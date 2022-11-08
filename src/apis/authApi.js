@@ -13,7 +13,7 @@ export const loginUser = async (user, dispatch, navigate) => {
   try {
     const response = await axiosConfig.post("/auth/login", user);
     if (response) {
-      dispatch(loginSuccess(response.data));
+      dispatch(loginSuccess(response.data.data));
       navigate("/#/");
     }
   } catch (error) {

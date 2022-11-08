@@ -9,7 +9,6 @@ export const getAllCandidate = async (pageNo, pageSize, token) => {
     .catch((error) => error);
 };
 
-
 export const getCandidateById = async (id, token) => {
   return await axiosConfig
     .get(`candidate/getCandidateById/{Id}?id=${id}`, {

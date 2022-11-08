@@ -29,6 +29,11 @@
       display: inline-flex;
       width: 100%;
       border: 1px solid #eee;
+      .input-tag {
+        margin: 5px 7px;
+        font-size: 1.2rem;
+        width: 100%;
+      }
     }
 
     .input-error {

@@ -1,0 +1,46 @@
+.recruitmentPlan-container {
+  background-color: #fff;
+
+  .title-container{
+    display: inline-flex;
+    padding: 2rem 5rem 0 2rem;
+    width: 100%;
+  }
+
+  .create-request {
+    display: flex;
+    font-weight: 500;
+    font-size: 1.15rem;
+    margin: 0.5rem 0.5rem 2rem 5rem;
+    color: #0F6E00;
+  }
+  .create-request:hover {
+    cursor: pointer;
+  }
+
+  .pagination-container {
+    display: flex; 
+    justify-content: center; 
+    margin: 0 1rem 1rem 1rem;
+  }
+}
+
+.modal-container {
+  padding: 1rem 2rem;
+
+  .amount-control {
+    border: 1px solid #116835;
+    padding: 5px;
+    border-radius: 0.5rem;
+    display: flex;
+    width: 8.4rem;
+  }
+
+  .btn-create {
+    background-color: #20D489;
+    border-radius: 8px;
+    width: 40%;
+    height: 2.5rem;
+    color: #f5fef9;   
+  }
+}
