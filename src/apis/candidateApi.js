@@ -37,3 +37,12 @@ export const updateProfileCandidate = async (id, token, data) => {
     .then((response) => response.data)
     .catch((error) => error);
 };
+
+export const getCVByCandidate = async (token, id, pageNo, pageSize) => {
+  return await axiosConfig
+    .get(`cv/getAllCvByCandidate?id=${id}&pageNo=${pageNo}&pageSize=${pageSize}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.data)
+    .catch((error) => error);
+}

@@ -1,15 +1,13 @@
-.listRecruitmentPlan-container {
+.listPlanDetail-container {
   width: 100%;
-  display: grid;
   padding: 0 3rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 
-  .recruitmentPlan-item {
+  .planDetail-item {
     width: 80%;
     border: 1px solid #116835;
     border-radius: 0.5rem;
     margin: 1rem auto;
-    padding: 1.5rem 1rem;
+    padding: 1.5rem 2rem;
     .item-value {
       border: 1px solid #116835;
       border-radius: 1rem;

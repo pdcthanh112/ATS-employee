@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux'
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -14,7 +15,7 @@ import CreateIcon from '../../../../assets/icon/plus.png'
 import AddIcon from '../../../../assets/icon/addIcon.png'
 import MinusIcon from '../../../../assets/icon/minusIcon.png'
 
-import { Box, Modal, Pagination, Stack, TextField, Autocomplete, Input } from '@mui/material';
+import { Box, Modal, Pagination, Stack } from '@mui/material';
 import { createRecruitmentPlan, getAllRecruimentPlan } from '../../../../apis/recruitmentPlan'
 import ListRecruitmentPlan from '../ListRecruitmentPlan/ListRecruitmentPlan'
 
@@ -29,7 +30,7 @@ const RecruitmentPlanPage = () => {
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
-  const [isShowPassword, setIsShowPassword] = useState(false)
+
   const style = {
     position: 'absolute',
     top: '40%',
@@ -46,9 +47,8 @@ const RecruitmentPlanPage = () => {
       setIsLoading(true)
       const response = await getAllRecruimentPlan(currentUser.token, pagination.currentPage - 1, 4);
       if (response) {
-        console.log('RR', response);
         setListRecruitmentPlan(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPages })
+        setPagination({ ...pagination, totalPage: response.data.totalPage })
         setIsLoading(false)
       }
     }
@@ -92,7 +92,7 @@ const RecruitmentPlanPage = () => {
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={CreateIcon} alt='' /></span>
         </div>
 
-        {/* {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListRecruitmentPlan listRecruitmentRequest={listRecruitmentPlan} />} */}
+        {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListRecruitmentPlan listRecruitmentPlan={listRecruitmentPlan} />}
 
         <div className='pagination-container'>
           <Stack spacing={2}>
@@ -128,16 +128,16 @@ const RecruitmentPlanPage = () => {
                   <div>
                     <div className='font-semibold text-xl mb-2'>Số lượng</div>
                     <span className='amount-control'>
-                      <button className='' onClick={() => { formik.values.amount = parseInt(formik.values.amount) - 1 }}><img src={MinusIcon} alt='' width={'20rem'} /></button>
+                      <span className='mt-1' onClick={() => { formik.setValue(formik.values.amount, parseInt(formik.values.amount) - 1) }}><img src={MinusIcon} alt='' width={'20rem'} /></span>
                       <input type={'text'} style={{ width: '5rem', paddingLeft: 10 }} className='focus:outline-none' name='amount' value={formik.values.amount} onChange={formik.handleChange} />
-                      <button className='' onClick={() => { formik.values.amount = parseInt(formik.values.amount) + 1 }}><img src={AddIcon} alt='' width={'20rem'} /></button>
+                      <span className='mt-1' onClick={() => { formik.setFieldValue(formik.values.amount, parseInt(formik.values.amount) + 1) }}><img src={AddIcon} alt='' width={'20rem'} /></span>
                     </span>
                     {formik.errors.amount && formik.touched.amount && (
                       <div className='text-[#ec5555]'>{formik.errors.amount}</div>
                     )}
                   </div>
                   <div>
-                    <div className='font-semibold text-xl mb-2'>Tổng lương</div>
+                    <div className='font-semibold text-xl mb-2'>Tổng lương</div> 
                     <input type={'text'} name='totalSalary' className='focus:outline-none' placeholder='1.000.000 VNĐ' value={formik.values.totalSalary} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.3rem 2rem', borderRadius: '0.5rem', width: '13rem' }} />
                     {formik.errors.totalSalary && formik.touched.totalSalary && (
                       <div className='text-[#ec5555]'>{formik.errors.totalSalary}</div>
@@ -166,7 +166,6 @@ const RecruitmentPlanPage = () => {
         pauseOnHover
         theme="light"
       />
-      <ToastContainer />
     </React.Fragment>
   )
 }

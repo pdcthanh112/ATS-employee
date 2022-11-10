@@ -1,11 +1,10 @@
 import React from 'react'
 import './ListRecruitmentRequest.scss'
-import ShowDescription from './ShowDescription/ShowDescription'
-import ShowRequirment from './ShowRequirment/ShowRequirment'
 
+import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
 
 const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
-  
+
   return (
     <React.Fragment>
       {listRecruitmentRequest.map((item, id) => (
@@ -25,9 +24,10 @@ const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
             <span><strong className='font-semibold ml-1'>Expired date:</strong> {item.expiryDate}</span>
             <span><strong className='font-semibold ml-1'>Salary:</strong> {item.salary}</span>
             <span><strong className='font-semibold ml-1'>Status:</strong> {item.status}</span>
-          </div>         
-          <ShowDescription description={item.description}/>         
-          <ShowRequirment requirment={item.description}/>         
+          </div>
+          <div><ShowMoreComponent title='Description' content={item.description} /></div>
+          <div><ShowMoreComponent title='Requirement' content={item.requirement} /></div>
+          <div><ShowMoreComponent title='Benefit' content={item.benefit} /></div>
         </div>
       ))}
     </React.Fragment>

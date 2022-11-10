@@ -5,11 +5,7 @@ import { SidebarItem } from './SidebarItem';
 import SubMenu from './SubMenu';
 import { IconContext } from 'react-icons/lib';
 
-
-
-const SidebarWrap = styled.div`
-  width: 100%;
-`;
+const SidebarWrap = styled.div`width: 100%;`;
 
 const AppSidebar = () => {
   return (

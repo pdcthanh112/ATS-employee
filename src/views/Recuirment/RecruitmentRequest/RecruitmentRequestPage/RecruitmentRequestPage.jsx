@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './RecruitmentRequestPage.scss'
 
 import ReactLoading from 'react-loading'
-
+import { useSelector } from 'react-redux'
 import RequestIcon from '../../../../assets/icon/request.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
 import AddIcon from '../../../../assets/icon/plus.png'
@@ -13,10 +13,33 @@ import ListRecruitmentRequest from '../ListRecruitmentRequest/ListRecruitmentReq
 
 const RecruitmentRequestPage = () => {
 
+  const currentUser = useSelector((state) => state.auth.login.currentUser)
+  //console.log(currentUser);
+
   const [listRecruitmentRequest, setListRecruitmentRequest] = useState([])
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  // const [createRecruitmentRequestObject, setCreateRecruitmentRequestObject] = useState({
+  //   address: '',
+  //   amount: 0,
+  //   benefit: '',
+  //   cityName: [],
+  //   description: '',
+  //   educationLevel: '',
+  //   employeeId: currentUser.employee.id,
+  //   experience: '',
+  //   expiryDate: '',
+  //   foreignLanguage: '',
+  //   industry: '',
+  //   jobLevel: '',
+  //   planDetailId: 0,
+  //   positionId: 0,
+  //   requirement: '',
+  //   salaryFrom: '',
+  //   salaryTo: '',
+  //   typeOfWork: ''
+  // })
 
   const style = {
     position: 'absolute',
@@ -36,7 +59,7 @@ const RecruitmentRequestPage = () => {
       if (response) {
         console.log(response.data);
         setListRecruitmentRequest(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPages })
+        setPagination({ ...pagination, totalPage: response.data.totalPage })
         setIsLoading(false)
       }
     }
@@ -111,12 +134,14 @@ const RecruitmentRequestPage = () => {
 
       <Modal open={openModalCreate} onClose={() => setOpenModalCreate(false)}>
         <Box sx={style}>
-          <div className='modal-container'>
-            <div className='modal-title'>
-              <span className='font-medium text-3xl mr-3'>Create</span>
+          <div className='modalCreateRequest-container'>
+            <div className='modalCreateRequest-title'>
+              <span className='font-medium text-3xl mr-3'>Create recruitment request</span>
+              <img src={RequestIcon} alt='' width={'30rem'} />
+            </div>
+            <div className='modalCreateRequest-content'>
 
             </div>
-
           </div>
         </Box>
       </Modal>

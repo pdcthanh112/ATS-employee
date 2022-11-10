@@ -16,7 +16,9 @@ import ListCandidate from '../ListCandidate/ListCandidate';
 import { DEFAULT_PASSWORD } from '../../../utils/constants'
 
 const CandidatePage = () => {
-  const currentUser = useSelector((state) => state.auth.login.currentUser.data);
+
+  const currentUser = useSelector((state) => state.auth.login.currentUser);
+
   const [isLoading, setIsLoading] = useState(true)
   const [listCandidate, setListCandidate] = useState([])
   const [searchObject, setSearchObject] = useState({ name: "", position: "" });
@@ -41,9 +43,9 @@ const CandidatePage = () => {
       setIsLoading(true)
       const response = await getAllCandidate(pagination.currentPage - 1, 10, currentUser.token);
       if (response) {
-        console.log(response.data);
-        setListCandidate(response.data)
-        //setPagination({ ...pagination, totalPage: response.data.totalPages })
+        //console.log('CCCCCCCCCCCCCCC',response.data);
+        setListCandidate(response.data.responseList)
+        setPagination({ ...pagination, totalPage: response.data.totalPage })
         setIsLoading(false)
       }
     }
@@ -142,7 +144,7 @@ const CandidatePage = () => {
 
         <div className='pagination-container'>
           <Stack spacing={2}>
-            <Pagination count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} />
+            <Pagination count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page })}} variant="outlined" shape="rounded" />
           </Stack>
         </div>
       </div>

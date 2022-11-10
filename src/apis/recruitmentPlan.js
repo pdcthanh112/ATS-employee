@@ -2,8 +2,7 @@ import axiosConfig from "../configs/axiosConfig";
 
 export const getAllRecruimentPlan = async (token, pageNo, pageSize) => {
   return await axiosConfig
-    .get(
-      `recruitmentPlan/getAllRecruitmentPlans?pageNo=${pageNo}&pageSize=${pageSize}`,
+    .get(`recruitmentPlan/getAllRecruitmentPlans?pageNo=${pageNo}&pageSize=${pageSize}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       }

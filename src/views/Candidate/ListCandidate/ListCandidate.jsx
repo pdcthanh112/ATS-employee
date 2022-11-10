@@ -1,17 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './ListCandidate.scss'
+
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom'
+import { Box, Modal, Pagination, Stack } from '@mui/material';
+import { getInterviewByCandidateId } from '../../../apis/interview';
+import { getCVByCandidate } from '../../../apis/candidateApi';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ReactLoading from 'react-loading'
 
 import ScheduleIcon from '../../../assets/icon/calendar.png'
 import folderIcon from '../../../assets/icon/folder-icon.png'
-
-import { Box, Modal } from '@mui/material';
-import { getInterviewByCandidateId } from '../../../apis/interview';
-import { useSelector } from 'react-redux';
+import DefaultCandidateAvatar from '../../../assets/image/defaultUser.png'
+import PDFImage from '../../../assets/image/pdf.png'
+import { responseStatus } from '../../../utils/constants';
 
 const ListCandidate = ({ listCandidate }) => {
-  const currentUser = useSelector((state) => state.auth.login.currentUser.data);
-  const [openModalSchedule, setOpenModalSchedule] = useState(false);
+
+  const currentUser = useSelector((state) => state.auth.login.currentUser);
+
+  const [openScheduleModal, setOpenScheduleModal] = useState(false);
+  const [openCVModal, setOpenCVModal] = useState(false);
   const [interviewSchedule, setInterviewSchedule] = useState();
+  const [listCV, setListCV] = useState();
+  const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
+  const [isLoading, setIsLoading] = useState(false)
 
   const style = {
     position: 'absolute',
@@ -20,22 +35,58 @@ const ListCandidate = ({ listCandidate }) => {
     transform: 'translate(-50%, -50%)',
     width: 500,
     bgcolor: 'background.paper',
-    //border: '1px solid #0F6B14',
     boxShadow: 24,
   };
 
-
-  const getCandidateInterview = async (candidateId) => {
-    setOpenModalSchedule(true)
-    const schedule = await getInterviewByCandidateId(candidateId, currentUser.token);
-    if (schedule.data === undefined) {
-      setInterviewSchedule(null)
+  const getCandidateCV = async (candidateId) => {
+    setIsLoading(true)
+    const response = await getCVByCandidate(currentUser.token, candidateId, pagination.currentPage - 1, 5);
+    if (response.status === responseStatus.SUCCESS) {
+      if (response.data === null || response.data.length < 1) {
+        setListCV(null)
+      } else {
+        setListCV(response.data.responseList);
+        setPagination({ ...pagination, totalPage: response.data.totalPage })
+      }
+      setIsLoading(false)
+      setOpenCVModal(true)
     } else {
-      setInterviewSchedule(schedule.data);
+      toast.error('Somethings error')
     }
   }
 
-
+  const getCandidateInterview = async (candidateId) => {
+    setIsLoading(true)
+    const response = await getInterviewByCandidateId(6, currentUser.token);
+    if (response.status === responseStatus.SUCCESS) {
+      if (response.data === null || response.data.length < 1) {
+        setInterviewSchedule(null)
+      } else {
+        setInterviewSchedule(response.data);
+      }
+      setIsLoading(false)
+      setOpenScheduleModal(true)
+    } else {
+      toast.error('Somethings error')
+    }
+  }
+  // const getCandidateInterview = async (candidateId) => {
+  //   setIsLoading(true)
+  //   const response = await getInterviewByCandidateId(6, currentUser.token);
+  //   console.log('CVtttttttttttttt', response);
+  //   if (response.status === responseStatus.SUCCESS) {
+  //     if (response.data === null || response.data.length < 1) {
+  //       setInterviewSchedule(null)
+  //     } else {
+  //       setInterviewSchedule(response.data.responseList);
+  //       setPagination({ ...pagination, totalPage: response.data.totalPage })
+  //     }
+  //     setIsLoading(false)
+  //     setOpenScheduleModal(true)
+  //   } else {
+  //     toast.error('Somethings error')
+  //   }
+  // }
 
   return (
     <React.Fragment>
@@ -47,7 +98,7 @@ const ListCandidate = ({ listCandidate }) => {
               <th style={{ width: '12%' }}>Position</th>
               <th style={{ width: '12%' }}>Phone</th>
               <th style={{ width: '22%' }}>Email</th>
-              <th style={{ width: '6%' }}>Folder</th>
+              <th style={{ width: '6%' }}>CV</th>
               <th style={{ width: '12%' }}>Status</th>
               <th style={{ width: '15%' }}>Action</th>
               <th style={{ width: '7%' }}>Schedule</th>
@@ -55,15 +106,15 @@ const ListCandidate = ({ listCandidate }) => {
           </thead>
           <tbody>
             {listCandidate.map((item, id) => (
-              <tr key={id} style={{ height: '4rem' }}>
+              <tr key={id} style={{ height: '4rem', paddingBottom: '5rem' }}>
                 <td className='inline-flex'>
-                  <img src={item.image} alt='' width={'50rem'} className='rounded-full' />
+                  <div className='w-16 h-20'><img src={item.image ? item.image : DefaultCandidateAvatar} alt='' className='rounded-xl' /></div>
                   <span className='pl-2 my-auto'>{item.name}</span>
                 </td>
                 <td className='text-center'>IT/BA</td>
                 <td className='text-center'>{item.phone}</td>
                 <td className=''>{item.email}</td>
-                <td><img src={folderIcon} alt='' title='CV' width={'30rem'} className='m-auto hover:cursor-pointer' /></td>
+                <td><img src={folderIcon} alt='' title='CV' width={'30rem'} className='m-auto hover:cursor-pointer' onClick={() => getCandidateCV(item.id)} /></td>
                 <td className='text-center'>
                   {item.status === 'ACTIVATE' ? <span className='status-active'>Active</span> : <span className='status-disable'>Disable</span>}
                 </td>
@@ -80,35 +131,63 @@ const ListCandidate = ({ listCandidate }) => {
         </table>
       </div>
 
-      <Modal open={openModalSchedule} onClose={() => setOpenModalSchedule(false)}>
+      <Modal open={openCVModal} onClose={() => setOpenCVModal(false)}>
         <Box sx={style}>
           <div className='modal-container'>
             <div className='modal-title'>
-              <span className='font-medium text-3xl mr-3'>Candidate</span>
+              <span className='font-medium text-3xl mr-3'>List CV</span>
+              <img src={PDFImage} alt='' width={'35rem'} />
+            </div>
+            {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <React.Fragment>
+              {listCV === null ? <div>This candidate does not have a CV yet</div> : <React.Fragment>
+                {listCV?.map((item) => (
+                  <a href={`${item.linkCV}`} rel='noreferrer' target={'_blank'} key={item.id}>
+                    <div className='flex py-4'>
+                      <img src={PDFImage} alt='' width={'30rem'} />
+                      {item.title}
+                    </div>
+                  </a>
+                ))}
+                <div className='flex justify-center'>
+                  <Stack spacing={2}>
+                    <Pagination count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} />
+                  </Stack>
+                </div>
+              </React.Fragment>}
+            </React.Fragment>}
+          </div>
+        </Box>
+      </Modal>
+
+      <Modal open={openScheduleModal} onClose={() => setOpenScheduleModal(false)}>
+        <Box sx={style}>
+          <div className='modal-container'>
+            <div className='modal-title'>
+              <span className='font-medium text-3xl mr-3'>Schedule</span>
               <img src={ScheduleIcon} alt='' width={'28rem'} />
             </div>
-            {/* {interviewSchedule === null ? <div> asfdasfsf</div> : <React.Fragment>
-              {interviewSchedule.map((item, id) => (
-                <div key={id} className='candidate-content'>
+            {interviewSchedule === null ? <div>This candidate does not have a interview yet</div> : <React.Fragment>
+              {interviewSchedule?.map((item) => (
+                <div key={item.id} className='candidate-content'>
                   <div>
                     <span className='font-medium text-base'>Candidate name</span>
                     <div className='candidate-content__field'>{item.candidateName}</div>
                   </div>
-                  <div>
+                  <div className='mt-2'>
                     <span className='font-medium text-base'>Position</span>
                     <div className='candidate-content__field'>{item.jobApply.recruitmentRequest.industry}</div>
                   </div>
-                  <div className='grid grid-cols-2'>
+                  <div className='grid grid-cols-2 my-2'>
                     <div>
                       <span className='font-medium text-base'>Date</span>
                       <div className='candidate-content__field'>{item.date}</div>
                     </div>
                     <div>
                       <span className='font-medium text-base'>Time</span>
-                      <div className='candidate-content__field'>{item.date}</div>
+                      <div className='candidate-content__field'>{item.time}</div>
                     </div>
                   </div>
-                  {item.type === 'OFFLINE' ? <div>
+                  {item.type === 'OFFLINE' && <div>
                     <span className='font-medium text-2xl'>Offline</span>
                     <div>
                       <span className='font-medium text-base'>Room</span>
@@ -118,7 +197,8 @@ const ListCandidate = ({ listCandidate }) => {
                       <span className='font-medium text-base'>Location</span>
                       <div className='candidate-content__field'>{item.address}</div>
                     </div>
-                  </div> : <div>
+                  </div>}
+                  {item.type === 'ONLINE' && <div>
                     <span className='font-medium text-2xl'>Online</span>
                     <div>
                       <span className='font-medium text-base'>Google meet link</span>
@@ -127,12 +207,25 @@ const ListCandidate = ({ listCandidate }) => {
                   </div>}
                 </div>
               ))
-            }
+              }
             </React.Fragment>
-            } */}
+            }
           </div>
         </Box>
       </Modal>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </React.Fragment >
   )
 }

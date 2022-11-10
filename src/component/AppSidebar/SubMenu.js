@@ -44,7 +44,7 @@ const SubMenu = ({ item }) => {
   const showSubnav = () => setSubnav(!subnav);
 
   return (
-    <>
+    <React.Fragment>
       <SidebarLink to={item.path}>
         <div className="inline-flex">
           {item.icon}
@@ -63,7 +63,7 @@ const SubMenu = ({ item }) => {
             </DropdownLink>
           );
         })}
-    </>
+    </React.Fragment>
   );
 };
 
