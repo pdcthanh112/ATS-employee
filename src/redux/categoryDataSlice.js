@@ -11,7 +11,6 @@ const categoryDataSlice = createSlice({
   },
   reducers: {
     setCategoryData: (state, action) => {
-      console.log('GGGGGGGGG', action.payload);
       state.data.jobTitle = action.payload.jobTitle;
       state.data.industry = action.payload.industry;
       state.data.province = action.payload.province;

@@ -1,8 +1,8 @@
 import React from 'react'
 import AppContent from '../component/AppContent/AppContent'
-import AppFooter from '../component/AppFooter/AppFooter'
 import AppHeader from '../component/AppHeader/AppHeader'
 import AppSidebar from '../component/AppSidebar/AppSidebar'
+//import AppFooter from '../component/AppFooter/AppFooter'
 
 function DefaultLayout() {
   return (
@@ -14,7 +14,7 @@ function DefaultLayout() {
           <AppContent />
         </div>
       </div>
-      <AppFooter />
+      {/* <AppFooter /> */}
     </div>
   )
 }

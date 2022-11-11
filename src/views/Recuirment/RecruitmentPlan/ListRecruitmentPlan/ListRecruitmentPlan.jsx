@@ -1,13 +1,19 @@
 import React, { useState } from 'react'
 import './ListRecruitmentPlan.scss'
+import { useSelector } from "react-redux";
 
 import { Box, Modal, Pagination, Stack } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+import { approveRecruitmentPlan } from '../../../../apis/recruitmentPlan'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
+import { positionName, statusName } from '../../../../utils/constants'
 
 const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
 
+  const currentUser = useSelector((state) => state.auth.login.currentUser);
+  console.log(currentUser);
   const [openModalCreate, setOpenModalCreate] = useState(false)
 
   const style = {
@@ -21,40 +27,61 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
     boxShadow: 24,
   };
 
+  const handleApproveRecruitmentPlan = async (planId) => {
+    const response = await approveRecruitmentPlan(currentUser.token, currentUser?.employee.id, planId).then(console.log(response))
+
+
+  }
   return (
     <div className='listRecruitmentPlan-container'>
       {listRecruitmentPlan.map((item) => (
         <React.Fragment>
           <div key={item.id} className='recruitmentPlan-item'>
-            {item.status === 'PENDING' ?
-              <div>
-                <span>{item.status}</span>
-                <span className='process-buton  ml-60 hover:cursor-pointer'>APPROVE</span>
-                <span className='process-buton  ml-5 hover:cursor-pointer'>Reject</span>
-              </div> : <div>
-                <span>{item.status}</span>
-                <span className='process-buton  ml-60 hover:cursor-pointer'>APPROVE</span>
-                <span className='process-buton  ml-5 hover:cursor-pointer'>Reject</span>
-              </div>}
+            {item.status === statusName.PENDING &&
+              <div className='flex justify-between'>
+                <span className='label-status bg-[#FFF4DE] text-[#FFA800]'>PENDING</span>
+                {currentUser.employee.position.name.toUpperCase().includes(positionName.MANAGER) || currentUser.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) ?
+                  <span>
+                    <span className='process-buton hover:cursor-pointer' onClick={() => handleApproveRecruitmentPlan(item.id)}>APPROVE</span>
+                    <span className='process-buton hover:cursor-pointer ml-5'>Reject</span>
+                  </span> : <span></span>}
+              </div>
+            }
+            {item.status === statusName.APPROVED &&
+              <div className='flex justify-between'>
+                <span className='label-status bg-[#C9F7F5] text-[#1BC5BD]'>APPROVED</span>
+                {currentUser.employee.position.name.toUpperCase().includes(positionName.MANAGER) || currentUser.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) ?
+                  <span className='process-buton hover:cursor-pointer'>Create plan detail</span> : <span></span>}
+              </div>
+            }
+            {item.status === statusName.REJECTED &&
+              <div className='flex justify-end'>
+                <span className='label-status bg-[#FFE2E5] text-[#F64E60]'>Rejected</span>
+              </div>
+            }
             <div>
-              <div className='font-semibold text-xl mt-3'>Thời gian</div>
+              <div className='font-semibold text-lg mt-3'>Name</div>
+              <div className='item-value w-[80%] justify-between mx-auto'>{item.name}</div>
+            </div>
+            <div>
+              <div className='font-semibold text-xl mt-3'>Period</div>
               <div className='grid grid-cols-2 px-1'>
                 <div>
-                  <div className='font-medium text-base'>Từ</div>
+                  <div className='font-medium text-base'>from</div>
                   <div className='item-value w-[80%] justify-between'>{item.periodFrom}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
                 </div>
                 <div>
-                  <div className='font-medium text-base'>Đến</div>
+                  <div className='font-medium text-base'>to</div>
                   <div className='item-value w-[80%] justify-between'>{item.periodTo}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
                 </div>
               </div>
               <div className='grid grid-cols-2 mt-3'>
                 <div>
-                  <div className='font-semibold text-xl mb-1'>Số lượng</div>
+                  <div className='font-semibold text-xl mb-1'>amount</div>
                   <div className='item-value w-[60%] justify-center ml-6'>{item.amount}</div>
                 </div>
                 <div>
-                  <div className='font-semibold text-xl mb-1'>Tổng lương</div>
+                  <div className='font-semibold text-xl mb-1'>Total salary</div>
                   <div className='item-value w-[70%]'>{item.totalSalary}</div>
                 </div>
               </div>

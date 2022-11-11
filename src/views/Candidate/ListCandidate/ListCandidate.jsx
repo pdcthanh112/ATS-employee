@@ -18,7 +18,7 @@ import PDFImage from '../../../assets/image/pdf.png'
 import { responseStatus } from '../../../utils/constants';
 
 const ListCandidate = ({ listCandidate }) => {
-
+console.log(listCandidate);
   const currentUser = useSelector((state) => state.auth.login.currentUser);
 
   const [openScheduleModal, setOpenScheduleModal] = useState(false);
@@ -95,10 +95,9 @@ const ListCandidate = ({ listCandidate }) => {
           <thead>
             <tr className='text-center'>
               <th style={{ width: '24%' }}>Candidate</th>
-              <th style={{ width: '12%' }}>Position</th>
-              <th style={{ width: '12%' }}>Phone</th>
-              <th style={{ width: '22%' }}>Email</th>
-              <th style={{ width: '6%' }}>CV</th>
+              <th style={{ width: '15%' }}>Phone</th>
+              <th style={{ width: '19%' }}>Email</th>
+              <th style={{ width: '8%' }}>CV</th>
               <th style={{ width: '12%' }}>Status</th>
               <th style={{ width: '15%' }}>Action</th>
               <th style={{ width: '7%' }}>Schedule</th>
@@ -111,7 +110,6 @@ const ListCandidate = ({ listCandidate }) => {
                   <div className='w-16 h-20'><img src={item.image ? item.image : DefaultCandidateAvatar} alt='' className='rounded-xl' /></div>
                   <span className='pl-2 my-auto'>{item.name}</span>
                 </td>
-                <td className='text-center'>IT/BA</td>
                 <td className='text-center'>{item.phone}</td>
                 <td className=''>{item.email}</td>
                 <td><img src={folderIcon} alt='' title='CV' width={'30rem'} className='m-auto hover:cursor-pointer' onClick={() => getCandidateCV(item.id)} /></td>

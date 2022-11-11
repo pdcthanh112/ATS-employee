@@ -16,7 +16,7 @@ import AddIcon from '../../../../assets/icon/addIcon.png'
 import MinusIcon from '../../../../assets/icon/minusIcon.png'
 
 import { Box, Modal, Pagination, Stack } from '@mui/material';
-import { createRecruitmentPlan, getAllRecruimentPlan } from '../../../../apis/recruitmentPlan'
+import { createRecruitmentPlan, getRecruimentPlanByDepartment } from '../../../../apis/recruitmentPlan'
 import ListRecruitmentPlan from '../ListRecruitmentPlan/ListRecruitmentPlan'
 
 import { responseStatus } from '../../../../utils/constants'
@@ -45,7 +45,7 @@ const RecruitmentPlanPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getAllRecruimentPlan(currentUser.token, pagination.currentPage - 1, 4);
+      const response = await getRecruimentPlanByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
       if (response) {
         setListRecruitmentPlan(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
@@ -58,16 +58,18 @@ const RecruitmentPlanPage = () => {
   const formik = useFormik({
     initialValues: {
       creatorId: currentUser.employee.id,
+      name: "",
       periodFrom: "",
       periodTo: "",
       amount: 0,
       totalSalary: 0,
     },
     validationSchema: Yup.object({
-      periodFrom: Yup.string().required('Vui lòng nhập ngày bắt đầu'),
-      periodTo: Yup.string().required('Vui lòng nhập ngày kết thúc'),
-      amount: Yup.number().positive('Giá trị không hợp lệ').integer(),
-      totalSalary: Yup.string().required('Vui lòng nhập tổng quỹ lương').min(1, 'Tổng quỹ lương không hợp lệ')
+      name: Yup.string().required('Please input name of recruitment plan'),
+      periodFrom: Yup.string().required('Please input begin date'),
+      periodTo: Yup.string().required('Please input end date'),
+      amount: Yup.number().positive('Invalid value').integer(),
+      totalSalary: Yup.string().required('Please input total salary').min(1, 'Invalid value')
     }),
     onSubmit: (values) => {
       console.log('TTTTTTT', values);
@@ -107,17 +109,24 @@ const RecruitmentPlanPage = () => {
             <span className='font-medium text-3xl mr-3'>Create plan</span>
             <form onSubmit={formik.handleSubmit}>
               <div>
-                <div className='font-semibold text-xl mt-4'>Thời gian</div>
+                <div>
+                  <div className='font-semibold text-lg mt-3'>Name</div>
+                  <input type={'text'} name='name' className='focus:outline-none' placeholder='Name of recruitment plan' value={formik.values.name} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.3rem 2rem', borderRadius: '0.5rem', width: '100%'}} />
+                  {formik.errors.name && formik.touched.name && (
+                    <div className='text-[#ec5555]'>{formik.errors.name}</div>
+                  )}
+                </div>
+                <div className='font-semibold text-xl mt-4'>Period</div>
                 <div className='grid grid-cols-2 px-1'>
                   <div>
-                    <div className='font-medium text-base'>Từ</div>
+                    <div className='font-medium text-base'>from</div>
                     <input type={'date'} name='periodFrom' className='focus:outline-none' value={formik.values.periodFrom} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
                     {formik.errors.periodFrom && formik.touched.periodFrom && (
                       <div className='text-[#ec5555]'>{formik.errors.periodFrom}</div>
                     )}
                   </div>
                   <div>
-                    <div className='font-medium text-base'>Đến</div>
+                    <div className='font-medium text-base'>to</div>
                     <input type={'date'} name='periodTo' className='focus:outline-none' value={formik.values.periodTo} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
                     {formik.errors.periodTo && formik.touched.periodTo && (
                       <div className='text-[#ec5555]'>{formik.errors.periodTo}</div>
@@ -126,7 +135,7 @@ const RecruitmentPlanPage = () => {
                 </div>
                 <div className='grid grid-cols-2 mt-4'>
                   <div>
-                    <div className='font-semibold text-xl mb-2'>Số lượng</div>
+                    <div className='font-semibold text-xl mb-2'>Amount</div>
                     <span className='amount-control'>
                       <span className='mt-1' onClick={() => { formik.setValue(formik.values.amount, parseInt(formik.values.amount) - 1) }}><img src={MinusIcon} alt='' width={'20rem'} /></span>
                       <input type={'text'} style={{ width: '5rem', paddingLeft: 10 }} className='focus:outline-none' name='amount' value={formik.values.amount} onChange={formik.handleChange} />
@@ -137,7 +146,7 @@ const RecruitmentPlanPage = () => {
                     )}
                   </div>
                   <div>
-                    <div className='font-semibold text-xl mb-2'>Tổng lương</div> 
+                    <div className='font-semibold text-xl mb-2'>Total salary</div>
                     <input type={'text'} name='totalSalary' className='focus:outline-none' placeholder='1.000.000 VNĐ' value={formik.values.totalSalary} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.3rem 2rem', borderRadius: '0.5rem', width: '13rem' }} />
                     {formik.errors.totalSalary && formik.touched.totalSalary && (
                       <div className='text-[#ec5555]'>{formik.errors.totalSalary}</div>
@@ -145,8 +154,8 @@ const RecruitmentPlanPage = () => {
                   </div>
                 </div>
                 <div className='mt-3 flex justify-around'>
-                  <button onClick={() => { setOpenModalCreate(false) }} className='btn-create'>Hủy</button>
-                  <button type='submit' className='btn-create'>Lưu</button>
+                  <button onClick={() => { setOpenModalCreate(false) }} className='btn-create'>Cancel</button>
+                  <button type='submit' className='btn-create'>Save</button>
                 </div>
               </div>
             </form>
