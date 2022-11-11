@@ -9,6 +9,15 @@ export const getAllPlanDetail = async (token, pageNo, pageSize) => {
     .catch((error) => error);
 };
 
+export const getPlanApprovedByDepartment = async (token, depId) => {
+  return await axiosConfig
+    .get(`recruitmentPlan/getPlanApprovedByDepartment?departmentId=${depId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
 export const createPlanDetail = async (planData, token) => {
   return await axiosConfig
     .post(

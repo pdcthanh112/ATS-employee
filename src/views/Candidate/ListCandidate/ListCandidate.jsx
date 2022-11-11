@@ -18,7 +18,7 @@ import PDFImage from '../../../assets/image/pdf.png'
 import { responseStatus } from '../../../utils/constants';
 
 const ListCandidate = ({ listCandidate }) => {
-console.log(listCandidate);
+
   const currentUser = useSelector((state) => state.auth.login.currentUser);
 
   const [openScheduleModal, setOpenScheduleModal] = useState(false);

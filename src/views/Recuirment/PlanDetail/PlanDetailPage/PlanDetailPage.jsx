@@ -14,9 +14,9 @@ import PlanDetailIcon from '../../../../assets/icon/plan-detail.png'
 import CreateIcon from '../../../../assets/icon/plus.png'
 
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize } from '@mui/material';
-import { getAllPlanDetail } from '../../../../apis/planDetail'
+import { getAllPlanDetail, getPlanApprovedByDepartment, createPlanDetail } from '../../../../apis/planDetail'
 import ListPlanDetail from '../ListPlanDetail/ListPlanDetail'
-import { getRecruimentPlanByDepartment } from '../../../../apis/recruitmentPlan'
+import { responseStatus } from '../../../../utils/constants'
 
 const PlanDetailPage = () => {
 
@@ -41,7 +41,7 @@ const PlanDetailPage = () => {
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [listRecruitmentPlan, setListRecruitmentPlan] = useState([])
+  const [listRecruitmentPlan, setListRecruitmentPlan] = useState()
 
   const style = {
     position: 'absolute',
@@ -71,16 +71,13 @@ const PlanDetailPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true)
-      const response = await getRecruimentPlanByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
+      const response = await getPlanApprovedByDepartment(currentUser.token, currentUser.employee.department.id);
       if (response) {
-        setListRecruitmentPlan(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })
-        setIsLoading(false)
+        setListRecruitmentPlan(response.data)
       }
     }
     fetchData();
-  }, [])
+  }, [currentUser.employee.department.id, currentUser.token])
 
   const onChangePlanDetailObject = (id, value) => {
     setCreatePlanDetailObject(() => ({
@@ -89,28 +86,11 @@ const PlanDetailPage = () => {
     }))
   }
 
-  // const formik = useFormik({
-  //   initialValues: {
-  //     creatorId: currentUser.employee.id,
-  //     periodFrom: "",
-  //     periodTo: "",
-  //     amount: 0,
-  //     totalSalary: 0,
-  //   },
-  //   validationSchema: Yup.object({
-  //     periodFrom: Yup.string().required('Vui lòng nhập ngày bắt đầu'),
-  //     periodTo: Yup.string().required('Vui lòng nhập ngày kết thúc'),
-  //     amount: Yup.number().positive('Giá trị không hợp lệ').integer(),
-  //     totalSalary: Yup.string().required('Vui lòng nhập tổng quỹ lương').min(1, 'Tổng quỹ lương không hợp lệ')
-  //   }),
-  //   onSubmit: (values) => {
-  //     console.log('TTTTTTT', values);
-  //     // setIsLoading(true)
-  //     // createRecruitmentPlan(currentUser.token, values).then((response) => {
-  //     //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-  //     // }).then(setIsLoading(false))
-  //   }
-  // })
+  const handleCreatePlanDetail = async () => {
+    await createPlanDetail(createPlanDetailObject, currentUser.token).then(response => {
+      response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
+    })
+  }
 
   return (
     <React.Fragment>
@@ -137,65 +117,70 @@ const PlanDetailPage = () => {
       <Modal open={openModalCreate} onClose={() => setOpenModalCreate(false)}>
         <Box sx={style}>
           <div className='modal-container'>
-            <span className='font-medium text-3xl mr-3'>Create plan</span>
+            <span className='font-medium text-3xl mr-3'>Create plan</span>     
             <div>
               <div>
-                <TextField label="Name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} onChange={(value) => onChangePlanDetailObject('name', value)} />
+                <TextField label="Name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} onChange={(event) => onChangePlanDetailObject('name', event.target.value)} />
                 <div className='font-semibold text-lg mt-2'>Period</div>
                 <div className='grid grid-cols-2 px-1'>
                   <div className=''>
                     <div className='font-medium text-base'>from</div>
-                    <input type={'date'} name='periodFrom' className='focus:outline-none' onChange={(value) => onChangePlanDetailObject('periodFrom', value)} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
+                    <input type={'date'} name='periodFrom' className='focus:outline-none' onChange={(event) => onChangePlanDetailObject('periodFrom', event.target.value)} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
                   </div>
                   <div>
                     <div className='font-medium text-base'>to</div>
-                    <input type={'date'} name='periodTo' className='focus:outline-none' onChange={(value) => onChangePlanDetailObject('periodTo', value)} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
+                    <input type={'date'} name='periodTo' className='focus:outline-none' onChange={(event) => onChangePlanDetailObject('periodTo', event.target.value)} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
                   </div>
                 </div>
                 <Autocomplete
-                    options={categoryData.jobTitle}
+                    options={listRecruitmentPlan}
                     size={'small'}
                     sx={{ width: '100%', marginTop: '1rem' }}
-                    renderInput={(params) => <TextField {...params} label="Position" />}
-                    onInputChange={(event, value) => { onChangePlanDetailObject('industry', value) }} />
+                    getOptionLabel={option => option.name}
+                    renderInput={(params) => <TextField {...params} label="Recruitment plan" />}
+                    onChange={(event, value) => { onChangePlanDetailObject('recruitmentPlanId', value.id) }} />
                 <div className='flex'>
-                  <TextField label="Amount" variant="outlined" size='small' sx={{ width: '20%', marginTop: '1rem', marginRight: '1rem' }} />
-                  <TextField label="Salary" variant="outlined" size='small' sx={{ width: '40%', marginTop: '1rem', marginRight: '1rem' }} />
+                  <TextField label="Amount" variant="outlined" size='small' sx={{ width: '20%', margin: '1rem 1rem 0 0'}} onChange={(event) => onChangePlanDetailObject('amount', event.target.value)}/>
+                  <TextField label="Salary" variant="outlined" size='small' sx={{ width: '40%', margin: '1rem 1rem 0 0'}} onChange={(event) => onChangePlanDetailObject('salary', event.target.value)}/>
                   <Autocomplete
                     options={categoryData.jobTitle}
                     size={'small'}
                     sx={{ width: '35%', marginTop: '1rem' }}
                     renderInput={(params) => <TextField {...params} label="Position" />}
-                    onInputChange={(event, value) => { onChangePlanDetailObject('industry', value) }} />
+                    onChange={(event, value) => { onChangePlanDetailObject('industry', value) }} />
                 </div>
                 <div className='mt-4'>Reason</div>
-                <TextareaAutosize
+                <TextareaAutosize               
                   minRows={2}
                   maxRows={5}
-                  style={{ width: '100%', border: '1px solid #116835' }}
+                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                  onChange={(event) => onChangePlanDetailObject('reason', event.target.value)}
                 />
                 <div className='mt-4'>Description</div>
                 <TextareaAutosize
                   minRows={2}
                   maxRows={5}
-                  style={{ width: '100%', border: '1px solid #116835' }}
+                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                  onChange={(event) => onChangePlanDetailObject('description', event.target.value)}
                 />
                 <div className='mt-4'>Requirment</div>
                 <TextareaAutosize
                   minRows={2}
                   maxRows={5}
-                  style={{ width: '100%', border: '1px solid #116835' }}
+                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                  onChange={(event) => onChangePlanDetailObject('requirment', event.target.value)}
                 />
                 <div className='mt-4'>Note</div>
                 <TextareaAutosize
                   minRows={2}
                   maxRows={5}
-                  style={{ width: '100%', border: '1px solid #116835' }}
+                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                  onChange={(event) => onChangePlanDetailObject('note', event.target.value)}
                 />
               </div>
               <div className='mt-3 flex justify-around'>
                 <button onClick={() => { setOpenModalCreate(false) }} className='btn-create'>Cancel</button>
-                <button type='submit' className='btn-create'>Save</button>
+                <button type='submit' onClick={() => handleCreatePlanDetail()}className='btn-create'>Save</button>
               </div>
             </div>
 

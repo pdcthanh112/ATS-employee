@@ -12,7 +12,7 @@ export const experienceData = () => [
   '5 năm',
   'Trên 5 năm',
   'Trên 8 năm',
-  'Trên10 năm',
+  'Trên 10 năm',
  ];
 
 export const salaryData = () => [
