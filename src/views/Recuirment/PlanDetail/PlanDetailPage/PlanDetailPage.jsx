@@ -79,18 +79,45 @@ const PlanDetailPage = () => {
     fetchData();
   }, [currentUser.employee.department.id, currentUser.token])
 
-  const onChangePlanDetailObject = (id, value) => {
-    setCreatePlanDetailObject(() => ({
-      ...createPlanDetailObject,
-      [id]: value
-    }))
-  }
+  // const onChangePlanDetailObject = (id, value) => {
+  //   setCreatePlanDetailObject(() => ({
+  //     ...createPlanDetailObject,
+  //     [id]: value
+  //   }))
+  // }
 
-  const handleCreatePlanDetail = async () => {
-    await createPlanDetail(createPlanDetailObject, currentUser.token).then(response => {
-      response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
-    })
-  }
+  // const handleCreatePlanDetail = async () => {
+  //   await createPlanDetail(createPlanDetailObject, currentUser.token).then(response => {
+  //     response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
+  //   })
+  // }
+
+  const formik = useFormik({
+    initialValues: {
+      amount: 0,
+      creatorId: currentUser?.employee.id,
+      description: '',
+      name: '',
+      note: '',
+      periodFrom: '',
+      periodTo: '',
+      positionName: '',
+      reason: '',
+      recruitmentPlanId: 0,
+      requirement: '',
+      salary: ''
+    },
+    validationSchema: Yup.object({
+      
+      // periodFrom: Yup.string().required('Please input begin date'),
+      // periodTo: Yup.string().required('Please input end date'),
+      
+      
+    }),
+    onSubmit: (values) => {
+      console.log('vl', values);
+    }
+  })
 
   return (
     <React.Fragment>
@@ -117,7 +144,88 @@ const PlanDetailPage = () => {
       <Modal open={openModalCreate} onClose={() => setOpenModalCreate(false)}>
         <Box sx={style}>
           <div className='modal-container'>
-            <span className='font-medium text-3xl mr-3'>Create plan detail</span>     
+            <span className='font-medium text-3xl mr-3'>Create plan detail</span>
+            <form onSubmit={formik.handleSubmit}>
+            <div>
+              <div>
+                <TextField label="Name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='name' value={formik.values.name} onChange={(event) => formik.setFieldValue('name', event.target.value)} />
+                <div className='font-semibold text-lg mt-2'>Period</div>
+                <div className='grid grid-cols-2 px-1'>
+                  <div className=''>
+                    <div className='font-medium text-base'>from</div>
+                    <input type={'date'} className='focus:outline-none' name='periodFrom' value={formik.values.periodFrom} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
+                  </div>
+                  <div>
+                    <div className='font-medium text-base'>to</div>
+                    <input type={'date'} className='focus:outline-none' name='periodTo' value={formik.values.periodTo} onChange={formik.handleChange}  style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
+                  </div>
+                </div>
+                <Autocomplete
+                  options={listApprovedRecruitmentPlan}
+                  size={'small'}
+                  sx={{ width: '100%', marginTop: '1rem' }}
+                  getOptionLabel={option => option.name}
+                  renderInput={(params) => <TextField {...params} label="Recruitment plan" />}
+                  onChange={(event, value) => { formik.setFieldValue('recruitmentPlanId', value.id) }} />
+                <div className='flex'>
+                  <TextField label="Amount" variant="outlined" size='small' sx={{ width: '20%', margin: '1rem 1rem 0 0' }} name='amount' value={formik.values.amount} onChange={formik.handleChange} />
+                  <TextField label="Salary" variant="outlined" size='small' sx={{ width: '40%', margin: '1rem 1rem 0 0' }} name='salary' value={formik.values.salary} onChange={formik.handleChange}/>
+                  <Autocomplete
+                    options={categoryData.jobTitle}
+                    size={'small'}
+                    sx={{ width: '35%', marginTop: '1rem' }}
+                    renderInput={(params) => <TextField {...params} label="Position" />}
+                    onChange={(event, value) => { formik.setFieldValue('position', value) }} />
+                </div>
+                <div className='mt-4'>Reason</div>
+                <TextareaAutosize
+                name='reason'
+                value={formik.values.reason}
+                  minRows={2}
+                  maxRows={5}
+                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                  onChange={formik.handleChange}
+                />
+                <div className='mt-4'>Description</div>
+                <TextareaAutosize
+                  name='description'
+                  value={formik.values.description}
+                  minRows={2}
+                  maxRows={5}
+                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                  onChange={formik.handleChange}
+                />
+                <div className='mt-4'>Requirement</div>
+                <TextareaAutosize
+                  name='requirement'
+                  value={formik.values.requirement}
+                  minRows={2}
+                  maxRows={5}
+                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                  onChange={formik.handleChange}
+                />
+                <div className='mt-4'>Note</div>
+                <TextareaAutosize
+                  name='note'
+                  value={formik.values.note}
+                  minRows={2}
+                  maxRows={5}
+                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                  onChange={formik.handleChange}
+                />
+              </div>
+              <div className='mt-3 flex justify-around'>
+                <button onClick={() => { setOpenModalCreate(false) }} className='btn-create'>Cancel</button>
+                <button type='submit' className='btn-create'>Save</button>
+              </div>
+             
+            </div>
+            </form>
+          </div>
+        </Box>
+        {/* <Box sx={style}>
+          <div className='modal-container'>
+            <span className='font-medium text-3xl mr-3'>Create plan detail</span>
             <div>
               <div>
                 <TextField label="Name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} onChange={(event) => onChangePlanDetailObject('name', event.target.value)} />
@@ -133,15 +241,15 @@ const PlanDetailPage = () => {
                   </div>
                 </div>
                 <Autocomplete
-                    options={listApprovedRecruitmentPlan}
-                    size={'small'}
-                    sx={{ width: '100%', marginTop: '1rem' }}
-                    getOptionLabel={option => option.name}
-                    renderInput={(params) => <TextField {...params} label="Recruitment plan" />}
-                    onChange={(event, value) => { onChangePlanDetailObject('recruitmentPlanId', value.id) }} />
+                  options={listApprovedRecruitmentPlan}
+                  size={'small'}
+                  sx={{ width: '100%', marginTop: '1rem' }}
+                  getOptionLabel={option => option.name}
+                  renderInput={(params) => <TextField {...params} label="Recruitment plan" />}
+                  onChange={(event, value) => { onChangePlanDetailObject('recruitmentPlanId', value.id) }} />
                 <div className='flex'>
-                  <TextField label="Amount" variant="outlined" size='small' sx={{ width: '20%', margin: '1rem 1rem 0 0'}} onChange={(event) => onChangePlanDetailObject('amount', event.target.value)}/>
-                  <TextField label="Salary" variant="outlined" size='small' sx={{ width: '40%', margin: '1rem 1rem 0 0'}} onChange={(event) => onChangePlanDetailObject('salary', event.target.value)}/>
+                  <TextField label="Amount" variant="outlined" size='small' sx={{ width: '20%', margin: '1rem 1rem 0 0' }} onChange={(event) => onChangePlanDetailObject('amount', event.target.value)} />
+                  <TextField label="Salary" variant="outlined" size='small' sx={{ width: '40%', margin: '1rem 1rem 0 0' }} onChange={(event) => onChangePlanDetailObject('salary', event.target.value)} />
                   <Autocomplete
                     options={categoryData.jobTitle}
                     size={'small'}
@@ -150,7 +258,7 @@ const PlanDetailPage = () => {
                     onChange={(event, value) => { onChangePlanDetailObject('industry', value) }} />
                 </div>
                 <div className='mt-4'>Reason</div>
-                <TextareaAutosize               
+                <TextareaAutosize
                   minRows={2}
                   maxRows={5}
                   style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
@@ -180,12 +288,11 @@ const PlanDetailPage = () => {
               </div>
               <div className='mt-3 flex justify-around'>
                 <button onClick={() => { setOpenModalCreate(false) }} className='btn-create'>Cancel</button>
-                <button type='submit' onClick={() => handleCreatePlanDetail()}className='btn-create'>Save</button>
+                <button type='submit' onClick={() => handleCreatePlanDetail()} className='btn-create'>Save</button>
               </div>
             </div>
-
           </div>
-        </Box>
+        </Box> */}
       </Modal>
 
       <ToastContainer
