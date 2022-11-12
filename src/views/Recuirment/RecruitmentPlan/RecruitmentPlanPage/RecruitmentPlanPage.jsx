@@ -10,6 +10,7 @@ import * as Yup from 'yup'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import CurrencyFormat from 'react-currency-format';
 import PlanIcon from '../../../../assets/icon/recruitment-plan.png'
 import CreateIcon from '../../../../assets/icon/plus.png'
 import AddIcon from '../../../../assets/icon/addIcon.png'
@@ -62,7 +63,7 @@ const RecruitmentPlanPage = () => {
       periodFrom: "",
       periodTo: "",
       amount: 0,
-      totalSalary: 0,
+      totalSalary: '',
     },
     validationSchema: Yup.object({
       name: Yup.string().required('Please input name of recruitment plan'),
@@ -72,14 +73,12 @@ const RecruitmentPlanPage = () => {
       totalSalary: Yup.string().required('Please input total salary').min(1, 'Invalid value')
     }),
     onSubmit: (values) => {
-      console.log('TTTTTTT', values);
       setIsLoading(true)
       createRecruitmentPlan(currentUser.token, values).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
       }).then(setIsLoading(false))
     }
   })
-
 
   return (
     <React.Fragment>
@@ -111,7 +110,7 @@ const RecruitmentPlanPage = () => {
               <div>
                 <div>
                   <div className='font-semibold text-lg mt-3'>Name</div>
-                  <input type={'text'} name='name' className='focus:outline-none' placeholder='Name of recruitment plan' value={formik.values.name} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.3rem 2rem', borderRadius: '0.5rem', width: '100%'}} />
+                  <input type={'text'} name='name' className='focus:outline-none' placeholder='Name of recruitment plan' value={formik.values.name} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.3rem 2rem', borderRadius: '0.5rem', width: '100%' }} />
                   {formik.errors.name && formik.touched.name && (
                     <div className='text-[#ec5555]'>{formik.errors.name}</div>
                   )}
@@ -147,10 +146,11 @@ const RecruitmentPlanPage = () => {
                   </div>
                   <div>
                     <div className='font-semibold text-xl mb-2'>Total salary</div>
-                    <input type={'text'} name='totalSalary' className='focus:outline-none' placeholder='1.000.000 VNĐ' value={formik.values.totalSalary} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.3rem 2rem', borderRadius: '0.5rem', width: '13rem' }} />
+                    <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='totalSalary' placeholder='1,000,000 VNĐ' value={formik.values.totalSalary} onChange={formik.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '100%' }} />
                     {formik.errors.totalSalary && formik.touched.totalSalary && (
                       <div className='text-[#ec5555]'>{formik.errors.totalSalary}</div>
                     )}
+
                   </div>
                 </div>
                 <div className='mt-3 flex justify-around'>
