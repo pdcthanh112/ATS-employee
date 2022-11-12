@@ -3,12 +3,12 @@ import Home from "../../assets/icon/home.png";
 import Recruitment from "../../assets/icon/recruitment.png";
 import Candidates from "../../assets/icon/candidate.png";
 import Schedules from "../../assets/icon/calendar.png";
-import Settings from "../../assets/icon/settings.png";
 import IconUp from "../../assets/icon/caret-arrow-up.png";
 import IconDown from "../../assets/icon/caret-arrow-down.png";
 import RecruitmentPlan from "../../assets/icon/recruitment-plan.png";
 import PlanDetail from "../../assets/icon/plan-detail.png";
 import RecruitmentRequest from "../../assets/icon/request.png";
+import Notification from "../../assets/icon/notification-icon.png"
 
 export const SidebarItem = [
   {
@@ -19,7 +19,7 @@ export const SidebarItem = [
   {
     title: "Recruitment",
     path: "/recruitment-request",
-    icon: <img src={Recruitment} alt="" width={"20rem"} />,
+    icon: <img src={Recruitment} alt="" width={"30rem"} />,
     iconClosed: <img src={IconDown} alt="" width={"15rem"} />,
     iconOpened: <img src={IconUp} alt="" width={"15rem"} />,
 
@@ -75,9 +75,9 @@ export const SidebarItem = [
 
   },
   {
-    title: "Settings",
-    path: "/settings",
-    icon: <img src={Settings} alt="" width={"30rem"} />,
+    title: "Notification",
+    path: "/notification",
+    icon: <img src={Notification} alt="" width={"30rem"} />,
 
   },
 ];

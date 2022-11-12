@@ -1,7 +1,7 @@
-.recruitmentrequest-container{
+.recruitmentrequest-container {
   background-color: #fff;
 
-  .title-container{
+  .title-container {
     display: inline-flex;
     padding: 2rem 5rem 0 2rem;
     width: 100%;
@@ -12,16 +12,13 @@
     font-weight: 500;
     font-size: 1.15rem;
     margin: 0.5rem 0.5rem 2rem 5rem;
-    color: #0F6E00;
-  }
-  .create-request:hover {
-    cursor: pointer;
+    color: #0f6e00;
   }
 
   .filter-container {
     display: flex;
     justify-content: center;
-    
+
     .inputName {
       border: 1px solid rgb(71, 71, 71);
       border-radius: 5px;
@@ -35,8 +32,8 @@
   }
 
   .pagination-container {
-    display: flex; 
-    justify-content: center; 
+    display: flex;
+    justify-content: center;
     margin: 0 1rem 1rem 1rem;
   }
 }
@@ -47,7 +44,13 @@
     display: flex;
   }
   .modalCreateRequest-content {
-    
+  }
+
+  .btn-create {
+    background-color: #20D489;
+    border-radius: 8px;
+    width: 40%;
+    height: 2.5rem;
+    color: #f5fef9;   
   }
 }
-

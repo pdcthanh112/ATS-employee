@@ -13,7 +13,6 @@ import { positionName, statusName } from '../../../../utils/constants'
 const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser);
-  console.log(currentUser);
   const [openModalCreate, setOpenModalCreate] = useState(false)
 
   const style = {

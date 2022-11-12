@@ -1,16 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import './SchedulePage.scss'
+import './InterviewSchedulePage.scss'
 
+import { useSelector } from 'react-redux';
 import ReactLoading from 'react-loading'
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete } from '@mui/material';
 
+import { getAllInterview } from '../../../apis/interview';
 import RequestIcon from '../../../assets/icon/request.png'
 import SearchIcon from '../../../assets/icon/filter.png'
 import AddIcon from '../../../assets/icon/plus.png'
+import ListInterviewSchedule from '../ListSInterviewchedule/ListInterviewSchedule';
+
 
 const SchedulePage = () => {
 
-  const [listRecruitmentRequest, setListRecruitmentRequest] = useState([])
+  const currentUser = useSelector((state) => state.auth.login.currentUser)
+
+  const [listInterviewSchedule, setListInterviewSchedule] = useState([])
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -27,17 +33,17 @@ const SchedulePage = () => {
   };
 
   useEffect(() => {
-    // const fetchData = async () => {
-    //   setIsLoading(true)
-    //   //const response = await getAllRecruimentRequest(pagination.currentPage - 1, 2);
-    //   if (response) {
-    //     console.log(response.data);
-    //     setListRecruitmentRequest(response.data.responseList)
-    //     setPagination({ ...pagination, totalPage: response.data.totalPages })
-    //     setIsLoading(false)
-    //   }
-    // }
-    // fetchData();
+    const fetchData = async () => {
+      setIsLoading(true)
+      const response = await getAllInterview(currentUser.token, pagination.currentPage - 1, 4);
+      if (response) {
+        console.log(response.data);
+        setListInterviewSchedule(response.data.responseList)
+        setPagination({ ...pagination, totalPage: response.data.totalPage })
+        setIsLoading(false)
+      }
+    }
+    fetchData();
   }, [pagination.currentPage])
 
   const handleChangeSearchObject = (id, value) => {
@@ -98,7 +104,7 @@ const SchedulePage = () => {
           <img src={SearchIcon} alt="" width={'50rem'} title='Search' onClick={() => onHandleSearch()} />
         </div>
 
-        {/* {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListRecruitmentRequest listRecruitmentRequest={listRecruitmentRequest} />} */}
+        {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListInterviewSchedule listInterviewSchedule={listInterviewSchedule} />}
 
         <div className='pagination-container'>
           <Stack spacing={2}>

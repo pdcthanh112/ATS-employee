@@ -49,6 +49,7 @@ export const createRecruitmentPlan = async (token, planData) => {
         amount: planData.amount,
         creatorId: planData.creatorId,
         periodFrom: planData.periodFrom,
+        name: planData.name,
         periodTo: planData.periodTo,
         totalSalary: planData.totalSalary,
       },

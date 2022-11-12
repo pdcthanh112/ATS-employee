@@ -45,7 +45,7 @@ const SubMenu = ({ item }) => {
 
   return (
     <React.Fragment>
-      <SidebarLink to={item.path}>
+      <SidebarLink to={item.path} className='hover:text-[#000]'>
         <div className="inline-flex">
           {item.icon}
           <SidebarLabel>{item.title}</SidebarLabel>

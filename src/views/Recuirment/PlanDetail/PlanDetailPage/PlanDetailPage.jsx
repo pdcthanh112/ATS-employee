@@ -41,7 +41,7 @@ const PlanDetailPage = () => {
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [listRecruitmentPlan, setListRecruitmentPlan] = useState()
+  const [listApprovedRecruitmentPlan, setApprovedListRecruitmentPlan] = useState([])
 
   const style = {
     position: 'absolute',
@@ -73,7 +73,7 @@ const PlanDetailPage = () => {
     const fetchData = async () => {
       const response = await getPlanApprovedByDepartment(currentUser.token, currentUser.employee.department.id);
       if (response) {
-        setListRecruitmentPlan(response.data)
+        setApprovedListRecruitmentPlan(response.data)
       }
     }
     fetchData();
@@ -117,7 +117,7 @@ const PlanDetailPage = () => {
       <Modal open={openModalCreate} onClose={() => setOpenModalCreate(false)}>
         <Box sx={style}>
           <div className='modal-container'>
-            <span className='font-medium text-3xl mr-3'>Create plan</span>     
+            <span className='font-medium text-3xl mr-3'>Create plan detail</span>     
             <div>
               <div>
                 <TextField label="Name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} onChange={(event) => onChangePlanDetailObject('name', event.target.value)} />
@@ -133,7 +133,7 @@ const PlanDetailPage = () => {
                   </div>
                 </div>
                 <Autocomplete
-                    options={listRecruitmentPlan}
+                    options={listApprovedRecruitmentPlan}
                     size={'small'}
                     sx={{ width: '100%', marginTop: '1rem' }}
                     getOptionLabel={option => option.name}

@@ -16,3 +16,8 @@ export const positionName = {
     MANAGER: 'MANAGER'
 }
 
+export const interviewType = {
+    ONLINE: 'ONLINE',
+    OFFLINE: 'OFFLINE'
+}
+

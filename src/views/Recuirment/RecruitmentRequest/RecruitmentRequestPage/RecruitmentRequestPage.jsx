@@ -6,15 +6,14 @@ import { useSelector } from 'react-redux'
 import RequestIcon from '../../../../assets/icon/request.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
 import AddIcon from '../../../../assets/icon/plus.png'
-
+import CurrencyFormat from 'react-currency-format';
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize } from '@mui/material';
-import { getAllRecruimentRequest } from '../../../../apis/recruimentRequestApi'
+import { getAllRecruimentRequest, getApprovedByDepartment } from '../../../../apis/recruimentRequestApi'
 import ListRecruitmentRequest from '../ListRecruitmentRequest/ListRecruitmentRequest'
-
+import { educationLevelData, experienceData, typeOfWorkData } from '../../../../utils/dropdownData'
 const RecruitmentRequestPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
-  //console.log(currentUser);
   const categoryData = useSelector((state) => state.categoryData.data);
 
   const [listRecruitmentRequest, setListRecruitmentRequest] = useState([])
@@ -41,6 +40,7 @@ const RecruitmentRequestPage = () => {
     salaryTo: '',
     typeOfWork: ''
   })
+  const [listApprovedPlanDetail, setListApprovedPlanDetail] = useState([])
 
   const style = {
     position: 'absolute',
@@ -60,7 +60,6 @@ const RecruitmentRequestPage = () => {
       setIsLoading(true)
       const response = await getAllRecruimentRequest(pagination.currentPage - 1, 2);
       if (response) {
-        //console.log(response.data);
         setListRecruitmentRequest(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
         setIsLoading(false)
@@ -69,7 +68,18 @@ const RecruitmentRequestPage = () => {
     fetchData();
   }, [pagination.currentPage])
 
-  const onChangePlanDetailObject = (id, value) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getApprovedByDepartment(currentUser.employee.department.id, currentUser.token);
+      if (response) {
+        setListApprovedPlanDetail(response.data)
+      }
+    }
+    fetchData();
+  }, [])
+
+
+  const onChangeRecruitmentRequestObject = (id, value) => {
     setCreateRecruitmentRequestObject(() => ({
       ...createRecruitmentRequestObject,
       [id]: value
@@ -105,7 +115,7 @@ const RecruitmentRequestPage = () => {
           <img src={RequestIcon} alt='' width={'30rem'} />
         </div>
 
-        <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
+        <div className='create-request hover:cursor-pointer' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
           <span className='mr-1'>Create recruitment request</span>
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' /></span>
         </div>
@@ -148,35 +158,71 @@ const RecruitmentRequestPage = () => {
               <img src={RequestIcon} alt='' width={'30rem'} />
             </div>
             <div className='modalCreateRequest-content'>
-            <div>
-                <TextField label="Job title" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} onChange={(value) => onChangePlanDetailObject('name', value)} />
-                <div className='font-semibold text-lg mt-2'>Period</div>
+              <div>
                 <div className='grid grid-cols-2 px-1'>
-                  <div className=''>
-                    <div className='font-medium text-base'>from</div>
-                    <input type={'date'} name='periodFrom' className='focus:outline-none' onChange={(value) => onChangePlanDetailObject('periodFrom', value)} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
-                  </div>
-                  <div>
-                    <div className='font-medium text-base'>to</div>
-                    <input type={'date'} name='periodTo' className='focus:outline-none' onChange={(value) => onChangePlanDetailObject('periodTo', value)} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
-                  </div>
+                  <Autocomplete
+                    options={categoryData.position}
+                    size={'small'}
+                    sx={{ width: '80%', marginTop: '1rem' }}
+                    renderInput={(params) => <TextField {...params} label="Position" />}
+                    onInputChange={(event, value) => { onChangeRecruitmentRequestObject('industry', value) }} />
+
+                  <TextField label="Job title" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} onChange={(value) => onChangeRecruitmentRequestObject('name', value)} />
                 </div>
-                <Autocomplete
-                    options={categoryData.jobTitle}
+
+                <div className='grid grid-cols-2 px-1'>
+                  <Autocomplete
+                    options={experienceData()}
+                    size={'small'}
+                    sx={{ width: '80%', marginTop: '1rem' }}
+                    renderInput={(params) => <TextField {...params} label="Experience" />}
+                    onInputChange={(event, value) => { onChangeRecruitmentRequestObject('experience', value) }} />
+                  <Autocomplete
+                    options={typeOfWorkData()}
                     size={'small'}
                     sx={{ width: '100%', marginTop: '1rem' }}
-                    renderInput={(params) => <TextField {...params} label="Position" />}
-                    onInputChange={(event, value) => { onChangePlanDetailObject('industry', value) }} />
-                <div className='flex'>
-                  <TextField label="Amount" variant="outlined" size='small' sx={{ width: '20%', marginTop: '1rem', marginRight: '1rem' }} />
-                  <TextField label="Salary" variant="outlined" size='small' sx={{ width: '40%', marginTop: '1rem', marginRight: '1rem' }} />
-                  <Autocomplete
-                    options={categoryData.jobTitle}
-                    size={'small'}
-                    sx={{ width: '35%', marginTop: '1rem' }}
-                    renderInput={(params) => <TextField {...params} label="Position" />}
-                    onInputChange={(event, value) => { onChangePlanDetailObject('industry', value) }} />
+                    renderInput={(params) => <TextField {...params} label="Type of work" />}
+                    onInputChange={(event, value) => { onChangeRecruitmentRequestObject('typeOfWork', value) }} />
                 </div>
+
+                <div className='grid grid-cols-2 px-1'>
+                  <Autocomplete
+                    options={educationLevelData()}
+                    size={'small'}
+                    sx={{ width: '80%', marginTop: '1rem' }}
+                    renderInput={(params) => <TextField {...params} label="Education level" />}
+                    onInputChange={(event, value) => { onChangeRecruitmentRequestObject('educationLevel', value) }} />
+
+                  <TextField label="Salary" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} onChange={(value) => onChangeRecruitmentRequestObject('salary', value)} />
+                </div>
+
+                <div className='grid grid-cols-2 px-1'>
+                  <TextField label="" placeholder='' type={'date'} variant="outlined" size='small' style={{ width: '80%', marginTop: '1rem' }} onChange={(value) => onChangeRecruitmentRequestObject('expiryDate', value)} />
+                  <TextField label="Industry" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} onChange={(value) => onChangeRecruitmentRequestObject('industry', value)} />
+                </div>
+
+                <div className='grid grid-cols-2 px-1'>
+                  {/* <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='totalSalary' placeholder='1,000,000 VNĐ' value={formik.values.totalSalary} onChange={formik.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '100%' }} />
+                  <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='totalSalary' placeholder='1,000,000 VNĐ' value={formik.values.totalSalary} onChange={formik.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '100%' }} /> */}
+                </div>
+
+                <Autocomplete
+                  options={listApprovedPlanDetail}
+                  size={'small'}
+                  sx={{ width: '100%', marginTop: '1rem' }}
+                  getOptionLabel={option => option.name}
+                  renderInput={(params) => <TextField {...params} label="Plan detail" />}
+                  onChange={(event, value) => { onChangeRecruitmentRequestObject('planDetailId', value.id) }} />
+
+                <Autocomplete
+                  options={categoryData.province}
+                  size={'small'}
+                  sx={{ width: '100%', marginTop: '1rem' }}
+                  renderInput={(params) => <TextField {...params} label="City name" />}
+                  onChange={(event, value) => { onChangeRecruitmentRequestObject('cityName', value) }} />
+
+                <TextField label="Address" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} onChange={(value) => onChangeRecruitmentRequestObject('address', value)} />
+
                 <div className='mt-4'>Reason</div>
                 <TextareaAutosize
                   minRows={2}
@@ -188,18 +234,21 @@ const RecruitmentRequestPage = () => {
                   minRows={2}
                   maxRows={5}
                   style={{ width: '100%', border: '1px solid #116835' }}
+                  onChange={(event) => onChangeRecruitmentRequestObject('description', event.target.value)}
                 />
                 <div className='mt-4'>Requirment</div>
                 <TextareaAutosize
                   minRows={2}
                   maxRows={5}
                   style={{ width: '100%', border: '1px solid #116835' }}
+                  onChange={(event) => onChangeRecruitmentRequestObject('requirment', event.target.value)}
                 />
-                <div className='mt-4'>Note</div>
+                <div className='mt-4'>Benefit</div>
                 <TextareaAutosize
                   minRows={2}
                   maxRows={5}
                   style={{ width: '100%', border: '1px solid #116835' }}
+                  onChange={(event) => onChangeRecruitmentRequestObject('benefit', event.target.value)}
                 />
               </div>
               <div className='mt-3 flex justify-around'>
