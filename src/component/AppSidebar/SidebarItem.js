@@ -69,8 +69,8 @@ export const SidebarItem = [
     // ],
   },
   {
-    title: "Schedules",
-    path: "/schedules",
+    title: "Interview",
+    path: "/interviews",
     icon: <img src={Schedules} alt="" width={"30rem"} />,
 
   },

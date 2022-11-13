@@ -1,12 +1,6 @@
 .schedule-container{
   background-color: #fff;
 
-  .title-container{
-    display: inline-flex;
-    padding: 2rem 5rem 0 2rem;
-    width: 100%;
-  }
-
   .create-schedule {
     display: flex;
     font-weight: 500;
@@ -39,4 +33,12 @@
     justify-content: center; 
     margin: 0 1rem 1rem 1rem;
   }
+}
+
+.btn-create {
+  background-color: #20D489;
+  border-radius: 8px;
+  width: 40%;
+  height: 2.5rem;
+  color: #f5fef9;   
 }

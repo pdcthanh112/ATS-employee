@@ -13,11 +13,19 @@ export const statusName = {
 
 export const positionName = {
     DIRECTOR: 'DIRECTOR',
-    MANAGER: 'MANAGER'
+    MANAGER: 'MANAGER', 
+    POSITION_HR: 'HR'
 }
 
 export const interviewType = {
     ONLINE: 'ONLINE',
     OFFLINE: 'OFFLINE'
+}
+
+export const interviewStatus = {
+    PENDING: 'PENDING',
+    APPROVED: 'APPROVED',
+    DONE: 'DONE', 
+    CANCELED: 'CANCELED'
 }
 

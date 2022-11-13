@@ -21,7 +21,7 @@ export const getPlanApprovedByDepartment = async (token, depId) => {
 export const createPlanDetail = async (planData, token) => {
   return await axiosConfig
     .post(
-      "recruitmentPlan/create",
+      "planDetail/create",
       {
         amount: planData.amount,
         creatorId: planData.creatorId,

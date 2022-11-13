@@ -46,3 +46,35 @@ export const getCategory = async (dispatch) => {
     dispatch(setCategoryData(response.data.data));
   }
 };
+
+export const createRecruitmentRequest = async (data, token) => {
+  return await axiosConfig
+    .post(
+      "recruitmentRequest/create",
+      {
+        address: data.address,
+        amount: data.amount,
+        benefit: data.benefit,
+        cityName: data.cityName,
+        description: data.description,
+        educationLevel: data.educationLevel,
+        employeeId: data.employeeId,
+        experience: data.experience,
+        expiryDate: data.expiryDate,
+        foreignLanguage: data.foreignLanguage,
+        industry: data.industry,
+        jobLevel: data.jobLevel,
+        planDetailId: data.planDetailId,
+        positionName: data.positionName,
+        requirement: data.requirement,
+        salaryFrom: data.salaryFrom,
+        salaryTo: data.salaryTo,
+        typeOfWork: data.typeOfWork,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    .then((response) => response.data)
+    .catch((error) => error.response.data);
+};
