@@ -27,7 +27,7 @@ export const getInterviewByDepartment = async (token, pageNo, pageSize) => {
     .catch((error) => error);
 };
 
-export const createRecruitmentRequest = async (data, token) => {
+export const createInterview = async (data, token) => {
   return await axiosConfig
     .post(
       "interview/createInterview",
@@ -46,6 +46,18 @@ export const createRecruitmentRequest = async (data, token) => {
         time: data.time,
         type: data.type,
       },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    .then((response) => response.data)
+    .catch((error) => error.response.data);
+};
+
+export const confirmInterview = async (token, employeeId, interviewId) => {
+  return await axiosConfig
+    .patch(
+      `interview/confirmByEmployee?idEmployee=${employeeId}&idInterview=${interviewId}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       }

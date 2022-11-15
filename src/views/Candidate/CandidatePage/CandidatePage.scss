@@ -1,38 +1,21 @@
 .candidatepage-container{
-  background-color: #fff;
 
-  .title-container{
-    display: inline-flex;
-    padding: 2rem 5rem 0 2rem;
-    width: 100%;
+.inputName {
+  border: 1px solid #A0A0A0;
+  background-color: #FFF;
+  border-radius: 5px;
+  margin: 0 1.2rem;
+  .input-tag {
+    margin: 5px 7px;
+    font-size: 1rem;
+    width: 95%;
   }
+}
 
-  .create-candidate {
-    display: flex;
-    font-weight: 500;
-    font-size: 1.15rem;
-    margin: 0.5rem 0.5rem 2rem 5rem;
-    color: #0F6E00;
-  }
-  .create-candidate:hover {
-    cursor: pointer;
-  }
-
-  .filter-container {
-    display: flex;
-    justify-content: center;
+  
     
-    .inputName {
-      border: 1px solid rgb(71, 71, 71);
-      border-radius: 5px;
-      font-size: 1rem;
-      font-weight: 400;
-      margin-right: 2rem;
-      height: 2.4rem;
-      line-height: 2.2rem;
-      width: 20rem;
-    }
-  }
+
+  
 
   .pagination-container {
     display: flex; 

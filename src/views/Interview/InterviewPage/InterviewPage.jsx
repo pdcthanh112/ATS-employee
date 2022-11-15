@@ -24,6 +24,22 @@ const SchedulePage = () => {
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [createInterviewObject, setCreateInterviewObject] = useState({
+    name: '',
+    address: '',
+    candidateId: '',
+    date: '',
+    description: '',
+    employeeId: [],
+    jobApplyId: '',
+    linkMeeting: '',
+    purpose: '',
+    room: '',
+    round: '',
+    subject: '',
+    time: '',
+    type: ''
+  })
 
   const style = {
     position: 'absolute',
@@ -49,6 +65,35 @@ const SchedulePage = () => {
     }
     fetchData();
   }, [pagination.currentPage])
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true)
+      const response = await getAllInterview(currentUser.token, pagination.currentPage - 1, 4);
+      if (response) {
+        console.log(response.data);
+        setListInterviewSchedule(response.data.responseList)
+        setPagination({ ...pagination, totalPage: response.data.totalPage })
+        setIsLoading(false)
+      }
+    }
+    fetchData();
+  }, [])
+
+
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setIsLoading(true)
+  //     const response = await getAllInterview(currentUser.token, pagination.currentPage - 1, 4);
+  //     if (response) {
+  //       console.log(response.data);
+  //       setListInterviewSchedule(response.data.responseList)
+  //       setPagination({ ...pagination, totalPage: response.data.totalPage })
+  //       setIsLoading(false)
+  //     }
+  //   }
+  //   fetchData();
+  // }, [pagination.currentPage])
 
   const handleChangeSearchObject = (id, value) => {
     // setSearchObject(() => ({
@@ -72,36 +117,34 @@ const SchedulePage = () => {
   };
 
 
-  const formik = useFormik({
-    initialValues: {
-      address: '',
-      candidateId: '',
-      date: '',
-      description: '',
-      employeeId: [],
-      jobApplyId: '',
-      linkMeeting: '',
-      purpose: '',
-      room: '',
-      round: '',
-      subject: '',
-      time: '',
-      type: ''
-    },
-    validationSchema: Yup.object({
-      name: Yup.string().required('Please input name of recruitment plan'),
-      periodFrom: Yup.string().required('Please input begin date'),
-      periodTo: Yup.string().required('Please input end date'),
-      amount: Yup.number().positive('Invalid value').integer(),
-      totalSalary: Yup.string().required('Please input total salary').min(1, 'Invalid value')
-    }),
-    onSubmit: (values) => {
-      // setIsLoading(true)
-      // createRecruitmentPlan(currentUser.token, values).then((response) => {
-      //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-      // }).then(setIsLoading(false))
-    }
-  })
+  // const formik = useFormik({
+  //   initialValues: {
+  //     name: '',
+  //     address: '',
+  //     candidateId: '',
+  //     date: '',
+  //     description: '',
+  //     employeeId: [],
+  //     jobApplyId: '',
+  //     linkMeeting: '',
+  //     purpose: '',
+  //     room: '',
+  //     round: '',
+  //     subject: '',
+  //     time: '',
+  //     type: ''
+  //   },
+  //   validationSchema: Yup.object({
+
+  //   }),
+  //   onSubmit: (values) => {
+  //     console.log(values);
+  //     // setIsLoading(true)
+  //     // createRecruitmentPlan(currentUser.token, values).then((response) => {
+  //     //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
+  //     // }).then(setIsLoading(false))
+  //   }
+  // })
 
   return (
     <React.Fragment>
@@ -156,40 +199,37 @@ const SchedulePage = () => {
               <span className='font-medium text-3xl mr-3'>Create interview</span>
               <img src={InterviewIcon} alt='' width={'30rem'} />
             </div>
-            <div>
-              <form onSubmit={formik.handleSubmit}>
+            <div className='px-5'>
+              <div>
+                <div className='font-semibold text-lg mt-3'>Department</div>
+                <Autocomplete
+                  //options={typeOfWorkData()}
+                  size={'small'}
+                  sx={{ width: 170, marginRight: 2 }}
+                  renderInput={(params) => <TextField {...params} label="Loại công việc" />}
+                  onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
+
+              </div>
+              <div className='font-semibold text-xl mt-4'>Period</div>
+              <div className='grid grid-cols-2 px-1'>
                 <div>
-                  <div>
-                    <div className='font-semibold text-lg mt-3'>Name</div>
-                    <input type={'text'} name='name' className='focus:outline-none' placeholder='Name of recruitment plan' value={formik.values.name} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.3rem 2rem', borderRadius: '0.5rem', width: '100%' }} />
-                    {formik.errors.name && formik.touched.name && (
-                      <div className='text-[#ec5555]'>{formik.errors.name}</div>
-                    )}
-                  </div>
-                  <div className='font-semibold text-xl mt-4'>Period</div>
-                  <div className='grid grid-cols-2 px-1'>
-                    <div>
-                      <div className='font-medium text-base'>from</div>
-                      <input type={'date'} name='periodFrom' className='focus:outline-none' value={formik.values.periodFrom} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
-                      {formik.errors.periodFrom && formik.touched.periodFrom && (
-                        <div className='text-[#ec5555]'>{formik.errors.periodFrom}</div>
-                      )}
-                    </div>
-                    <div>
-                      <div className='font-medium text-base'>to</div>
-                      <input type={'date'} name='periodTo' className='focus:outline-none' value={formik.values.periodTo} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
-                      {formik.errors.periodTo && formik.touched.periodTo && (
-                        <div className='text-[#ec5555]'>{formik.errors.periodTo}</div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className='mt-3 flex justify-around'>
-                    <button onClick={() => { setOpenModalCreate(false) }} className='btn-create'>Cancel</button>
-                    <button type='submit' className='btn-create'>Save</button>
-                  </div>
+                  <div className='font-medium text-base'>from</div>
+                  <input type={'date'} name='periodFrom' className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
+
                 </div>
-              </form>
+                <div>
+                  <div className='font-medium text-base'>to</div>
+                  <input type={'date'} name='periodTo' className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
+
+                </div>
+              </div>
+
+              <div className='mt-3 flex justify-around'>
+                <button onClick={() => { setOpenModalCreate(false) }} className='btn-create'>Cancel</button>
+                <button type='submit' className='btn-create'>Save</button>
+              </div>
+
+
             </div>
           </div>
         </Box>

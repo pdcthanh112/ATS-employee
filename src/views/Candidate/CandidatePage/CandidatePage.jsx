@@ -83,8 +83,8 @@ const CandidatePage = () => {
       linkCV: '',
     },
     validationSchema: Yup.object({
-      fullname: Yup.string().required('Please input your name'),
       email: Yup.string().required('Please input email').matches(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'This email is invalid'),
+      fullname: Yup.string().required('Please input your name'),
       address: Yup.string().required('Please input your address'),
       phone: Yup.string().required('Please input your phone number').matches(/^[0-9\-\\+]{10}$/, 'This phone number is invalid'),
     }),
@@ -107,44 +107,44 @@ const CandidatePage = () => {
   return (
     <React.Fragment>
       <div className='candidatepage-container'>
-        <div className='title-container'>
-          <span className='font-medium text-3xl mr-3'>Candidate</span>
+        <div className='flex mx-5 my-3'>
+          <span className='font-semibold text-3xl mr-3'>Candidate</span>
           <img src={CandidateIcon} alt='' width={'30rem'} />
         </div>
 
-        <div className='create-candidate' onClick={() => setOpenModalCreate(true)} title='Create a new candidate'>
-          <span className='mr-1'>Create candidate</span>
-          <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' /></span>
-        </div>
+        <div className='bg-[#E9FCE9] flex justify-between px-10 py-4'>
+          <div className='flex'>
+            <img src={SearchIcon} alt="" width={'40rem'} title='Search' onClick={() => onHandleSearch()} />
+            <div className='inputName'>
+              <input type={'text'} className='input-tag focus:outline-none' placeholder='Nhập tên ứng viên...' onChange={(event) => { handleChangeSearchObject('name', event.target.value) }} />
+            </div>
+            <Autocomplete
+              blurOnSelect={true}
+              //options={typeOfWorkData()}
+              size={'small'}
+              sx={{ width: 170, marginRight: 2 }}
+              renderInput={(params) => <TextField {...params} label="Loại công việc" />}
+              onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
 
-        <div className='filter-container'>
-          <div className='inputName'>
-            <input type={'text'} className='form-control' placeholder='Nhập tên ứng viên...' onChange={(event) => { handleChangeSearchObject('name', event.target.value) }} />
+            <Autocomplete
+              blurOnSelect={true}
+              //options={typeOfWorkData()}
+              size={'small'}
+              sx={{ width: 170, marginRight: 2 }}
+              renderInput={(params) => <TextField {...params} label="Loại công việc" />}
+              onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
           </div>
-          <Autocomplete
-            blurOnSelect={true}
-            //options={typeOfWorkData()}
-            size={'small'}
-            sx={{ width: 170, marginRight: 2 }}
-            renderInput={(params) => <TextField {...params} label="Loại công việc" />}
-            onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
-
-          <Autocomplete
-            blurOnSelect={true}
-            //options={typeOfWorkData()}
-            size={'small'}
-            sx={{ width: 170, marginRight: 2 }}
-            renderInput={(params) => <TextField {...params} label="Loại công việc" />}
-            onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
-
-          <img src={SearchIcon} alt="" width={'50rem'} title='Search' onClick={() => onHandleSearch()} />
+          <div className='flex bg-[#1DAF5A] px-3 hover:cursor-pointer rounded-lg' onClick={() => setOpenModalCreate(true)} title='Create a new candidate'>
+            <i className="fa-solid fa-plus text-white" style={{ marginTop: '0.8rem' }}></i>
+            <span className='ml-1 mt-2 font-semibold text-white'>Create candidate</span>
+          </div>
         </div>
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListCandidate listCandidate={listCandidate} />}
 
         <div className='pagination-container'>
           <Stack spacing={2}>
-            <Pagination count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page })}} variant="outlined" shape="rounded" />
+            <Pagination count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} variant="outlined" shape="rounded" />
           </Stack>
         </div>
       </div>
@@ -154,49 +154,53 @@ const CandidatePage = () => {
           <div className='modal-container'>
             <span className='font-medium text-3xl'>Create candidate</span>
             <form onSubmit={formik.handleSubmit}>
-              <div className=''>
-                <label className='text-lg'>Email</label><br />
-                <div className='modal-content__field'>
-                  <input type={'text'} className={`form-control border-none `} name='email' value={formik.values.fullname} onChange={formik.handleChange} /><br />
-                </div>
-                {formik.errors.email && formik.touched.email && (
-                  <div className='text-[#ec5555]'>{formik.errors.email}</div>
-                )}
-              </div>
-              <div className=''>
-                <label className='text-lg'>Fullname: </label><br />
+              <div className='my-3'>
+                <label className='text-lg'>Fullname</label><br />
                 <div className='field-input'>
-                  <input type={'text'} className={`form-control border-none ${formik.errors.fullname && formik.touched.fullname && 'input-error'}`} name='fullname' placeholder='Nhập tên của bạn' value={formik.values.fullname} onChange={formik.handleChange} /><br />
+                  <input type={'text'} className={`input-tag focus:outline-none ${formik.errors.fullname && formik.touched.fullname && 'input-error'}`} name='fullname' placeholder='Nhập tên của bạn' value={formik.values.fullname} onChange={formik.handleChange} /><br />
                 </div>
                 {formik.errors.fullname && formik.touched.fullname && (
                   <div className='text-[#ec5555]'>{formik.errors.fullname}</div>
                 )}
               </div>
-              <div className=''>
-                <div>
-                  <input type={'file'} className='form-control border-none text-sm' name='image' onChange={(e) => { setFileCV(e.target.files[0]) }} /><br />
+              <div className='my-3'>
+                <label className='text-lg'>Email</label><br />
+                <div className='field-input'>
+                  <input type={'text'} className={`input-tag focus:outline-none ${formik.errors.email && formik.touched.email && 'input-error'}`} name='email' placeholder='Nhập email của bạn' value={formik.values.email} onChange={formik.handleChange} /><br />
                 </div>
+                {formik.errors.email && formik.touched.email && (
+                  <div className='text-[#ec5555]'>{formik.errors.email}</div>
+                )}
+                {/* {registerStatus !== responseStatus.SUCCESS && registerStatus.includes('email') && (
+                  <div className='text-[#ec5555]'>Email is alrealy exist</div>
+                )} */}
               </div>
 
-              <div className=''>
-                <label className='text-lg'>Phone</label><br />
-                <div className='field-input'>
-                  <input type={'text'} className={`form-control border-none ${formik.errors.phone && formik.touched.phone && 'input-error'}`} name='phone' placeholder='Nhập số điện thoại của bạn' value={formik.values.phone} onChange={formik.handleChange} /><br />
-                </div>
-                {formik.errors.phone && formik.touched.phone && (
-                  <div className='text-[#ec5555]'>{formik.errors.phone}</div>
-                )}
-              </div>
-              <div className=''>
+              <div className='my-3'>
                 <label className='text-lg'>Address</label><br />
                 <div className='field-input'>
-                  <input type={'text'} className={`form-control border-none ${formik.errors.address && formik.touched.address && 'input-error'}`} name='address' placeholder='Nhập địa chỉ của bạn' value={formik.values.address} onChange={formik.handleChange} /><br />
+                  <input type={'text'} className={`input-tag focus:outline-none ${formik.errors.address && formik.touched.address && 'input-error'}`} name='address' placeholder='Nhập địa chỉ của bạn' value={formik.values.address} onChange={formik.handleChange} /><br />
                 </div>
                 {formik.errors.address && formik.touched.address && (
                   <div className='text-[#ec5555]'>{formik.errors.address}</div>
                 )}
               </div>
-              <button type='submit' className='btn-save-edit'>Save</button>
+              <div className='my-3'>
+                <label className='text-lg'>Phone</label><br />
+                <div className='field-input'>
+                  <input type={'text'} className={`input-tag focus:outline-none ${formik.errors.phone && formik.touched.phone && 'input-error'}`} name='phone' placeholder='Nhập số điện thoại của bạn' value={formik.values.phone} onChange={formik.handleChange} onBlur={formik.handleBlur} /><br />
+                </div>
+                {formik.errors.phone && formik.touched.phone && (
+                  <div className='text-[#ec5555]'>{formik.errors.phone}</div>
+                )}
+                {/* {registerStatus !== responseStatus.SUCCESS && registerStatus.includes('Phone number') && (
+                  <div className='text-[#ec5555]'>Phone number is alrealy exist</div>
+                )} */}
+              </div>
+              <div className='flex justify-evenly'>
+                <button onClick={() => setOpenModalCreate(false)} className='bg-[#20D489] text-[#FFF] px-5 py-2 rounded-lg'>Cancel</button>
+                <button type='submit' className='bg-[#20D489] text-[#FFF] px-5 py-2 rounded-lg'>Create</button>
+              </div>
             </form>
           </div>
         </Box>

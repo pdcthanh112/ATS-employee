@@ -8,7 +8,7 @@ function DefaultLayout() {
   return (
     <div className="wrapper d-flex flex-column min-vh-100 bg-light">
       <AppHeader />
-      <div className="bg-[#FBF9F6] inline-flex">
+      <div className="bg-[#E0E1DE] inline-flex">
         <AppSidebar />
         <div style={{ width: '82%' }}>
           <AppContent />

@@ -12,7 +12,7 @@ const ShowRequirment = ({ title, content }) => {
         <span>{title}</span>
         <img src={ShowMoreIcon} alt='' style={{ width: '1rem', height: '1rem', marginTop: '5px', marginLeft: '0.5rem' }} />
       </div>
-      {isShowContent && <div className='px-4'>{content}</div>}
+      {isShowContent && <div className='px-4'>{content.split("\\n").map((item) => (<div>{item}</div>))}</div>}
     </React.Fragment>
   )
 }

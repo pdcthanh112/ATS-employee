@@ -38,7 +38,7 @@ export const logoutUser = async (dispatch, navigate) => {
   dispatch(logoutStart());
   try {
     dispatch(logoutSuccess());
-    navigate("/#/");
+    navigate("/login");
   } catch (error) {
     dispatch(logoutFailed());
   }

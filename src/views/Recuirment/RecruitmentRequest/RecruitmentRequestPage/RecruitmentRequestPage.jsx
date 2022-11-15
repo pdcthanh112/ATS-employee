@@ -26,26 +26,6 @@ const RecruitmentRequestPage = () => {
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [createRecruitmentRequestObject, setCreateRecruitmentRequestObject] = useState({
-    address: '',
-    amount: 0,
-    benefit: '',
-    cityName: '',
-    description: '',
-    educationLevel: '',
-    employeeId: currentUser?.employee.id,
-    experience: '',
-    expiryDate: '',
-    foreignLanguage: '',
-    industry: '',
-    jobLevel: '',
-    planDetailId: 0,
-    positionId: 0,
-    requirement: '',
-    salaryFrom: '',
-    salaryTo: '',
-    typeOfWork: ''
-  })
   const [listApprovedPlanDetail, setListApprovedPlanDetail] = useState([])
 
   const style = {
@@ -402,8 +382,6 @@ const RecruitmentRequestPage = () => {
                   {formik.errors.benefit && formik.touched.benefit && (
                     <div className='text-[#ec5555]'>{formik.errors.benefit}</div>
                   )}
-
-
 
                 </div>
                 <div className='mt-3 flex justify-around'>
