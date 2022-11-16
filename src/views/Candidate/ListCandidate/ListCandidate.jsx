@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './ListCandidate.scss'
 
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom'
-import { Box, Modal, Pagination, Stack } from '@mui/material';
+import { Box, Modal, Pagination, Stack, Avatar } from '@mui/material';
 import { getInterviewByCandidateId } from '../../../apis/interview';
 import { getCVByCandidate } from '../../../apis/candidateApi';
 
@@ -56,20 +55,21 @@ const ListCandidate = ({ listCandidate }) => {
   }
 
   const getCandidateInterview = async (candidateId) => {
-    setIsLoading(true)
-    const response = await getInterviewByCandidateId(6, currentUser.token);
-    if (response.status === responseStatus.SUCCESS) {
-      if (response.data === null || response.data.length < 1) {
-        setInterviewSchedule(null)
-      } else {
-        setInterviewSchedule(response.data);
-      }
-      setIsLoading(false)
-      setOpenScheduleModal(true)
-    } else {
-      toast.error('Somethings error')
-    }
+    // setIsLoading(true)
+    // const response = await getInterviewByCandidateId(candidateId, currentUser.token);
+    // if (response.status === responseStatus.SUCCESS) {
+    //   if (response.data === null || response.data.length < 1) {
+    //     setInterviewSchedule(null)
+    //   } else {
+    //     setInterviewSchedule(response.data);
+    //   }
+    //   setIsLoading(false)
+    //   setOpenScheduleModal(true)
+    // } else {
+    //   toast.error('Somethings error')
+    // }
   }
+
   // const getCandidateInterview = async (candidateId) => {
   //   setIsLoading(true)
   //   const response = await getInterviewByCandidateId(6, currentUser.token);
@@ -94,12 +94,11 @@ const ListCandidate = ({ listCandidate }) => {
         <table className="table-auto" >
           <thead>
             <tr className='text-center'>
-              <th style={{ width: '24%' }}>Candidate</th>
-              <th style={{ width: '15%' }}>Phone</th>
-              <th style={{ width: '19%' }}>Email</th>
+              <th style={{ width: '28%' }}>Candidate</th>
+              <th style={{ width: '18%' }}>Phone</th>
+              <th style={{ width: '20%' }}>Email</th>
               <th style={{ width: '8%' }}>CV</th>
               <th style={{ width: '12%' }}>Status</th>
-              <th style={{ width: '15%' }}>Action</th>
               <th style={{ width: '7%' }}>Schedule</th>
             </tr>
           </thead>
@@ -107,7 +106,7 @@ const ListCandidate = ({ listCandidate }) => {
             {listCandidate.map((item, id) => (
               <tr key={id} style={{ height: '4rem', paddingBottom: '5rem' }}>
                 <td className='inline-flex'>
-                  <div className='w-16 h-20'><img src={item.image ? item.image : DefaultCandidateAvatar} alt='' className='rounded-xl' /></div>
+                  {/* <div className='w-16 h-20'><Avatar src={item.image ? item.image : DefaultCandidateAvatar} alt='' sx={{ width: '3rem', height: '3rem'}}  className='mt-3'/></div> */}
                   <span className='pl-2 my-auto'>{item.name}</span>
                 </td>
                 <td className='text-center'>{item.phone}</td>
@@ -115,10 +114,6 @@ const ListCandidate = ({ listCandidate }) => {
                 <td><img src={folderIcon} alt='' title='CV' width={'30rem'} className='m-auto hover:cursor-pointer' onClick={() => getCandidateCV(item.id)} /></td>
                 <td className='text-center'>
                   {item.status === 'ACTIVATE' ? <span className='status-active'>Active</span> : <span className='status-disable'>Disable</span>}
-                </td>
-                <td className='block text-center mt-3'>
-                  <a href='/#/' className=''><i title='Edit' className="fa-solid fa-pen-to-square text-2xl mr-2 text-[#53ADFF]"></i></a>
-                  <a href='/#/' className=''><i title='Delete' className="fa-solid fa-trash-can text-2xl text-[#FF5353]"></i></a>
                 </td>
                 <td>
                   <img src={ScheduleIcon} alt='' title='Schedule' width={'30rem'} className='m-auto hover:cursor-pointer' onClick={() => getCandidateInterview(item.id)} />
@@ -134,13 +129,13 @@ const ListCandidate = ({ listCandidate }) => {
           <div className='modal-container'>
             <div className='modal-title'>
               <span className='font-medium text-3xl mr-3'>List CV</span>
-              <img src={PDFImage} alt='' width={'35rem'} />
+              <img src={PDFImage} alt='' width={'30rem'} />
             </div>
             {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <React.Fragment>
               {listCV === null ? <div>This candidate does not have a CV yet</div> : <React.Fragment>
                 {listCV?.map((item) => (
                   <a href={`${item.linkCV}`} rel='noreferrer' target={'_blank'} key={item.id}>
-                    <div className='flex py-4'>
+                    <div className='flex py-3'>
                       <img src={PDFImage} alt='' width={'30rem'} />
                       {item.title}
                     </div>

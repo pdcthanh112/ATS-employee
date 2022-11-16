@@ -12,7 +12,7 @@ import { getAllInterview } from '../../../apis/interview';
 import InterviewIcon from '../../../assets/icon/calendar.png'
 import SearchIcon from '../../../assets/icon/filter.png'
 import AddIcon from '../../../assets/icon/plus.png'
-import ListInterviewSchedule from '../ListSInterview/ListInterview';
+import ListInterviewSchedule from '../ListInterview/ListInterview';
 import { positionName } from '../../../utils/constants';
 
 
@@ -65,6 +65,7 @@ const SchedulePage = () => {
     }
     fetchData();
   }, [pagination.currentPage])
+  
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)

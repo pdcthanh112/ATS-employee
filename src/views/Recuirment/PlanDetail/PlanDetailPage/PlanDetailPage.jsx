@@ -10,7 +10,7 @@ import * as Yup from 'yup'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import PlanDetailIcon from '../../../../assets/icon/plan-detail.png'
+import PlanDetailIcon from '../../../../assets/icon/plan-detailImage.png'
 import CreateIcon from '../../../../assets/icon/plus.png'
 
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize } from '@mui/material';

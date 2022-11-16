@@ -46,3 +46,21 @@ export const getCVByCandidate = async (token, id, pageNo, pageSize) => {
     .then((response) => response.data)
     .catch((error) => error);
 }
+
+export const createCandidate = async (data) => {
+  return await axiosConfig
+    .post("/auth/register", {
+      address: data.address,
+      dob: data.dob,
+      email: data.email,
+      gender: data.gender,
+      image: data.image,
+      name: data.name,
+      notificationToken: data.notificationToken,
+      password: data.password,
+      phone: data.phone,
+    })
+    .then((response) => response.data)
+    .catch((error) => error.response.data);
+};
+

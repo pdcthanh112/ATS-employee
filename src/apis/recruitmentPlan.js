@@ -64,10 +64,7 @@ export const createRecruitmentPlan = async (token, planData) => {
 export const approveRecruitmentPlan = async (token, empId, planId) => {
   return await axiosConfig
     .put("recruitmentPlan/approved", {
-      //headers: { Authorization: `Bearer ${token}` },
-      headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6W3siYXV0aG9yaXR5IjoiTUFOQUdFUiJ9XSwiZW1haWwiOiJuaGR1b25nMmtAZ21haWwuY29tIiwiYWNjb3VudElkIjo1LCJpYXQiOjE2NjgxMzQ5NzIsImV4cCI6MTY2ODIxMTIwMH0.uhA5uL4aofyPWww4r-3_3481OoK_X-_n5tDGq8joaTpuKIB8c7ftQarhq787r8KCvORHRR51LsmsGWRK0AhaGA`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
       body: { employeeId: empId, id: planId },
     })
     .then((response) => response.data)

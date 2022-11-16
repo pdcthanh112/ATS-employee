@@ -13,6 +13,7 @@ import { positionName, statusName } from '../../../../utils/constants'
 const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser);
+  
   const [openModalCreate, setOpenModalCreate] = useState(false)
 
   const style = {
@@ -27,9 +28,7 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
   };
 
   const handleApproveRecruitmentPlan = async (planId) => {
-    const response = await approveRecruitmentPlan(currentUser.token, currentUser?.employee.id, planId).then(console.log(response))
-
-
+    await approveRecruitmentPlan(currentUser.token, currentUser?.employee.id, planId).then((response) => console.log(response))
   }
   return (
     <div className='listRecruitmentPlan-container'>
@@ -49,8 +48,6 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
             {item.status === statusName.APPROVED &&
               <div className='flex justify-between'>
                 <span className='label-status bg-[#C9F7F5] text-[#1BC5BD]'>APPROVED</span>
-                {currentUser.employee.position.name.toUpperCase().includes(positionName.MANAGER) || currentUser.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) ?
-                  <span className='process-buton hover:cursor-pointer'>Create plan detail</span> : <span></span>}
               </div>
             }
             {item.status === statusName.REJECTED &&
@@ -81,7 +78,7 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
                 </div>
                 <div>
                   <div className='font-semibold text-xl mb-1'>Total salary</div>
-                  <div className='item-value w-[70%]'>{item.totalSalary}</div>
+                  <div className='item-value w-[80%]'>{item.totalSalary}</div>
                 </div>
               </div>
             </div>

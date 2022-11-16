@@ -4,6 +4,7 @@ import './AppHeader.scss'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logoutUser } from '../../apis/authApi'
+import {Avatar} from '@mui/material'
 import logo from '../../assets/image/big-logo.png'
 import defaultUser from '../../assets/image/defaultUser.png'
 
@@ -24,7 +25,7 @@ const AppHeader = () => {
         <div className="dropdown">
           <a className="" href="/" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <div className='inline-flex bg-slate-200 rounded-3xl px-2'>
-              <img src={currentUser.employee.image || defaultUser} alt='' className='profile-image py-1.5' width={'30rem'} />
+              <Avatar src={currentUser.employee.image || defaultUser} alt='' className="my-auto"/>
               <div className='mx-2 py-2.5 font-medium text-lg' style={{ width: '13rem' }}>{currentUser.employee.name}</div>
               <i className="fa-solid fa-chevron-down m-1.5 py-2.5 text-xs"></i>
             </div>

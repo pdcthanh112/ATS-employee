@@ -11,7 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import CurrencyFormat from 'react-currency-format';
-import PlanIcon from '../../../../assets/icon/recruitment-plan.png'
+import PlanIcon from '../../../../assets/icon/recruitment-planImage.png'
 import CreateIcon from '../../../../assets/icon/plus.png'
 import AddIcon from '../../../../assets/icon/addIcon.png'
 import MinusIcon from '../../../../assets/icon/minusIcon.png'
@@ -25,12 +25,12 @@ import { responseStatus } from '../../../../utils/constants'
 const RecruitmentPlanPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
+  console.log(currentUser);
 
   const [listRecruitmentPlan, setListRecruitmentPlan] = useState([])
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-
 
   const style = {
     position: 'absolute',

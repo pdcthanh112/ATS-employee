@@ -3,7 +3,7 @@ import './RecruitmentRequestPage.scss'
 
 import ReactLoading from 'react-loading'
 import { useSelector } from 'react-redux'
-import RequestIcon from '../../../../assets/icon/request.png'
+import RequestIcon from '../../../../assets/icon/recruitment-requestImage.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
 import AddIcon from '../../../../assets/icon/plus.png'
 import CurrencyFormat from 'react-currency-format';

@@ -3,6 +3,7 @@ import './Dashboard.scss'
 
 import { getCategory } from '../../apis/recruimentRequestApi';
 import { useDispatch, useSelector } from 'react-redux';
+import ChartComponent from './ChartComponent/ChartComponent';
 
 
 const Dashboard = () => {
@@ -10,14 +11,13 @@ const Dashboard = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getCategory(dispatch)  
+    getCategory(dispatch)
   }, [])
 
 
   return (
     <React.Fragment>
-
-      <div className='text-[red]'>asdfasdsaf</div>
+      <ChartComponent />
 
     </React.Fragment>
   )

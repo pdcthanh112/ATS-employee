@@ -8,12 +8,15 @@ import { Box, Modal, Pagination, Stack, TextField, Autocomplete } from '@mui/mat
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
-import CandidateIcon from '../../../assets/icon/candidate.png'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import CandidateIcon from '../../../assets/icon/candidateImage.png'
 import SearchIcon from '../../../assets/icon/filter.png'
-import AddIcon from '../../../assets/icon/plus.png'
-import { getAllCandidate } from '../../../apis/candidateApi'
+import { createCandidate, getAllCandidate } from '../../../apis/candidateApi'
 import ListCandidate from '../ListCandidate/ListCandidate';
-import { DEFAULT_PASSWORD } from '../../../utils/constants'
+import { DEFAULT_PASSWORD, responseStatus } from '../../../utils/constants'
+import { getPositionByDepartment } from '../../../apis/position';
 
 const CandidatePage = () => {
 
@@ -25,18 +28,20 @@ const CandidatePage = () => {
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [fileCV, setFileCV] = useState(null)
+  const [listPosition, setListPosition] = useState([])
 
   const style = {
     position: 'absolute',
-    top: '40%',
+    top: '22rem',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 500,
+    maxHeight: 600,
+    overflow: 'scroll',
     bgcolor: 'background.paper',
     border: '1px solid #0F6B14',
     boxShadow: 24,
   };
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,6 +56,16 @@ const CandidatePage = () => {
     }
     fetchData();
   }, [pagination.currentPage])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getPositionByDepartment(currentUser.token, currentUser.employee.department.id, 0, 20);
+      if (response) {
+        setListPosition(response.data.responseList)
+      }
+    }
+    fetchData();
+  }, [])
 
   const handleChangeSearchObject = (id, value) => {
     // setSearchObject(() => ({
@@ -73,36 +88,50 @@ const CandidatePage = () => {
     // })
   };
 
-  const formik = useFormik({
+  const formikCreate = useFormik({
     initialValues: {
-      fullname: '',
+      address: '',
+      dob: '',
       email: '',
+      gender: '',
+      image: '',
+      name: '',
+      notificationToken: '',
       password: DEFAULT_PASSWORD,
-      position: '',
-      phone: '',
-      linkCV: '',
+      phone: ''
     },
     validationSchema: Yup.object({
-      email: Yup.string().required('Please input email').matches(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'This email is invalid'),
-      fullname: Yup.string().required('Please input your name'),
-      address: Yup.string().required('Please input your address'),
-      phone: Yup.string().required('Please input your phone number').matches(/^[0-9\-\\+]{10}$/, 'This phone number is invalid'),
+      email: Yup.string().required('Please input candidate email').matches(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'This email is invalid'),
+      name: Yup.string().required('Please input candidate name'),
+      address: Yup.string().required('Please input candidate address'),
+      phone: Yup.string().required('Please input candidate phone number').matches(/^[0-9\-\\+]{10}$/, 'This phone number is invalid'),
     }),
     onSubmit: async (values) => {
-      // if (fileImage !== null) {
-      //   const imageRef = ref(storage, `candidate-avatar/${fileImage.name + uuidv4()}`)
-      //   await uploadBytes(imageRef, fileImage).then((snapshot) => {
-      //     getDownloadURL(snapshot.ref).then(url => {
-      //       values.image = url
-      //     })
-      //   })
-      // }
-      // console.log('RRRRRRR', values);
-      // updateProfileCandidate(currentUser.candidate.id, currentUser.token, values).then((response) => {
-      //   response.status === responseStatus.SUCCESS ? toast.success('Edit profile successfully') : toast.error('Edit profile fail')
-      // })
+      await createCandidate(values).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
+      })
     }
   })
+  // const formikSearch = useFormik({
+  //   initialValues: {
+  //     name: '',
+  //     position: ''
+  //   },
+  //   onSubmit: async (values) => {
+  //     if (fileImage !== null) {
+  //       const imageRef = ref(storage, `candidate-avatar/${fileImage.name + uuidv4()}`)
+  //       await uploadBytes(imageRef, fileImage).then((snapshot) => {
+  //         getDownloadURL(snapshot.ref).then(url => {
+  //           values.image = url
+  //         })
+  //       })
+  //     }
+  //     console.log('RRRRRRR', values);
+  //     updateProfileCandidate(currentUser.candidate.id, currentUser.token, values).then((response) => {
+  //       response.status === responseStatus.SUCCESS ? toast.success('Edit profile successfully') : toast.error('Edit profile fail')
+  //     })
+  //   }
+  // })
 
   return (
     <React.Fragment>
@@ -116,22 +145,20 @@ const CandidatePage = () => {
           <div className='flex'>
             <img src={SearchIcon} alt="" width={'40rem'} title='Search' onClick={() => onHandleSearch()} />
             <div className='inputName'>
-              <input type={'text'} className='input-tag focus:outline-none' placeholder='Nhập tên ứng viên...' onChange={(event) => { handleChangeSearchObject('name', event.target.value) }} />
+              <input type={'text'} className='focus:outline-none' placeholder='Nhập tên ứng viên...' style={{ margin: '5px 7px' }} onChange={(event) => { handleChangeSearchObject('name', event.target.value) }} />
             </div>
             <Autocomplete
-              blurOnSelect={true}
-              //options={typeOfWorkData()}
+              options={listPosition}
               size={'small'}
               sx={{ width: 170, marginRight: 2 }}
-              renderInput={(params) => <TextField {...params} label="Loại công việc" />}
+              renderInput={(params) => <TextField {...params} label="Position" />}
               onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
 
             <Autocomplete
-              blurOnSelect={true}
               //options={typeOfWorkData()}
               size={'small'}
               sx={{ width: 170, marginRight: 2 }}
-              renderInput={(params) => <TextField {...params} label="Loại công việc" />}
+              renderInput={(params) => <TextField {...params} label="Job name" />}
               onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
           </div>
           <div className='flex bg-[#1DAF5A] px-3 hover:cursor-pointer rounded-lg' onClick={() => setOpenModalCreate(true)} title='Create a new candidate'>
@@ -153,23 +180,23 @@ const CandidatePage = () => {
         <Box sx={style}>
           <div className='modal-container'>
             <span className='font-medium text-3xl'>Create candidate</span>
-            <form onSubmit={formik.handleSubmit}>
+            <form onSubmit={formikCreate.handleSubmit}>
               <div className='my-3'>
                 <label className='text-lg'>Fullname</label><br />
                 <div className='field-input'>
-                  <input type={'text'} className={`input-tag focus:outline-none ${formik.errors.fullname && formik.touched.fullname && 'input-error'}`} name='fullname' placeholder='Nhập tên của bạn' value={formik.values.fullname} onChange={formik.handleChange} /><br />
+                  <input type={'text'} className={`input-tag focus:outline-none ${formikCreate.errors.fullname && formikCreate.touched.fullname && 'input-error'}`} name='name' placeholder='Input candidate name' value={formikCreate.values.name} onChange={formikCreate.handleChange} /><br />
                 </div>
-                {formik.errors.fullname && formik.touched.fullname && (
-                  <div className='text-[#ec5555]'>{formik.errors.fullname}</div>
+                {formikCreate.errors.name && formikCreate.touched.name && (
+                  <div className='text-[#ec5555]'>{formikCreate.errors.name}</div>
                 )}
               </div>
               <div className='my-3'>
                 <label className='text-lg'>Email</label><br />
                 <div className='field-input'>
-                  <input type={'text'} className={`input-tag focus:outline-none ${formik.errors.email && formik.touched.email && 'input-error'}`} name='email' placeholder='Nhập email của bạn' value={formik.values.email} onChange={formik.handleChange} /><br />
+                  <input type={'text'} className={`input-tag focus:outline-none ${formikCreate.errors.email && formikCreate.touched.email && 'input-error'}`} name='email' placeholder='Input candidate email' value={formikCreate.values.email} onChange={formikCreate.handleChange} /><br />
                 </div>
-                {formik.errors.email && formik.touched.email && (
-                  <div className='text-[#ec5555]'>{formik.errors.email}</div>
+                {formikCreate.errors.email && formikCreate.touched.email && (
+                  <div className='text-[#ec5555]'>{formikCreate.errors.email}</div>
                 )}
                 {/* {registerStatus !== responseStatus.SUCCESS && registerStatus.includes('email') && (
                   <div className='text-[#ec5555]'>Email is alrealy exist</div>
@@ -179,19 +206,19 @@ const CandidatePage = () => {
               <div className='my-3'>
                 <label className='text-lg'>Address</label><br />
                 <div className='field-input'>
-                  <input type={'text'} className={`input-tag focus:outline-none ${formik.errors.address && formik.touched.address && 'input-error'}`} name='address' placeholder='Nhập địa chỉ của bạn' value={formik.values.address} onChange={formik.handleChange} /><br />
+                  <input type={'text'} className={`input-tag focus:outline-none ${formikCreate.errors.address && formikCreate.touched.address && 'input-error'}`} name='address' placeholder='Input candidate address' value={formikCreate.values.address} onChange={formikCreate.handleChange} /><br />
                 </div>
-                {formik.errors.address && formik.touched.address && (
-                  <div className='text-[#ec5555]'>{formik.errors.address}</div>
+                {formikCreate.errors.address && formikCreate.touched.address && (
+                  <div className='text-[#ec5555]'>{formikCreate.errors.address}</div>
                 )}
               </div>
               <div className='my-3'>
                 <label className='text-lg'>Phone</label><br />
                 <div className='field-input'>
-                  <input type={'text'} className={`input-tag focus:outline-none ${formik.errors.phone && formik.touched.phone && 'input-error'}`} name='phone' placeholder='Nhập số điện thoại của bạn' value={formik.values.phone} onChange={formik.handleChange} onBlur={formik.handleBlur} /><br />
+                  <input type={'text'} className={`input-tag focus:outline-none ${formikCreate.errors.phone && formikCreate.touched.phone && 'input-error'}`} name='phone' placeholder='Input phone number' value={formikCreate.values.phone} onChange={formikCreate.handleChange} onBlur={formikCreate.handleBlur} /><br />
                 </div>
-                {formik.errors.phone && formik.touched.phone && (
-                  <div className='text-[#ec5555]'>{formik.errors.phone}</div>
+                {formikCreate.errors.phone && formikCreate.touched.phone && (
+                  <div className='text-[#ec5555]'>{formikCreate.errors.phone}</div>
                 )}
                 {/* {registerStatus !== responseStatus.SUCCESS && registerStatus.includes('Phone number') && (
                   <div className='text-[#ec5555]'>Phone number is alrealy exist</div>
@@ -205,6 +232,19 @@ const CandidatePage = () => {
           </div>
         </Box>
       </Modal>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </React.Fragment>
   )
 }

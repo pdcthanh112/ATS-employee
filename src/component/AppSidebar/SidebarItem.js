@@ -1,14 +1,15 @@
 import React from "react";
-import Home from "../../assets/icon/home.png";
-import Recruitment from "../../assets/icon/recruitment.png";
-import Candidates from "../../assets/icon/candidate.png";
-import Schedules from "../../assets/icon/calendar.png";
+import Home from "../../assets/icon/homeNavbar.png";
+import Recruitment from "../../assets/icon/recruitmentNavbar.png";
+import RecruitmentPlan from "../../assets/icon/recruitment-planNavbar.png";
+import PlanDetail from "../../assets/icon/plan-detailNavbar.png";
+import RecruitmentRequest from "../../assets/icon/recruitment-requestNavbar.png";
+import Candidates from "../../assets/icon/candidatesNavbar.png";
+import Interview from "../../assets/icon/job-interviewNavbar.png";
 import IconUp from "../../assets/icon/caret-arrow-up.png";
 import IconDown from "../../assets/icon/caret-arrow-down.png";
-import RecruitmentPlan from "../../assets/icon/recruitment-plan.png";
-import PlanDetail from "../../assets/icon/plan-detail.png";
-import RecruitmentRequest from "../../assets/icon/request.png";
-import Notification from "../../assets/icon/notification-icon.png"
+
+import Notification from "../../assets/icon/notification-iconNavbar.png"
 
 export const SidebarItem = [
   {
@@ -27,17 +28,17 @@ export const SidebarItem = [
       {
         title: "Recruitment plan",
         path: "/recruitment-plan",
-        icon: <img src={RecruitmentPlan} alt="" width={"20rem"} />,
+        icon: <img src={RecruitmentPlan} alt="" width={"25rem"} />,
       },
       {
         title: "Plan detail",
         path: "/plan-detail",
-        icon: <img src={PlanDetail} alt="" width={"20rem"} />,
+        icon: <img src={PlanDetail} alt="" width={"25rem"} />,
       },
       {
         title: "Recruitment request",
         path: "/recruitment-request",
-        icon: <img src={RecruitmentRequest} alt="" width={"20rem"} />,
+        icon: <img src={RecruitmentRequest} alt="" width={"25rem"} />,
       },
     ],
   },
@@ -71,7 +72,7 @@ export const SidebarItem = [
   {
     title: "Interview",
     path: "/interviews",
-    icon: <img src={Schedules} alt="" width={"30rem"} />,
+    icon: <img src={Interview} alt="" width={"30rem"} />,
 
   },
   {

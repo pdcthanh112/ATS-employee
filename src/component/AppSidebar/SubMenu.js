@@ -45,21 +45,27 @@ const SubMenu = ({ item }) => {
 
   return (
     <React.Fragment>
-      <SidebarLink to={item.path} className='hover:text-[#000]'>
-        <div className="inline-flex">
+      <SidebarLink to={item.path} className="hover:text-[#000]">
+        <div className="inline-flex text-[#FFF]">
           {item.icon}
           <SidebarLabel>{item.title}</SidebarLabel>
         </div>
         <div onClick={item.subNav && showSubnav}>
-          {item.subNav && subnav ? item.iconOpened : item.subNav ? item.iconClosed : null}
+          {item.subNav && subnav
+            ? item.iconOpened
+            : item.subNav
+            ? item.iconClosed
+            : null}
         </div>
       </SidebarLink>
       {subnav &&
         item.subNav.map((item, index) => {
           return (
             <DropdownLink to={item.path} key={index}>
-              {item.icon}
-              <SidebarLabel>{item.title}</SidebarLabel>
+              <div className="inline-flex text-[#FFF]">
+                {item.icon}
+                <SidebarLabel>{item.title}</SidebarLabel>
+              </div>
             </DropdownLink>
           );
         })}
