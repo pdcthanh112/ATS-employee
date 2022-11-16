@@ -44,7 +44,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
             <div><ShowMoreComponent title='Reason' content={item.reason} /></div>
             <div><ShowMoreComponent title='Description' content={item.description} /></div>
             <div><ShowMoreComponent title='Requirment' content={item.requirement} /></div>
-            <div><ShowMoreComponent title='Note' content={item.reason} /></div>
+            <div><ShowMoreComponent title='Note' content={item.note} /></div>
           </div>
         </div>
       ))}
