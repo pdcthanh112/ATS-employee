@@ -18,9 +18,9 @@ export const getPlanDetailById = async (token, id) => {
     .catch((error) => error);
 };
 
-export const getPlanApprovedByDepartment = async (token, depId) => {
+export const getPlanDetailApprovedByDepartment = async (token, depId) => {
   return await axiosConfig
-    .get(`recruitmentPlan/getPlanApprovedByDepartment?departmentId=${depId}`, {
+    .get(`planDetail/getApprovedByDepartment?departmentId=${depId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => response.data)
@@ -28,6 +28,7 @@ export const getPlanApprovedByDepartment = async (token, depId) => {
 };
 
 export const createPlanDetail = async (planData, token) => {
+  console.log('api', planData);
   return await axiosConfig
     .post(
       "planDetail/create",

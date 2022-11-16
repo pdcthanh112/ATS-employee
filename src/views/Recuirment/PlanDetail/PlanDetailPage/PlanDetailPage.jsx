@@ -14,9 +14,11 @@ import PlanDetailIcon from '../../../../assets/icon/plan-detailImage.png'
 import CreateIcon from '../../../../assets/icon/plus.png'
 
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize } from '@mui/material';
-import { getAllPlanDetail, getPlanApprovedByDepartment, createPlanDetail } from '../../../../apis/planDetail'
+import CurrencyFormat from 'react-currency-format';
+import { getAllPlanDetail, createPlanDetail } from '../../../../apis/planDetail'
 import ListPlanDetail from '../ListPlanDetail/ListPlanDetail'
 import { responseStatus } from '../../../../utils/constants'
+import { getPlanApprovedByDepartment } from '../../../../apis/recruitmentPlan'
 
 const PlanDetailPage = () => {
 
@@ -27,7 +29,7 @@ const PlanDetailPage = () => {
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [listApprovedRecruitmentPlan, setApprovedListRecruitmentPlan] = useState([])
+  const [listApprovedRecruitmentPlan, setListApprovedRecruitmentPlan] = useState([])
 
   const style = {
     position: 'absolute',
@@ -59,7 +61,7 @@ const PlanDetailPage = () => {
     const fetchData = async () => {
       const response = await getPlanApprovedByDepartment(currentUser.token, currentUser.employee.department.id);
       if (response) {
-        setApprovedListRecruitmentPlan(response.data)
+        setListApprovedRecruitmentPlan(response.data)
       }
     }
     fetchData();
@@ -90,7 +92,7 @@ const PlanDetailPage = () => {
       salary: Yup.string().required('Please input salary'),
     }),
     onSubmit: async (values) => {
-      await createPlanDetail(values, currentUser.token).then(response => {
+      await createPlanDetail(values, currentUser.token).then(response => {       
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
       })
     }
@@ -164,7 +166,7 @@ const PlanDetailPage = () => {
                       )}
                     </div>
                     <div className='w-[42%]'>
-                      <TextField label="Salary" variant="outlined" size='small' sx={{ margin: '1rem 1rem 0 0' }} name='salary' value={formik.values.salary} onChange={formik.handleChange} />
+                      <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='salary' placeholder='1,000,000 VNĐ' value={formik.values.salary} onChange={formik.handleChange} className='focus:outline-none' style={{ border: '1px solid #00000050', padding: '0.3rem 1rem', borderRadius: '0.2rem', marginTop: '1.1rem', width: '92%', height: '2.4rem' }} />
                       {formik.errors.salary && formik.touched.salary && (
                         <div className='text-[#ec5555]'>{formik.errors.salary}</div>
                       )}
@@ -222,81 +224,10 @@ const PlanDetailPage = () => {
                   <button onClick={() => { setOpenModalCreate(false) }} className='btn-create'>Cancel</button>
                   <button type='submit' className='btn-create'>Save</button>
                 </div>
-
               </div>
             </form>
           </div>
         </Box>
-        {/* <Box sx={style}>
-          <div className='modal-container'>
-            <span className='font-medium text-3xl mr-3'>Create plan detail</span>
-            <div>
-              <div>
-                <TextField label="Name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} onChange={(event) => onChangePlanDetailObject('name', event.target.value)} />
-                <div className='font-semibold text-lg mt-2'>Period</div>
-                <div className='grid grid-cols-2 px-1'>
-                  <div className=''>
-                    <div className='font-medium text-base'>from</div>
-                    <input type={'date'} name='periodFrom' className='focus:outline-none' onChange={(event) => onChangePlanDetailObject('periodFrom', event.target.value)} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
-                  </div>
-                  <div>
-                    <div className='font-medium text-base'>to</div>
-                    <input type={'date'} name='periodTo' className='focus:outline-none' onChange={(event) => onChangePlanDetailObject('periodTo', event.target.value)} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
-                  </div>
-                </div>
-                <Autocomplete
-                  options={listApprovedRecruitmentPlan}
-                  size={'small'}
-                  sx={{ width: '100%', marginTop: '1rem' }}
-                  getOptionLabel={option => option.name}
-                  renderInput={(params) => <TextField {...params} label="Recruitment plan" />}
-                  onChange={(event, value) => { onChangePlanDetailObject('recruitmentPlanId', value.id) }} />
-                <div className='flex'>
-                  <TextField label="Amount" variant="outlined" size='small' sx={{ width: '20%', margin: '1rem 1rem 0 0' }} onChange={(event) => onChangePlanDetailObject('amount', event.target.value)} />
-                  <TextField label="Salary" variant="outlined" size='small' sx={{ width: '40%', margin: '1rem 1rem 0 0' }} onChange={(event) => onChangePlanDetailObject('salary', event.target.value)} />
-                  <Autocomplete
-                    options={categoryData.jobTitle}
-                    size={'small'}
-                    sx={{ width: '35%', marginTop: '1rem' }}
-                    renderInput={(params) => <TextField {...params} label="Position" />}
-                    onChange={(event, value) => { onChangePlanDetailObject('industry', value) }} />
-                </div>
-                <div className='mt-4'>Reason</div>
-                <TextareaAutosize
-                  minRows={2}
-                  maxRows={5}
-                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-                  onChange={(event) => onChangePlanDetailObject('reason', event.target.value)}
-                />
-                <div className='mt-4'>Description</div>
-                <TextareaAutosize
-                  minRows={2}
-                  maxRows={5}
-                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-                  onChange={(event) => onChangePlanDetailObject('description', event.target.value)}
-                />
-                <div className='mt-4'>Requirment</div>
-                <TextareaAutosize
-                  minRows={2}
-                  maxRows={5}
-                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-                  onChange={(event) => onChangePlanDetailObject('requirment', event.target.value)}
-                />
-                <div className='mt-4'>Note</div>
-                <TextareaAutosize
-                  minRows={2}
-                  maxRows={5}
-                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-                  onChange={(event) => onChangePlanDetailObject('note', event.target.value)}
-                />
-              </div>
-              <div className='mt-3 flex justify-around'>
-                <button onClick={() => { setOpenModalCreate(false) }} className='btn-create'>Cancel</button>
-                <button type='submit' onClick={() => handleCreatePlanDetail()} className='btn-create'>Save</button>
-              </div>
-            </div>
-          </div>
-        </Box> */}
       </Modal>
 
       <ToastContainer

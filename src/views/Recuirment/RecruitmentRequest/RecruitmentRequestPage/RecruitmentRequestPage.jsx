@@ -17,7 +17,7 @@ import { responseStatus } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAllDepartment } from '../../../../apis/department'
-import { getPlanApprovedByDepartment, getPlanDetailById } from '../../../../apis/planDetail'
+import {  getPlanDetailApprovedByDepartment, getPlanDetailById } from '../../../../apis/planDetail'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
 import Loading from 'react-loading'
@@ -31,7 +31,7 @@ const RecruitmentRequestPage = () => {
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [listApprovedPlanDetail, setListApprovedPlanDetail] = useState([])
+  //const [listApprovedPlanDetail, setListApprovedPlanDetail] = useState([])
 
 
   const [tabPage, setTabPage] = useState(0);
@@ -63,15 +63,15 @@ const RecruitmentRequestPage = () => {
     fetchData();
   }, [pagination.currentPage])
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await getApprovedByDepartment(currentUser.employee.department.id, currentUser.token);
-      if (response) {
-        setListApprovedPlanDetail(response.data)
-      }
-    }
-    fetchData();
-  }, [])
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const response = await getApprovedByDepartment(currentUser.employee.department.id, currentUser.token);
+  //     if (response) {
+  //       setListApprovedPlanDetail(response.data)
+  //     }
+  //   }
+  //   fetchData();
+  // }, [])
 
   const PageDisplay = () => {
     if (tabPage === 0) {
@@ -89,6 +89,7 @@ const RecruitmentRequestPage = () => {
   }
 
   const onHandleSearch = () => {
+
     console.log('search');
     // searchRecruimentRequest(searchObject).then((response) => {
     //   console.log(response.data);
@@ -144,13 +145,13 @@ const RecruitmentRequestPage = () => {
     }),
     onSubmit: async (values) => {
       console.log('val', values);
-      // await createRecruitmentRequest(values, currentUser.token).then(response => {
-      //   console.log(response);
-      //   if (response.message.includes(' expiry date')) {
-      //     formik.errors.expiryDate = "Invalid expiry date"
-      //   }
-      //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
-      // })
+      await createRecruitmentRequest(values, currentUser.token).then(response => {
+        console.log(response);
+        if (response.message.includes(' expiry date')) {
+          formik.errors.expiryDate = "Invalid expiry date"
+        }
+        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
+      })
     }
   })
 
@@ -264,7 +265,6 @@ const ChoosePlanTab = ({ formik }) => {
 
   const [listDepartment, setListDepartment] = useState([])
   const [listPlanDetail, setListPlanDetail] = useState([])
-
   const [currentDepartment, setCurrentDepartment] = useState()
 
   useEffect(() => {
@@ -278,11 +278,13 @@ const ChoosePlanTab = ({ formik }) => {
   }, [])
 
   useEffect(() => {
-    if (currentDepartment) {
+    if (currentDepartment) {   
       const fetchData = async () => {
-        const response = await getPlanApprovedByDepartment(currentUser.token, currentDepartment, 0, 20);
-        if (response) {
+        const response = await getPlanDetailApprovedByDepartment(currentUser.token, currentDepartment);
+        if (response.data && response.data.length > 0) {
           setListPlanDetail(response.data)
+        } else {
+          setListPlanDetail([])
         }
       }
       fetchData();
@@ -340,21 +342,19 @@ const FillInformationTab = ({ formik }) => {
     fetchData();
   }, [formik.values.planDetailId])
 
-  // useEffect(() => {
-  //   if (isSalaryNegotiable) {
-  //     formik.salaryFrom = 'Negotiable'
-  //     formik.salaryTo = 'Negotiable'
-  //   } else {
-  //     formik.salaryFrom = ''
-  //     formik.salaryTo = ''
-  //   }
-  // }, [isSalaryNegotiable])
+  useEffect(() => {
+    if (isSalaryNegotiable) {
+      formik.values.salaryFrom = 'Negotiable'
+      formik.values.salaryTo = 'Negotiable'
+    } else {
+      formik.values.salaryFrom = ''
+      formik.values.salaryTo = ''
+    }
+  }, [isSalaryNegotiable])
 
   if (!isLoading) {
-    formik.amount = planDetailData.amount
-    formik.positionName = planDetailData.position.name
-    formik.description = planDetailData.description
-    formik.requirement = planDetailData.requirement
+    formik.values.amount = planDetailData.amount
+    formik.values.positionName = planDetailData.position.name
   }
 
   return (
@@ -378,7 +378,7 @@ const FillInformationTab = ({ formik }) => {
               <Autocomplete
                 options={experienceData()}
                 size={'small'}
-                sx={{ width: '80%', marginTop: '1rem' }}
+                sx={{ width: '85%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Experience" />}
                 onInputChange={(event, value) => { formik.setFieldValue('experience', value) }} />
               {formik.errors.experience && formik.touched.experience && (
@@ -403,7 +403,7 @@ const FillInformationTab = ({ formik }) => {
               <Autocomplete
                 options={educationLevelData()}
                 size={'small'}
-                sx={{ width: '80%', marginTop: '1rem' }}
+                sx={{ width: '85%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Education level" />}
                 onInputChange={(event, value) => { formik.setFieldValue('educationLevel', value) }} />
               {formik.errors.educationLevel && formik.touched.educationLevel && (
@@ -428,7 +428,7 @@ const FillInformationTab = ({ formik }) => {
               <Autocomplete
                 options={categoryData.industry}
                 size={'small'}
-                sx={{ width: '80%', marginTop: '1rem' }}
+                sx={{ width: '85%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Industry" />}
                 onInputChange={(event, value) => { formik.setFieldValue('industry', value) }} />
               {formik.errors.industry && formik.touched.industry && (
@@ -443,16 +443,7 @@ const FillInformationTab = ({ formik }) => {
             </div>
           </div>
 
-          <div className='grid grid-cols-2 px-1'>
-            <div>
-              <div className='font-medium text-base'>from</div>
-              <div className='item-value w-[80%] justify-between'>{planDetailData.periodFrom}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
-            </div>
-            <div>
-              <div className='font-medium text-base'>to</div>
-              <div className='item-value w-[80%] justify-between'>{planDetailData.periodTo}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
-            </div>
-          </div>
+
           <div className='mt-3 ml-14 font-semibold'>Expired date</div>
           <div className='flex justify-center'>
             <TextField type={'date'} variant="outlined" size='small' style={{ width: '80%' }} name='expiryDate' value={formik.values.expiryDate} onChange={formik.handleChange} />
@@ -548,7 +539,7 @@ const FillInformationTab = ({ formik }) => {
 
 
 const ShowPlanDetailData = ({ planDetailId }) => {
-
+console.log('iddddddddd', planDetailId);
   const currentUser = useSelector((state) => state.auth.login.currentUser)
 
   const [planDatailData, setPlanDetailData] = useState([])
@@ -564,7 +555,7 @@ const ShowPlanDetailData = ({ planDetailId }) => {
       }
     }
     fetchData();
-  }, [])
+  }, [planDetailId])
 
   if (isLoading) return
 

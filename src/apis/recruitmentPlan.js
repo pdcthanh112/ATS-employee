@@ -41,6 +41,15 @@ export const getRecruimentPlanByDepartment = async (
     .catch((error) => error);
 };
 
+export const getPlanApprovedByDepartment = async (token, depId) => {
+  return await axiosConfig
+    .get(`recruitmentPlan/getPlanApprovedByDepartment?departmentId=${depId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
 export const createRecruitmentPlan = async (token, planData) => {
   return await axiosConfig
     .post(
@@ -62,11 +71,18 @@ export const createRecruitmentPlan = async (token, planData) => {
 };
 
 export const approveRecruitmentPlan = async (token, empId, planId) => {
+
   return await axiosConfig
-    .put("recruitmentPlan/approved", {
-      headers: { Authorization: `Bearer ${token}` },
-      body: { employeeId: empId, id: planId },
-    })
+    .put(
+      "recruitmentPlan/approved",
+      {
+        employeeId: empId,
+        id: planId,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
     .then((response) => response.data)
     .catch((error) => error);
 };

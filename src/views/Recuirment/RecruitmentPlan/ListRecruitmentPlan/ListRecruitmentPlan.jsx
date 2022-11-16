@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { approveRecruitmentPlan } from '../../../../apis/recruitmentPlan'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
-import { positionName, statusName } from '../../../../utils/constants'
+import { positionName, responseStatus, statusName } from '../../../../utils/constants'
 
 const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
 
@@ -28,7 +28,9 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
   };
 
   const handleApproveRecruitmentPlan = async (planId) => {
-    await approveRecruitmentPlan(currentUser.token, currentUser?.employee.id, planId).then((response) => console.log(response))
+    await approveRecruitmentPlan(currentUser.token, currentUser?.employee.id, planId).then((response) => {
+      response.status === responseStatus.SUCCESS ? toast.success('Approve successfully') : toast.error('Something error')
+    })
   }
   return (
     <div className='listRecruitmentPlan-container'>
@@ -40,7 +42,7 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
                 <span className='label-status bg-[#FFF4DE] text-[#FFA800]'>PENDING</span>
                 {currentUser.employee.position.name.toUpperCase().includes(positionName.MANAGER) || currentUser.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) ?
                   <span>
-                    <span className='process-buton hover:cursor-pointer' onClick={() => handleApproveRecruitmentPlan(item.id)}>APPROVE</span>
+                    <span className='process-buton hover:cursor-pointer' onClick={() => {handleApproveRecruitmentPlan(item.id); console.log(item.id)}}>APPROVE</span>
                     <span className='process-buton hover:cursor-pointer ml-5'>Reject</span>
                   </span> : <span></span>}
               </div>

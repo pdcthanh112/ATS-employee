@@ -8,15 +8,6 @@ export const getAllRecruimentRequest = async (pageNo, pageSize) => {
     .catch((error) => error);
 };
 
-export const getApprovedByDepartment = async (depId, token) => {
-  return await axiosConfig
-    .get(`planDetail/getApprovedByDepartment?departmentId=${depId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    .then((response) => response.data)
-    .catch((error) => error);
-};
-
 export const getRecruimentRequestDetail = async (id) => {
   return await axiosConfig
     .get(`recruitmentRequest/getById/{id}?id=${id}`)
