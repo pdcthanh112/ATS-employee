@@ -6,6 +6,7 @@ import PlanDetail from "../../assets/icon/plan-detailNavbar.png";
 import RecruitmentRequest from "../../assets/icon/recruitment-requestNavbar.png";
 import Candidates from "../../assets/icon/candidatesNavbar.png";
 import Interview from "../../assets/icon/job-interviewNavbar.png";
+import CuriculumVitae from "../../assets/icon/curriculum-vitaeNavbar.png";
 import IconUp from "../../assets/icon/caret-arrow-up.png";
 import IconDown from "../../assets/icon/caret-arrow-down.png";
 
@@ -73,12 +74,15 @@ export const SidebarItem = [
     title: "Interview",
     path: "/interviews",
     icon: <img src={Interview} alt="" width={"30rem"} />,
-
+  },
+  {
+    title: "Curiculum vitae",
+    path: "/curiculum-vitae",
+    icon: <img src={CuriculumVitae} alt="" width={"30rem"} />,
   },
   {
     title: "Notification",
     path: "/notification",
     icon: <img src={Notification} alt="" width={"30rem"} />,
-
   },
 ];

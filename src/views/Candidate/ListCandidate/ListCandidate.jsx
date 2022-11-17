@@ -3,7 +3,7 @@ import './ListCandidate.scss'
 
 import { useSelector } from 'react-redux';
 import { Box, Modal, Pagination, Stack, Avatar } from '@mui/material';
-import { getInterviewByCandidateId } from '../../../apis/interview';
+import { getInterviewByCandidateId } from '../../../apis/interviewApi';
 import { getCVByCandidate } from '../../../apis/candidateApi';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -12,7 +12,6 @@ import ReactLoading from 'react-loading'
 
 import ScheduleIcon from '../../../assets/icon/calendar.png'
 import folderIcon from '../../../assets/icon/folder-icon.png'
-import DefaultCandidateAvatar from '../../../assets/image/defaultUser.png'
 import PDFImage from '../../../assets/image/pdf.png'
 import { responseStatus } from '../../../utils/constants';
 

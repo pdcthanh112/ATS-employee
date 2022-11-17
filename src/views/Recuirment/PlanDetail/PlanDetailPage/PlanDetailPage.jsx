@@ -15,10 +15,10 @@ import CreateIcon from '../../../../assets/icon/plus.png'
 
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize } from '@mui/material';
 import CurrencyFormat from 'react-currency-format';
-import { getAllPlanDetail, createPlanDetail } from '../../../../apis/planDetail'
+import { getAllPlanDetail, createPlanDetail } from '../../../../apis/planDetailApi'
 import ListPlanDetail from '../ListPlanDetail/ListPlanDetail'
 import { responseStatus } from '../../../../utils/constants'
-import { getPlanApprovedByDepartment } from '../../../../apis/recruitmentPlan'
+import { getPlanApprovedByDepartment } from '../../../../apis/recruitmentPlanApi'
 
 const PlanDetailPage = () => {
 

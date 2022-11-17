@@ -17,10 +17,10 @@ import AddIcon from '../../../../assets/icon/addIcon.png'
 import MinusIcon from '../../../../assets/icon/minusIcon.png'
 
 import { Box, Modal, Pagination, Stack } from '@mui/material';
-import { createRecruitmentPlan, getRecruimentPlanByDepartment } from '../../../../apis/recruitmentPlan'
+import { createRecruitmentPlan, getRecruimentPlanByDepartment } from '../../../../apis/recruitmentPlanApi'
 import ListRecruitmentPlan from '../ListRecruitmentPlan/ListRecruitmentPlan'
 
-import { responseStatus } from '../../../../utils/constants'
+import { positionName, responseStatus } from '../../../../utils/constants'
 
 const RecruitmentPlanPage = () => {
 
@@ -47,6 +47,7 @@ const RecruitmentPlanPage = () => {
     const fetchData = async () => {
       setIsLoading(true)
       const response = await getRecruimentPlanByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
+      console.log('adfas', response)
       if (response) {
         setListRecruitmentPlan(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
@@ -88,12 +89,12 @@ const RecruitmentPlanPage = () => {
           <img src={PlanIcon} alt='' width={'30rem'} />
         </div>
 
-        <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
+        {currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) && <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
           <span className='mr-1'>Create recruitment plan</span>
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={CreateIcon} alt='' /></span>
-        </div>
+        </div>}
 
-        {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListRecruitmentPlan listRecruitmentPlan={listRecruitmentPlan} />}
+        <div className='min-h-screen'>{isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListRecruitmentPlan listRecruitmentPlan={listRecruitmentPlan} />}</div>
 
         <div className='pagination-container'>
           <Stack spacing={2}>

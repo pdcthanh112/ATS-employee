@@ -16,7 +16,7 @@ import SearchIcon from '../../../assets/icon/filter.png'
 import { createCandidate, getAllCandidate } from '../../../apis/candidateApi'
 import ListCandidate from '../ListCandidate/ListCandidate';
 import { DEFAULT_PASSWORD, responseStatus } from '../../../utils/constants'
-import { getPositionByDepartment } from '../../../apis/department';
+import { getPositionByDepartment } from '../../../apis/departmentApi';
 
 const CandidatePage = () => {
 

@@ -1,12 +1,12 @@
 import React from 'react'
 
-
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const CandidatePage = React.lazy(() => import('./views/Candidate/CandidatePage/CandidatePage'))
 const RecruitmentPlanPage = React.lazy(() => import('./views/Recuirment/RecruitmentPlan/RecruitmentPlanPage/RecruitmentPlanPage'))
 const PlanDetailPage = React.lazy(() => import('./views/Recuirment/PlanDetail/PlanDetailPage/PlanDetailPage'))
 const RecruitmentRequestPage = React.lazy(() => import('./views/Recuirment/RecruitmentRequest/RecruitmentRequestPage/RecruitmentRequestPage'))
 const InterviewPage = React.lazy(() => import('./views/Interview/InterviewPage/InterviewPage'))
+const CuriculumVitaePage = React.lazy(() => import('./views/CuriculumVitae/CVPage/CVPage'))
 const NotificationPage = React.lazy(() => import('./views/Notification/NotificationPage/NotificationPage'))
 
 const routes = [
@@ -17,6 +17,7 @@ const routes = [
   { path: '/plan-detail', name: 'Recruitment Plan Detail Page', element: PlanDetailPage },
   { path: '/recruitment-request', name: 'Recruitment Request Page', element: RecruitmentRequestPage },
   { path: '/interviews', name: 'Interview Page', element: InterviewPage },
+  { path: '/curiculum-vitae', name: 'Curiculum Vitae Page', element: CuriculumVitaePage },
   { path: '/notification', name: 'Notification Page', element: NotificationPage }, 
 ]
 

@@ -7,17 +7,17 @@ import RequestIcon from '../../../../assets/icon/recruitment-requestImage.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
 import AddIcon from '../../../../assets/icon/plus.png'
 import CurrencyFormat from 'react-currency-format';
-import { Formik, useFormik } from 'formik'
+import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize, FormControlLabel, Checkbox } from '@mui/material';
-import { createRecruitmentRequest, getAllRecruimentRequest, getApprovedByDepartment } from '../../../../apis/recruimentRequestApi'
+import { createRecruitmentRequest, getAllRecruimentRequest } from '../../../../apis/recruimentRequestApi'
 import ListRecruitmentRequest from '../ListRecruitmentRequest/ListRecruitmentRequest'
 import { educationLevelData, experienceData, foreignLanguageData, typeOfWorkData } from '../../../../utils/dropdownData'
 import { responseStatus } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getAllDepartment } from '../../../../apis/department'
-import {  getPlanDetailApprovedByDepartment, getPlanDetailById } from '../../../../apis/planDetail'
+import { getAllDepartment } from '../../../../apis/departmentApi'
+import {  getPlanDetailApprovedByDepartment, getPlanDetailById } from '../../../../apis/planDetailApi'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
 import Loading from 'react-loading'
@@ -25,7 +25,6 @@ import Loading from 'react-loading'
 const RecruitmentRequestPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
-  const categoryData = useSelector((state) => state.categoryData.data);
 
   const [listRecruitmentRequest, setListRecruitmentRequest] = useState([])
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
@@ -117,6 +116,7 @@ const RecruitmentRequestPage = () => {
       foreignLanguage: '',
       industry: '',
       jobLevel: '',
+      name: '',
       planDetailId: '',
       positionName: '',
       requirement: '',
@@ -136,6 +136,7 @@ const RecruitmentRequestPage = () => {
       foreignLanguage: Yup.string().required('Please choose forign language'),
       industry: Yup.string().required('Please input industry'),
       jobLevel: Yup.string().required('Please input job level'),
+      name: Yup.string().required('Please input job name'),
       planDetailId: Yup.string().required('Please choose recruitment plan'),
       positionName: Yup.string().required('Please choose position'),
       requirement: Yup.string().required('Please input requirement'),
@@ -206,7 +207,6 @@ const RecruitmentRequestPage = () => {
               <img src={RequestIcon} alt='' width={'50rem'} />
             </div>
             <div className='modalCreateRequest-content'>
-
               <div className='bg-[#C9F7F5]'>
                 <div className="progressbar" style={{ width: tabPage === 0 ? "50%" : "100%" }}></div>
               </div>
@@ -361,8 +361,14 @@ const FillInformationTab = ({ formik }) => {
     <React.Fragment>
       {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
         <div>
-          <div className='grid grid-cols-2 px-1'>
+           <div>
+              <TextField label="Recruitment name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='jobLevel' value={formik.values.name} onChange={formik.handleChange} />
+              {formik.errors.name && formik.touched.name && (
+                <div className='text-[#ec5555]'>{formik.errors.name}</div>
+              )}
+            </div>
 
+          <div className='grid grid-cols-2 px-1'>
             <TextField label="Position" variant="outlined" size='small' sx={{ marginTop: '1rem', width: '85%' }} name='positionName' value={formik.values.positionName} disabled />
 
             <div>
@@ -518,7 +524,6 @@ const FillInformationTab = ({ formik }) => {
             <div className='text-[#ec5555]'>{formik.errors.requirement}</div>
           )}
 
-
           <div className='mt-4'>Benefit</div>
           <TextareaAutosize
             name='benefit'
@@ -539,7 +544,7 @@ const FillInformationTab = ({ formik }) => {
 
 
 const ShowPlanDetailData = ({ planDetailId }) => {
-console.log('iddddddddd', planDetailId);
+
   const currentUser = useSelector((state) => state.auth.login.currentUser)
 
   const [planDatailData, setPlanDetailData] = useState([])

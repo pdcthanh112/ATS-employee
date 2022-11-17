@@ -6,7 +6,7 @@ import { Box, Modal, Pagination, Stack } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { approveRecruitmentPlan } from '../../../../apis/recruitmentPlan'
+import { approveRecruitmentPlan } from '../../../../apis/recruitmentPlanApi'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
 import { positionName, responseStatus, statusName } from '../../../../utils/constants'
 

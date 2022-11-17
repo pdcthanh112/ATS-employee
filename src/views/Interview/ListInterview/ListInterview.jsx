@@ -8,7 +8,7 @@ import RejectIcon from '../../../assets/icon/close.png'
 import EditIcon from '../../../assets/icon/trash.png'
 import DeleteIcon from '../../../assets/icon/edit.png'
 import { interviewStatus, interviewType, positionName, responseStatus } from '../../../utils/constants'
-import { confirmInterview } from '../../../apis/interview'
+import { confirmInterview } from '../../../apis/interviewApi'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Box, Modal } from '@mui/material';
@@ -56,8 +56,8 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
                   <div className='bg-[#FFF4DE] text-[#FFA800] text-sm font-semibold px-3 py-2 rounded-lg h-9'>PENDING</div>
                   <div className='flex'>
                     {currentUser.employee.position.name === positionName.POSITION_HR ? <React.Fragment>
-                      <span onClick={() => { }}><img src={EditIcon} alt="" width={'40rem'} className='mr-2 hover:cursor-pointer' title='Edit' /></span>
-                      <span onClick={() => { setOpenModalReason(true) }}><img src={DeleteIcon} alt="" width={'40rem'} className='hover:cursor-pointer' title='Delete' /></span> </React.Fragment> : <React.Fragment>
+                      <span onClick={() => { }}><img src={EditIcon} alt="" width={'30rem'} className='mr-2 hover:cursor-pointer' title='Edit' /></span>
+                      <span onClick={() => { setOpenModalReason(true) }}><img src={DeleteIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Delete' /></span> </React.Fragment> : <React.Fragment>
                       <span onClick={() => { confirmInterviewByEmp(item.id) }}><img src={ApproveIcon} alt="" width={'40rem'} className='mr-2 hover:cursor-pointer' title='Approve' /></span>
                       <span onClick={() => { }}><img src={RejectIcon} alt="" width={'20rem'} className='mt-2 hover:cursor-pointer' title='Reject' /></span> </React.Fragment>}
                   </div>
@@ -75,7 +75,7 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
             </div>
             <div className='flex justify-between mt-2'>
               <div className='field-item w-[60%]'>{item.candidateName}</div>
-              <div className='field-item w-[30%]'>{item.jobApply.recruitmentRequest.position.name}</div>
+              {/* <div className='field-item w-[30%]'>{item.jobApply.recruitmentRequest.position.name}</div> */}
             </div>
             {item.type === interviewType.ONLINE ? <div className='mt-2'>
               <div className='font-semibold text-lg'>Google meet</div>

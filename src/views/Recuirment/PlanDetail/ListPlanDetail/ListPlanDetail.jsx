@@ -16,14 +16,14 @@ import CurrencyFormat from 'react-currency-format';
 import { positionName, responseStatus, statusName } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getPlanApprovedByDepartment } from '../../../../apis/recruitmentPlan';
+import { getPlanApprovedByDepartment } from '../../../../apis/recruitmentPlanApi';
+import { confirm } from "mui-confirm-modal";
 
 
 const ListPlanDetail = ({ listPlanDetail }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
   const categoryData = useSelector((state) => state.categoryData.data);
-  console.log(categoryData);
 
   const [listApprovedRecruitmentPlan, setListApprovedRecruitmentPlan] = useState([])
   const [openModalEdit, setOpenModalEdit] = useState(false)
@@ -85,41 +85,68 @@ const ListPlanDetail = ({ listPlanDetail }) => {
   const handleEditPlan = (data) => {
     setOpenModalEdit(true)
     //console.log('data', data);
-    formik.values.amount= data.amount
-    formik.values.name= data.name
-    formik.values.note= data.note
-    formik.values.periodFrom= data.periodFrom
-    formik.values.periodTo= data.periodTo
-    formik.values.positionId= data.positionName
-    formik.values.reason= data.reason
-    formik.values.salary= data.salary
-    formik.values.description= data.description
-    formik.values.requirement= data.requirement
+    formik.values.amount = data.amount
+    formik.values.name = data.name
+    formik.values.note = data.note
+    formik.values.periodFrom = data.periodFrom
+    formik.values.periodTo = data.periodTo
+    formik.values.positionId = data.positionName
+    formik.values.reason = data.reason
+    formik.values.salary = data.salary
+    formik.values.description = data.description
+    formik.values.requirement = data.requirement
   }
+
+  const handleDeletePlan = async (planDetailId) => {
+     confirm({ message: "Are you sure to delete this plan?" }).then((response) => { 
+      if(response) {
+         
+      }
+    })
+  };
+
 
   return (
     <React.Fragment>
       <div className='listPlanDetail-container'>
         {listPlanDetail.map((item) => (
           <div key={item.id} className='planDetail-item'>
-            <div className='flex justify-between'>
-              <div>
-                {item.status === statusName.PENDING ? <div className='flex'>
-                  <span className='process-buton text-[#FFA800] bg-[#FFF4DE] hover:cursor-pointer'>APPROVE</span>
+            {item.status === statusName.PENDING ? <div className='flex'>
+              <span className='process-buton text-[#FFA800] bg-[#FFF4DE]'>Pending</span>
+              <div className='flex w-full justify-between'>
+                <div className='flex'>
                   <span className='hover:cursor-pointer'><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
                   <span className='hover:cursor-pointer'><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
-                </div> : <div>
-                  {item.status === statusName.APPROVED && <span className='process-buton text-[#1BC5BD] bg-[#C9F7F5] hover:cursor-pointer'>APPROVE</span>}
-                  {item.status === statusName.REJECTED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] hover:cursor-pointer'>Reject</span>}
-                </div>}
+                </div>
+                <div className='flex'>
+                  {currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) || currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) ? <React.Fragment>
+                    <span className='hover:cursor-pointer' onClick={() => handleEditPlan(item)}><img src={EditIcon} alt="" title='Edit this plan' width={'30rem'} className='mr-2' /></span>
+                    <span className='hover:cursor-pointer' onClick={() => handleDeletePlan(item.id)}><img src={DeleteIcon} alt="" title='Delete this plan' width={'30rem'} /></span>
+                  </React.Fragment> : <React.Fragment></React.Fragment>}
+                </div>
               </div>
-              <div className='flex'>
-                {currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) || currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) ? <React.Fragment>
-                  <span className='hover:cursor-pointer' onClick={() => handleEditPlan(item)}><img src={EditIcon} alt="" title='Edit this plan' width={'30rem'} className='mr-2' /></span>
-                  <span className='hover:cursor-pointer'><img src={DeleteIcon} alt="" title='Delete this plan' width={'30rem'} /></span>
-                </React.Fragment> : <React.Fragment></React.Fragment>}
-              </div>
-            </div>
+            </div> : <div>
+              {item.status === statusName.APPROVED && <span className='process-buton text-[#1BC5BD] bg-[#C9F7F5] hover:cursor-pointer'>APPROVE</span>}
+              {item.status === statusName.REJECTED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] hover:cursor-pointer'>Reject</span>}
+            </div>}
+            {/* {item.status === statusName.PENDING ? <div className='flex'>
+                <span className='process-buton text-[#FFA800] bg-[#FFF4DE]'>APPROVE</span>
+                <div className='flex'>
+                  <div className='flex'>
+                    <span className='hover:cursor-pointer'><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
+                    <span className='hover:cursor-pointer'><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
+                  </div>
+                  <div className='flex'>
+                    {currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) || currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) ? <React.Fragment>
+                      <span className='hover:cursor-pointer' onClick={() => handleEditPlan(item)}><img src={EditIcon} alt="" title='Edit this plan' width={'30rem'} className='mr-2' /></span>
+                      <span className='hover:cursor-pointer' onClick={() => handleDeletePlan(item.id)}><img src={DeleteIcon} alt="" title='Delete this plan' width={'30rem'} /></span>
+                    </React.Fragment> : <React.Fragment></React.Fragment>}
+                  </div>
+                </div>
+              </div> : <div>
+                {item.status === statusName.APPROVED && <span className='process-buton text-[#1BC5BD] bg-[#C9F7F5] hover:cursor-pointer'>APPROVE</span>}
+                {item.status === statusName.REJECTED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] hover:cursor-pointer'>Reject</span>}
+              </div>}            */}
             <div className='flex justify-center mt-3 font-medium text-2xl'>{item.name}</div>
             <div>
               <div className='font-semibold text-xl mt-1'>Period</div>

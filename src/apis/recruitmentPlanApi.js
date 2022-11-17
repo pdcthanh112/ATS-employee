@@ -24,12 +24,7 @@ export const getAllApproveRecruimentPlan = async (token, pageNo, pageSize) => {
     .catch((error) => error);
 };
 
-export const getRecruimentPlanByDepartment = async (
-  token,
-  departmentId,
-  pageNo,
-  pageSize
-) => {
+export const getRecruimentPlanByDepartment = async (token, departmentId, pageNo, pageSize) => {
   return await axiosConfig
     .get(
       `recruitmentPlan/getByDepartment?departmentId=${departmentId}&pageNo=${pageNo}&pageSize=${pageSize}`,
@@ -71,7 +66,6 @@ export const createRecruitmentPlan = async (token, planData) => {
 };
 
 export const approveRecruitmentPlan = async (token, empId, planId) => {
-
   return await axiosConfig
     .put(
       "recruitmentPlan/approved",

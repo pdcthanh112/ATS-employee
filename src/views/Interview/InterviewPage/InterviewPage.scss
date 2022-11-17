@@ -1,4 +1,4 @@
-.schedule-container{
+.interview-container{
   background-color: #fff;
 
   .create-schedule {
@@ -36,9 +36,27 @@
 }
 
 .btn-create {
-  background-color: #20D489;
   border-radius: 8px;
   width: 40%;
   height: 2.5rem;
   color: #f5fef9;   
+}
+
+.modal-container {
+  padding: 1rem 2rem;
+  .modalCreateInterview-content {
+    .progressbar {
+      height: 5px;
+      background-color: #1BC5BD;
+      border-radius: 10px;
+      margin: 1rem 0;
+    }
+  }
+}
+
+
+.info-tag {
+  border: 1px solid #0F6E00;
+  border-radius: 1rem;
+  padding: 0.2rem 1rem;
 }

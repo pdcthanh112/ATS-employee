@@ -8,10 +8,19 @@ export const getAllRecruimentRequest = async (pageNo, pageSize) => {
     .catch((error) => error);
 };
 
-export const getRecruimentRequestDetail = async (id) => {
+export const getRecruimentRequestById = async (id) => {
   return await axiosConfig
-    .get(`recruitmentRequest/getById/{id}?id=${id}`)
-    .then((response) => response)
+    .get(`recruitmentRequest/getById?id=${id}`)
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
+export const getListRecruimentRequestByDepartment = async (token, id) => {
+  return await axiosConfig
+    .get(`recruitmentRequest/getIdAndNameByDepartment?department_id=${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.data)
     .catch((error) => error);
 };
 
@@ -54,6 +63,7 @@ export const createRecruitmentRequest = async (data, token) => {
         expiryDate: data.expiryDate,
         foreignLanguage: data.foreignLanguage,
         industry: data.industry,
+        name: data.name,
         jobLevel: data.jobLevel,
         planDetailId: data.planDetailId,
         positionName: data.positionName,
@@ -68,4 +78,13 @@ export const createRecruitmentRequest = async (data, token) => {
     )
     .then((response) => response.data)
     .catch((error) => error.response.data);
+};
+
+export const getCandidateAppliedByRecruitmentRequest = async (token, id) => {
+  return await axiosConfig
+    .get(`candidate/getCandidateAppliedByRecruitment?recruitmentId=${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.data)
+    .catch((error) => error);
 };
