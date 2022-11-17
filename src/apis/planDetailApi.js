@@ -18,6 +18,14 @@ export const getPlanDetailById = async (token, id) => {
     .catch((error) => error);
 };
 
+export const getPlanDetailByDepartment = async (token, depId) => {
+  return await axiosConfig
+    .get(`planDetail/getByDepartment?departmentId=${depId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.data)
+    .catch((error) => error);
+};
 export const getPlanDetailApprovedByDepartment = async (token, depId) => {
   return await axiosConfig
     .get(`planDetail/getApprovedByDepartment?departmentId=${depId}`, {

@@ -6,17 +6,21 @@ import * as Yup from 'yup'
 
 import { useSelector } from 'react-redux';
 import ReactLoading from 'react-loading'
-import { Box, Modal, Pagination, Stack, TextField, Autocomplete } from '@mui/material';
+import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize, Switch, FormControlLabel } from '@mui/material';
 
-import { getAllInterview } from '../../../apis/interviewApi';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { createInterview, getAllInterview } from '../../../apis/interviewApi';
 import InterviewIcon from '../../../assets/icon/calendar.png'
 import SearchIcon from '../../../assets/icon/filter.png'
 import AddIcon from '../../../assets/icon/plus.png'
 import ListInterviewSchedule from '../ListInterview/ListInterview';
-import { positionName } from '../../../utils/constants';
+import { interviewType, positionName, responseStatus } from '../../../utils/constants';
 import { getAllDepartment } from '../../../apis/departmentApi';
-import { getCandidateAppliedByRecruitmentRequest, getListRecruimentRequestByDepartment, getRecruimentRequestById } from '../../../apis/recruimentRequestApi';
-
+import { getListRecruimentRequestByDepartment, getRecruimentRequestById } from '../../../apis/recruimentRequestApi';
+import { getCandidateAppliedByRecruitmentRequest } from '../../../apis/candidateApi';
+import { getEmployeeByRecruitmentRequest } from '../../../apis/employeeApi';
+import { interviewRound } from '../../../utils/dropdownData';
 
 const InterviewPage = () => {
 
@@ -26,16 +30,19 @@ const InterviewPage = () => {
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [isSubmiting, setIsSubmitting] = useState(false)
 
   const [tabPage, setTabPage] = useState(0);
   const FormTitles = ["Choose recruitment request", "Choose paticipants", "Fill information"];
 
   const style = {
     position: 'absolute',
-    top: '40%',
+    top: '20rem',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 500,
+    maxHeight: 600,
+    overflow: 'scroll',
     bgcolor: 'background.paper',
     border: '1px solid #0F6B14',
     boxShadow: 24,
@@ -130,14 +137,28 @@ const InterviewPage = () => {
       type: ''
     },
     validationSchema: Yup.object({
-
+      //address: Yup.string().required('Please input address'),
+      candidateId: Yup.string().required('Please choose candidate'),
+      date: Yup.string().required('Please input date'),
+      description: Yup.string().required('Please input description'),
+      employeeId: Yup.array().min(1, 'Please choose at least 1 employee interview'),
+      //linkMeeting: Yup.string().required('Please input link meeting'),
+      purpose: Yup.string().required('Please input purpose'),
+      recruitmentRequestId: Yup.string().required('Please input address'),
+      //room: Yup.string().required('Please input room'),
+      round: Yup.string().required('Please choose round'),
+      subject: Yup.string().required('Please input subject'),
+      time: Yup.string().required('Please input time'),
+      //type: Yup.string().required('Please choose type of interview'),
     }),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log(values);
-      // setIsLoading(true)
-      // createRecruitmentPlan(currentUser.token, values).then((response) => {
-      //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-      // }).then(setIsLoading(false))
+      setIsSubmitting(true)
+      await createInterview(currentUser.token, values).then((response) => {
+        console.log('asfasf0', response);
+        setIsSubmitting(false)
+        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
+      }).then(setIsLoading(false))
     }
   })
 
@@ -187,7 +208,7 @@ const InterviewPage = () => {
         </div>
       </div>
 
-      <Modal open={openModalCreate} onClose={() => setOpenModalCreate(false)}>
+      <Modal open={openModalCreate} onClose={() => { setOpenModalCreate(false); formik.resetForm(); setTabPage(0) }}>
         <Box sx={style}>
           <div className='modal-container'>
             <div className='flex'>
@@ -208,7 +229,8 @@ const InterviewPage = () => {
                     <div className='flex justify-evenly mt-5'>
                       <button type='button' className='btn-create bg-[#F64E60]'
                         onClick={() => { setOpenModalCreate(false) }}>Cancel</button>
-                      <button type='button' className='btn-create bg-[#1BC5BD]'
+                      <button type='button' className={`btn-create ${formik.values.recruitmentRequestId ? 'bg-[#1BC5BD]' : 'bg-[#c1c1c1]'}`}
+                        disabled={!formik.values.recruitmentRequestId}
                         onClick={(e) => { setTabPage((currPage) => currPage + 1); e.preventDefault() }}>
                         Next
                       </button>
@@ -217,13 +239,14 @@ const InterviewPage = () => {
                     <div className='flex justify-evenly mt-5'>
                       <button type='button' className='btn-create bg-[#F64E60]'
                         onClick={(e) => { setTabPage((currPage) => currPage - 1); e.preventDefault() }}>Prev</button>
-                      <button type='button' className='btn-create bg-[#1BC5BD]'
+                      <button type='button' className={`btn-create ${!formik.values.candidateId || formik.values.employeeId.length === 0 ? 'bg-[#C1C1C1]' : 'bg-[#1BC5BD]'}`}
+                        disabled={!formik.values.candidateId || formik.values.employeeId.length === 0}
                         onClick={(e) => { setTabPage((currPage) => currPage + 1); e.preventDefault() }}>
                         Next
                       </button>
                     </div>}
                   {tabPage === 2 && <div className='flex justify-evenly mt-5'>
-                    <button type='button' className='btn-create bg-[#1BC5BD]' disabled={tabPage === 0}
+                    <button type='button' className='btn-create bg-[#1BC5BD]'
                       onClick={(e) => { setTabPage((currPage) => currPage - 1); e.preventDefault() }}>
                       Prev
                     </button>
@@ -237,6 +260,19 @@ const InterviewPage = () => {
           </div>
         </Box>
       </Modal>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </React.Fragment>
   )
 }
@@ -310,11 +346,11 @@ const ChooseRecruitmentRequestTab = ({ formik }) => {
 const ChoosePaticipantsTab = ({ formik }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
-  const categoryData = useSelector((state) => state.categoryData.data);
+
   const [isLoading, setIsLoading] = useState(true)
   const [listEmployee, setListEmployee] = useState([])
   const [listCandidate, setListCandidate] = useState([])
-  console.log('asfasdf', formik.values.recruitmentRequestId);
+  const [listEmpInterview, setListEmpInterview] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -331,173 +367,170 @@ const ChoosePaticipantsTab = ({ formik }) => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getCandidateAppliedByRecruitmentRequest(currentUser.token, formik.values.recruitmentRequestId);
+      const response = await getEmployeeByRecruitmentRequest(currentUser.token, formik.values.recruitmentRequestId);
       if (response) {
-        setListCandidate(response.data)
+        setListEmployee(response.data)
         setIsLoading(false)
       }
     }
     fetchData();
   }, [formik.values.recruitmentRequestId])
 
-
+  useEffect(() => {
+    const listTmp = []
+    if (listEmpInterview) {
+      listEmpInterview.map(item => listTmp.push(item.id))
+    }
+    if (listTmp && listTmp.length > 0) {
+      formik.setFieldValue('employeeId', listTmp)
+    }
+  }, [listEmpInterview])
 
   return (
     <React.Fragment>
-
-      <div>
-
-
+      {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
         <div>
-          <Autocomplete
-            options={listCandidate}
-            size={'small'}
-            sx={{ width: '85%', marginTop: '1rem' }}
-            getOptionLabel={option => option.name}
-            renderInput={(params) => <TextField {...params} label="Candidate" />}
-            onChange={(event, value) => { formik.setFieldValue('candidateId', value.id) }} />
-          {formik.errors.industry && formik.touched.industry && (
-            <div className='text-[#ec5555]'>{formik.errors.industry}</div>
-          )}
+          <div>
+            <Autocomplete
+              options={listCandidate}
+              size={'small'}
+              sx={{ width: '85%', marginTop: '1rem' }}
+              getOptionLabel={option => option.name}
+              renderInput={(params) => <TextField {...params} label="Candidate" />}
+              onChange={(event, value) => { formik.setFieldValue('candidateId', value.id) }} />
+            {formik.errors.industry && formik.touched.industry && (
+              <div className='text-[#ec5555]'>{formik.errors.industry}</div>
+            )}
+          </div>
+
+          <div>
+            <Autocomplete
+              multiple
+              options={listEmployee}
+              size={'small'}
+              sx={{ width: '85%', marginTop: '1rem' }}
+              getOptionLabel={option => option.name}
+              renderInput={(params) => <TextField {...params} label="Employee" />}
+              onChange={(event, value) => { setListEmpInterview(value) }} />
+            {formik.errors.employeeId && formik.touched.employeeId && (
+              <div className='text-[#ec5555]'>{formik.errors.employeeId}</div>
+            )}
+          </div>
         </div>
-
-        <div>
-          <Autocomplete
-            multiple
-            options={categoryData.industry}
-            size={'small'}
-            sx={{ width: '85%', marginTop: '1rem' }}
-            renderInput={(params) => <TextField {...params} label="Employee" />}
-            onChange={(event, value) => { console.log('industry', value) }}
-          // onInputChange={(event, value) => { formik.setFieldValue('industry', value) }} 
-          />
-          {formik.errors.industry && formik.touched.industry && (
-            <div className='text-[#ec5555]'>{formik.errors.industry}</div>
-          )}
-        </div>
-
-      </div>
-
-
-
+      }
     </React.Fragment>
   );
 }
 
 const FillInformationTab = ({ formik }) => {
 
-  const currentUser = useSelector((state) => state.auth.login.currentUser)
-  const categoryData = useSelector((state) => state.categoryData.data);
-  const [isLoading, setIsLoading] = useState(true)
+  const [isOnline, setIsOnline] = useState(false)
 
-  const [planDetailData, setPlanDetailData] = useState({})
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setIsLoading(true)
-  //     const response = await getPlanDetailById(currentUser.token, formik.values.planDetailId);
-  //     if (response) {
-  //       setPlanDetailData(response.data)
-  //       setIsLoading(false)
-  //     }
-  //   }
-  //   fetchData();
-  // }, [formik.values.planDetailId])
-
-
+  useEffect(() => {
+    if (isOnline) {
+      formik.values.type = interviewType.ONLINE
+      formik.values.address = ''
+      formik.values.room = ''
+    } else {
+      formik.values.type = interviewType.OFFLINE
+      formik.values.linkMeeting = ''
+    }
+  }, [isOnline])
 
   return (
-    <React.Fragment>
-      {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
-        <div>
-          <div className='grid grid-cols-2 px-1'>
-
-            <TextField label="Position" variant="outlined" size='small' sx={{ marginTop: '1rem', width: '85%' }} name='positionName' value={formik.values.positionName} disabled />
-
-            <div>
-              <TextField label="Job level" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='jobLevel' value={formik.values.jobLevel} onChange={formik.handleChange} />
-              {formik.errors.jobLevel && formik.touched.jobLevel && (
-                <div className='text-[#ec5555]'>{formik.errors.jobLevel}</div>
-              )}
-            </div>
-          </div>
-
-
-
-
-
-          <div className='grid grid-cols-2 px-1'>
-            <div>
-              <Autocomplete
-                options={categoryData.industry}
-                size={'small'}
-                sx={{ width: '85%', marginTop: '1rem' }}
-                renderInput={(params) => <TextField {...params} label="Industry" />}
-                onInputChange={(event, value) => { formik.setFieldValue('industry', value) }} />
-              {formik.errors.industry && formik.touched.industry && (
-                <div className='text-[#ec5555]'>{formik.errors.industry}</div>
-              )}
-            </div>
-            <div>
-              <TextField label="Amount" variant="outlined" size='small' sx={{ marginTop: '1rem', width: '100%' }} name='amount' value={formik.values.amount} disabled />
-              {formik.errors.amount && formik.touched.amount && (
-                <div className='text-[#ec5555]'>{formik.errors.amount}</div>
-              )}
-            </div>
-          </div>
-
-
-          <div className='mt-3 ml-14 font-semibold'>Expired date</div>
-          <div className='flex justify-center'>
-            <TextField type={'date'} variant="outlined" size='small' style={{ width: '80%' }} name='expiryDate' value={formik.values.expiryDate} onChange={formik.handleChange} />
-          </div>
-          {formik.errors.expiryDate && formik.touched.expiryDate && (
-            <div className='text-[#ec5555] w-[80%] ml-12'>{formik.errors.expiryDate}</div>
+    <div>
+      <div className='w-full flex mt-3'>
+        <div className='w-[22%] mr-3'>
+          <Autocomplete
+            options={interviewRound()}
+            size={'small'}
+            sx={{ width: '100%', marginRight: '2rem' }}
+            renderInput={(params) => <TextField {...params} label="Round" />}
+            onChange={(event, value) => { formik.setFieldValue('round', value) }} />
+          {formik.errors.round && formik.touched.round && (
+            <div className='text-[#ec5555]'>{formik.errors.round}</div>
           )}
-
-          <div className='mt-3 ml-2 font-semibold text-lg'>Salary</div>
-
-
-          <div>
-            <Autocomplete
-              options={categoryData.province}
-              size={'small'}
-              sx={{ width: '100%', marginTop: '1rem' }}
-              renderInput={(params) => <TextField {...params} label="City name" />}
-              onChange={(event, value) => { formik.setFieldValue('cityName', value) }} />
-            {formik.errors.cityName && formik.touched.cityName && (
-              <div className='text-[#ec5555]'>{formik.errors.cityName}</div>
-            )}
-          </div>
-
-          <div>
-            <TextField label="Address" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='address' value={formik.values.address} onChange={formik.handleChange} />
-            {formik.errors.address && formik.touched.address && (
-              <div className='text-[#ec5555]'>{formik.errors.address}</div>
-            )}
-          </div>
-
-          <div className='mt-4'>Description</div>
-
-
-
-          <div className='mt-4'>Benefit</div>
-
         </div>
-      }
-    </React.Fragment>
+        <div className='w-[100%]'>
+          <TextField label='Subject' variant="outlined" size='small' style={{ width: '100%' }} name='subject' value={formik.values.subject} onChange={formik.handleChange} />
+          {formik.errors.subject && formik.touched.subject && (
+            <div className='text-[#ec5555]'>{formik.errors.subject}</div>
+          )}
+        </div>
+      </div>
+      <div className='flex justify-evenly mt-3'>
+        <div>
+          <TextField type={'date'} variant="outlined" size='small' style={{ width: '100%' }} name='date' value={formik.values.date} onChange={formik.handleChange} />
+          {formik.errors.date && formik.touched.date && (
+            <div className='text-[#ec5555]'>{formik.errors.date}</div>
+          )}
+        </div>
+        <div>
+          <TextField type={'time'} variant="outlined" size='small' style={{ width: '100%' }} name='time' value={formik.values.time} onChange={formik.handleChange} />
+          {formik.errors.time && formik.touched.time && (
+            <div className='text-[#ec5555]'>{formik.errors.time}</div>
+          )}
+        </div>
+      </div>
+
+      <div className='mt-4'>Purpose</div>
+      <TextareaAutosize
+        name='purpose'
+        value={formik.values.purpose}
+        minRows={2}
+        maxRows={5}
+        style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+        onChange={formik.handleChange}
+      />
+      {formik.errors.purpose && formik.touched.purpose && (
+        <div className='text-[#ec5555]'>{formik.errors.purpose}</div>
+      )}
+
+      <FormControlLabel control={<Switch onChange={(event) => setIsOnline(event.target.checked)} />} label={isOnline ? 'Online' : 'Offline'} />
+
+      {isOnline ? <div>
+        <TextField label='Google meet' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='linkMeeting' value={formik.values.linkMeeting} onChange={formik.handleChange} />
+      </div> : <div>
+        <div>
+          <TextField label='Room' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='room' value={formik.values.room} onChange={formik.handleChange} />
+          {formik.errors.room && formik.touched.room && (
+            <div className='text-[#ec5555]'>{formik.errors.room}</div>
+          )}
+        </div>
+        <div>
+          <TextField label='Address' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='address' value={formik.values.address} onChange={formik.handleChange} />
+          {formik.errors.address && formik.touched.address && (
+            <div className='text-[#ec5555]'>{formik.errors.address}</div>
+          )}
+        </div>
+      </div>}
+
+      <div className='mt-4'>Description</div>
+      <TextareaAutosize
+        name='description'
+        value={formik.values.description}
+        minRows={2}
+        maxRows={5}
+        style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+        onChange={formik.handleChange}
+      />
+      {formik.errors.description && formik.touched.description && (
+        <div className='text-[#ec5555]'>{formik.errors.description}</div>
+      )}
+    </div>
+
   );
 }
 
-const ShowRecruitmentRequestDetail = (id) => {
+const ShowRecruitmentRequestDetail = ({ id }) => {
 
   const [recruitmentRequestData, setRecruitmentRequestData] = useState({})
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getRecruimentRequestById(id.id);
+      const response = await getRecruimentRequestById(id);
       if (response.data) {
         setRecruitmentRequestData(response.data)
         setIsLoading(false)
@@ -514,8 +547,8 @@ const ShowRecruitmentRequestDetail = (id) => {
           <div className='info-tag'>{recruitmentRequestData.name}</div>
           <div className='grid grid-cols-2 mt-2'>
             <div className='w-[90%]'>
-              <div className='font-medium'>Position</div>
-              <div className='info-tag'>{recruitmentRequestData.position.name}</div>
+              <div className='font-medium'>Create date</div>
+              <div className='info-tag'>{recruitmentRequestData.date}</div>
             </div>
             <div>
               <div className='font-medium'>Level</div>

@@ -27,13 +27,13 @@ export const getInterviewByDepartment = async (token, pageNo, pageSize) => {
     .catch((error) => error);
 };
 
-export const createInterview = async (data, token) => {
+export const createInterview = async (token, data) => {
   return await axiosConfig
     .post(
       "interview/createInterview",
       {
         address: data.address,
-        candidateId: 0,
+        candidateId: data.candidateId,
         date: data.date,
         description: data.description,
         employeeId: data.employeeId,

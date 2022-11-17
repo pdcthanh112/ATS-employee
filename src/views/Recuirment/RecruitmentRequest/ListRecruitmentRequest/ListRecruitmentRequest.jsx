@@ -7,14 +7,16 @@ const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
 
   return (
     <React.Fragment>
-      {listRecruitmentRequest.map((item, id) => (
-        <div key={id} className='recruitmentRequest-container'>
-          <div>
-            <span className='font-bold text-xl'>{item.industry}</span>
-            <span className='font-light text-3xl mx-8'>|</span>
-            <span className='process-buton text-[#1BC5BD] bg-[#C9F7F5] ml-32 mr-10'>APPROVE</span>
-            <span className='process-buton text-[#F64E60] bg-[#FFE2E5]'>Reject</span>
+      {listRecruitmentRequest.map((item) => (
+        <div key={item.id} className='recruitmentRequest-container'>
+          <div className='flex justify-between'>
+            <div>
+              <span className='font-bold text-xl'>{item.industry}</span>
+              <span className='font-light text-3xl mx-8'>|</span>
+            </div>
+            <div className='ml-20 mt-3 mr-5 font-medium text-lg'>{item.name}</div>
           </div>
+
           <div className='request-infor grid grid-cols-4 gap-4 text-[0.8rem] mt-3'>
             <span><strong className='font-semibold ml-1'>Job level:</strong> {item.jobLevel}</span>
             <span><strong className='font-semibold ml-1'>Experience:</strong> {item.experience}</span>

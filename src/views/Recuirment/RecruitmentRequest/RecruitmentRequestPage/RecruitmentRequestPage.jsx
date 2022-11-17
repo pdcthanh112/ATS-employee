@@ -20,7 +20,6 @@ import { getAllDepartment } from '../../../../apis/departmentApi'
 import {  getPlanDetailApprovedByDepartment, getPlanDetailById } from '../../../../apis/planDetailApi'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
-import Loading from 'react-loading'
 
 const RecruitmentRequestPage = () => {
 
@@ -30,7 +29,7 @@ const RecruitmentRequestPage = () => {
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  //const [listApprovedPlanDetail, setListApprovedPlanDetail] = useState([])
+  const [isSubmiting, setIsSubmitting] = useState(false)
 
 
   const [tabPage, setTabPage] = useState(0);
@@ -146,11 +145,12 @@ const RecruitmentRequestPage = () => {
     }),
     onSubmit: async (values) => {
       console.log('val', values);
-      await createRecruitmentRequest(values, currentUser.token).then(response => {
-        console.log(response);
+      setIsSubmitting(true)
+      await createRecruitmentRequest(values, currentUser.token).then(response => {     
         if (response.message.includes(' expiry date')) {
           formik.errors.expiryDate = "Invalid expiry date"
         }
+        setIsSubmitting(false)
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
       })
     }
@@ -199,7 +199,7 @@ const RecruitmentRequestPage = () => {
         </div>
       </div>
 
-      <Modal open={openModalCreate} onClose={() => setOpenModalCreate(false)}>
+      <Modal open={openModalCreate} onClose={() => {setOpenModalCreate(false); formik.resetForm(); setTabPage(0)}}>
         <Box sx={style}>
           <div className='modalCreateRequest-container'>
             <div className='modalCreateRequest-title'>
@@ -220,18 +220,20 @@ const RecruitmentRequestPage = () => {
                     <div className='flex justify-evenly mt-5'>
                       <button type='button' className='btn-create bg-[#F64E60]'
                         onClick={() => { setOpenModalCreate(false) }}>Cancel</button>
-                      <button type='button' className='btn-create bg-[#1BC5BD]'
+                      <button type='button' className={`btn-create ${formik.values.planDetailId ? 'bg-[#1BC5BD]' : 'bg-[#c1c1c1]'}`}
+                      disabled={!formik.values.planDetailId}
                         onClick={(e) => { setTabPage((currPage) => currPage + 1); e.preventDefault() }}>
                         Next
                       </button>
                     </div> : <div className='flex justify-evenly mt-5'>
-                      <button type='button' className='btn-create bg-[#1BC5BD]' disabled={tabPage === 0}
+                      <button type='button' className='btn-create bg-[#1BC5BD]'
                         onClick={() => { setTabPage((currPage) => currPage - 1); }}>
                         Prev
                       </button>
                       <button className='btn-create bg-[#20D489]' onClick={formik.handleSubmit}>
                         Submit
                       </button>
+                      {isSubmiting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
                     </div>}
                 </div>
               </form>
@@ -316,6 +318,7 @@ const ChoosePlanTab = ({ formik }) => {
       </div>
 
       {formik.values.planDetailId && <ShowPlanDetailData planDetailId={formik.values.planDetailId} />}
+    
     </React.Fragment>
   );
 }
@@ -362,7 +365,7 @@ const FillInformationTab = ({ formik }) => {
       {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
         <div>
            <div>
-              <TextField label="Recruitment name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='jobLevel' value={formik.values.name} onChange={formik.handleChange} />
+              <TextField label="Recruitment name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='name' value={formik.values.name} onChange={formik.handleChange} />
               {formik.errors.name && formik.touched.name && (
                 <div className='text-[#ec5555]'>{formik.errors.name}</div>
               )}
@@ -547,14 +550,14 @@ const ShowPlanDetailData = ({ planDetailId }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
 
-  const [planDatailData, setPlanDetailData] = useState([])
+  const [planDatailData, setPlanDetailData] = useState({})
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
       const response = await getPlanDetailById(currentUser.token, planDetailId);
-      if (response) {
+      if (response.data) {
         setPlanDetailData(response.data)
         setIsLoading(false)
       }

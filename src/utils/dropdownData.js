@@ -31,3 +31,6 @@ export const educationLevelData = () => ['Tốt nghiệp THPT', 'Trung cấp', '
 export const foreignLanguageData = () => ['Tiếng Anh','Tiếng Nhật'];
 
 export const genderData = () => ['Nam', 'Nữ', 'Khác'];
+
+
+export const interviewRound = () => ['1', '2', '3']

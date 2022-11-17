@@ -98,9 +98,9 @@ const ListPlanDetail = ({ listPlanDetail }) => {
   }
 
   const handleDeletePlan = async (planDetailId) => {
-     confirm({ message: "Are you sure to delete this plan?" }).then((response) => { 
-      if(response) {
-         
+    confirm({ message: "Are you sure to delete this plan?" }).then((response) => {
+      if (response) {
+
       }
     })
   };
@@ -113,18 +113,19 @@ const ListPlanDetail = ({ listPlanDetail }) => {
           <div key={item.id} className='planDetail-item'>
             {item.status === statusName.PENDING ? <div className='flex'>
               <span className='process-buton text-[#FFA800] bg-[#FFF4DE]'>Pending</span>
-              <div className='flex w-full justify-between'>
-                <div className='flex'>
-                  <span className='hover:cursor-pointer'><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
-                  <span className='hover:cursor-pointer'><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
-                </div>
-                <div className='flex'>
-                  {currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) || currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) ? <React.Fragment>
+              {currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) || currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) ? <React.Fragment>
+                <div className='flex w-full justify-between'>
+                  <div className='flex'>
+                    <span className='hover:cursor-pointer'><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
+                    <span className='hover:cursor-pointer'><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
+                  </div>
+                  <div className='flex'>
+
                     <span className='hover:cursor-pointer' onClick={() => handleEditPlan(item)}><img src={EditIcon} alt="" title='Edit this plan' width={'30rem'} className='mr-2' /></span>
                     <span className='hover:cursor-pointer' onClick={() => handleDeletePlan(item.id)}><img src={DeleteIcon} alt="" title='Delete this plan' width={'30rem'} /></span>
-                  </React.Fragment> : <React.Fragment></React.Fragment>}
+                  </div>
                 </div>
-              </div>
+              </React.Fragment> : <React.Fragment></React.Fragment>}
             </div> : <div>
               {item.status === statusName.APPROVED && <span className='process-buton text-[#1BC5BD] bg-[#C9F7F5] hover:cursor-pointer'>APPROVE</span>}
               {item.status === statusName.REJECTED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] hover:cursor-pointer'>Reject</span>}

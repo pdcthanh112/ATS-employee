@@ -17,7 +17,7 @@ import AddIcon from '../../../../assets/icon/addIcon.png'
 import MinusIcon from '../../../../assets/icon/minusIcon.png'
 
 import { Box, Modal, Pagination, Stack } from '@mui/material';
-import { createRecruitmentPlan, getRecruimentPlanByDepartment } from '../../../../apis/recruitmentPlanApi'
+import { createRecruitmentPlan, getAllRecruimentPlan, getRecruimentPlanByDepartment } from '../../../../apis/recruitmentPlanApi'
 import ListRecruitmentPlan from '../ListRecruitmentPlan/ListRecruitmentPlan'
 
 import { positionName, responseStatus } from '../../../../utils/constants'
@@ -46,7 +46,7 @@ const RecruitmentPlanPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getRecruimentPlanByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
+      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllRecruimentPlan(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4) : await getRecruimentPlanByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
       console.log('adfas', response)
       if (response) {
         setListRecruitmentPlan(response.data.responseList)

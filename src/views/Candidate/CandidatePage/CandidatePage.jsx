@@ -225,7 +225,7 @@ const CandidatePage = () => {
                 )} */}
               </div>
               <div className='flex justify-evenly'>
-                <button onClick={() => setOpenModalCreate(false)} className='bg-[#20D489] text-[#FFF] px-5 py-2 rounded-lg'>Cancel</button>
+                <button onClick={() => setOpenModalCreate(false)} className='bg-[#F64E60] text-[#FFF] px-5 py-2 rounded-lg'>Cancel</button>
                 <button type='submit' className='bg-[#20D489] text-[#FFF] px-5 py-2 rounded-lg'>Create</button>
               </div>
             </form>

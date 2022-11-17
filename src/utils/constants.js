@@ -29,3 +29,4 @@ export const interviewStatus = {
     CANCELED: 'CANCELED'
 }
 
+

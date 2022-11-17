@@ -15,10 +15,11 @@ import CreateIcon from '../../../../assets/icon/plus.png'
 
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize } from '@mui/material';
 import CurrencyFormat from 'react-currency-format';
-import { getAllPlanDetail, createPlanDetail } from '../../../../apis/planDetailApi'
+import { getAllPlanDetail, createPlanDetail, getPlanDetailByDepartment } from '../../../../apis/planDetailApi'
 import ListPlanDetail from '../ListPlanDetail/ListPlanDetail'
 import { responseStatus } from '../../../../utils/constants'
 import { getPlanApprovedByDepartment } from '../../../../apis/recruitmentPlanApi'
+import {positionName} from '../../../../utils/constants'
 
 const PlanDetailPage = () => {
 
@@ -47,7 +48,7 @@ const PlanDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getAllPlanDetail(currentUser.token, pagination.currentPage - 1, 2);
+      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllPlanDetail(currentUser.token, pagination.currentPage - 1, 2) : await getPlanDetailByDepartment(currentUser.token, pagination.currentPage - 1, 2)
       if (response) {
         setListPlanDetail(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
@@ -221,8 +222,8 @@ const PlanDetailPage = () => {
                   />
                 </div>
                 <div className='mt-3 flex justify-around'>
-                  <button onClick={() => { setOpenModalCreate(false) }} className='btn-create'>Cancel</button>
-                  <button type='submit' className='btn-create'>Save</button>
+                  <button onClick={() => { setOpenModalCreate(false) }} className='btn-create bg-[#F64E60]'>Cancel</button>
+                  <button type='submit' className='btn-create bg-[#20D489]'>Save</button>
                 </div>
               </div>
             </form>
