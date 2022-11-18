@@ -14,7 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Box, Modal } from '@mui/material';
 
 const ListInterviewSchedule = ({ listInterviewSchedule }) => {
-
+  
   const currentUser = useSelector((state) => state.auth.login.currentUser);
   const [openModalReason, setOpenModalReason] = useState(false)
 

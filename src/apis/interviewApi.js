@@ -37,7 +37,7 @@ export const createInterview = async (token, data) => {
         date: data.date,
         description: data.description,
         employeeId: data.employeeId,
-        jobApplyId: data.jobApplyId,
+        recruitmentRequestId: data.recruitmentRequestId,
         linkMeeting: data.linkMeeting,
         purpose: data.purpose,
         room: data.room,

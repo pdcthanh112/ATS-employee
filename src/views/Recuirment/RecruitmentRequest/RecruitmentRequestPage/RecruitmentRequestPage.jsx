@@ -144,7 +144,6 @@ const RecruitmentRequestPage = () => {
       typeOfWork: Yup.string().required('Please choose type of work'),
     }),
     onSubmit: async (values) => {
-      console.log('val', values);
       setIsSubmitting(true)
       await createRecruitmentRequest(values, currentUser.token).then(response => {     
         if (response.message.includes(' expiry date')) {

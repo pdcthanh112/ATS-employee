@@ -24,6 +24,7 @@ import {positionName} from '../../../../utils/constants'
 const PlanDetailPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
+  console.log(currentUser);
   const categoryData = useSelector((state) => state.categoryData.data);
 
   const [listPlanDetail, setListPlanDetail] = useState([])
@@ -48,7 +49,7 @@ const PlanDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllPlanDetail(currentUser.token, pagination.currentPage - 1, 2) : await getPlanDetailByDepartment(currentUser.token, pagination.currentPage - 1, 2)
+      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllPlanDetail(currentUser.token, pagination.currentPage - 1, 2) : await getPlanDetailByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 2)
       if (response) {
         setListPlanDetail(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })

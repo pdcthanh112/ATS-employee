@@ -152,13 +152,12 @@ const InterviewPage = () => {
       //type: Yup.string().required('Please choose type of interview'),
     }),
     onSubmit: async (values) => {
-      console.log(values);
+      console.log('values', values);
       setIsSubmitting(true)
       await createInterview(currentUser.token, values).then((response) => {
-        console.log('asfasf0', response);
-        setIsSubmitting(false)
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-      }).then(setIsLoading(false))
+      })
+      setIsSubmitting(false)
     }
   })
 
@@ -253,6 +252,7 @@ const InterviewPage = () => {
                     <button className='btn-create bg-[#20D489]' onClick={formik.handleSubmit}>
                       Submit
                     </button>
+                    {isSubmiting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
                   </div>}
                 </div>
               </form>
