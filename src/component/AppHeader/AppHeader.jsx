@@ -4,7 +4,7 @@ import './AppHeader.scss'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logoutUser } from '../../apis/authApi'
-import {Avatar} from '@mui/material'
+import { Avatar } from '@mui/material'
 import logo from '../../assets/image/big-logo.png'
 import defaultUser from '../../assets/image/defaultUser.png'
 
@@ -24,17 +24,16 @@ const AppHeader = () => {
       <div className='header-menu'>
         <div className="dropdown">
           <a className="" href="/" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <div className='inline-flex bg-slate-200 rounded-3xl px-2'>
-              <Avatar src={currentUser.employee.image || defaultUser} alt='' className="my-auto"/>
+            <div className='inline-flex rounded-3xl px-2' style={{ border: '1px solid #60d860' }}>
+              <Avatar src={currentUser.image || defaultUser} alt='' className='my-auto' />
               <div className='mx-2 py-2.5 font-medium text-lg' style={{ width: '13rem' }}>{currentUser.employee.name}</div>
               <i className="fa-solid fa-chevron-down m-1.5 py-2.5 text-xs"></i>
             </div>
           </a>
-          <ul className="dropdown-menu">
-            <a href='/#/view-profile' className='dropdown-item header-menu-item'><i className="fa-regular fa-address-card mr-2 text-[#60d860]"></i>View profile</a>
-            <a href='/#/change-password' className='dropdown-item header-menu-item'><i className="fa-sharp fa-solid fa-shield-halved mr-2 text-[#60d860]"></i>Change password</a>
-            <div className='linee'></div>
-            <Link to='/#/logout' onClick={handleLogout} className='dropdown-item header-menu-item'><i className="fa-solid fa-arrow-right-from-bracket mr-2 text-[#ff5858] "></i>Log out</Link>
+          <ul className="dropdown-menu dropdown-menu_header">
+            <a href='/#/manage-profile/view-profile'><div className='header-menu-item'><i className="fa-regular fa-address-card mr-2 text-[#60d860]"></i>Thông tin cá nhân</div></a>
+            <a href='/#/manage-profile/change-password'><div className='header-menu-item'><i className="fa-sharp fa-solid fa-shield-halved mr-2 text-[#60d860]"></i>Thay đổi mật khẩu</div></a>
+            <Link to='/#/logout' onClick={handleLogout}><div className='header-menu-item hover:text-[#000]' style={{ marginTop: 15, marginBottom: 10 }}><i className="fa-solid fa-arrow-right-from-bracket mr-2 text-[#ff5858] "></i>Đăng xuất</div></Link>
           </ul>
         </div>
       </div>

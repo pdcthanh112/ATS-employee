@@ -13,7 +13,7 @@ import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosiz
 import { createRecruitmentRequest, getAllRecruimentRequest } from '../../../../apis/recruimentRequestApi'
 import ListRecruitmentRequest from '../ListRecruitmentRequest/ListRecruitmentRequest'
 import { educationLevelData, experienceData, foreignLanguageData, typeOfWorkData } from '../../../../utils/dropdownData'
-import { responseStatus } from '../../../../utils/constants'
+import { positionName, responseStatus } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAllDepartment } from '../../../../apis/departmentApi'
@@ -163,10 +163,10 @@ const RecruitmentRequestPage = () => {
           <img src={RequestIcon} alt='' width={'30rem'} />
         </div>
 
-        <div className='create-request hover:cursor-pointer' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
+        {currentUser.employee.position.name === positionName.POSITION_HR && <div className='create-request hover:cursor-pointer' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
           <span className='mr-1'>Create recruitment request</span>
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' /></span>
-        </div>
+        </div>}
 
         <div className='filter-container'>
           <div className='inputName'>

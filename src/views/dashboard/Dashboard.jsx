@@ -3,7 +3,6 @@ import './Dashboard.scss'
 
 import { getCategory } from '../../apis/recruimentRequestApi';
 import { useDispatch, useSelector } from 'react-redux';
-import ChartComponent from './ChartComponent/ChartComponent';
 
 
 const Dashboard = () => {
@@ -17,8 +16,8 @@ const Dashboard = () => {
 
   return (
     <React.Fragment>
-      <ChartComponent />
-
+      
+asdfasdf
     </React.Fragment>
   )
 }

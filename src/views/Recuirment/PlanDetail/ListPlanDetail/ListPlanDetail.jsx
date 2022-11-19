@@ -18,6 +18,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getPlanApprovedByDepartment } from '../../../../apis/recruitmentPlanApi';
 import { confirm } from "mui-confirm-modal";
+import { approvePlanDetail, editPlanDetail } from '../../../../apis/planDetailApi';
 
 
 const ListPlanDetail = ({ listPlanDetail }) => {
@@ -54,7 +55,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
   const formik = useFormik({
     initialValues: {
       amount: 0,
-      creatorId: currentUser?.employee.id,
+      planDetailId: '',
       description: '',
       name: '',
       note: '',
@@ -67,24 +68,37 @@ const ListPlanDetail = ({ listPlanDetail }) => {
     },
     validationSchema: Yup.object({
       amount: Yup.number().positive('Invalid value').integer(),
-      name: Yup.string().required('Please input name'),
-      periodFrom: Yup.string().required('Please input begin date'),
-      periodTo: Yup.string().required('Please input end date'),
+      description: Yup.string().required('Please input description'),
+      name: Yup.string().required('Please input name of plan detail'),
+      note: Yup.string().required('Please input note'),
+      periodFrom: Yup.string().required('Please input period'),
+      periodTo: Yup.string().required('Please input period'),
       positionName: Yup.string().required('Please choose position'),
-      recruitmentPlanId: Yup.string().required('Please choose recruitment plan'),
-      salary: Yup.string().required('Please input salary'),
+      reason: Yup.string().required('Please input reason'),
+      requirement: Yup.string().required('Please choose recruitment plan'),
+      salary: Yup.string().required('Please input salary').min(1, 'Invalid value')
     }),
     onSubmit: async (values) => {
       console.log('value', values);
-      // await createPlanDetail(values, currentUser.token).then(response => {       
-      //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
-      // })
+      await editPlanDetail(formik.values.planDetailId, currentUser.token).then(response => {       
+        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
+      })
     }
   })
 
+  const handleApprovePlanDetail = async (planId) => {
+    await confirm({ message: "Are you sure to approve this plan?" }).then((response) => {
+      if (response) {
+        approvePlanDetail(currentUser.token, currentUser?.employee.id, planId).then((response) => {
+          response.status === responseStatus.SUCCESS ? toast.success('Approve successfully') : toast.error('Something error')
+        })
+      }
+    })
+  }
+
   const handleEditPlan = (data) => {
-    setOpenModalEdit(true)
-    //console.log('data', data);
+    setOpenModalEdit(true)   
+    formik.values.planDetailId = data.id
     formik.values.amount = data.amount
     formik.values.name = data.name
     formik.values.note = data.note
@@ -116,7 +130,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
               {currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) || currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) ? <React.Fragment>
                 <div className='flex w-full justify-between'>
                   <div className='flex'>
-                    <span className='hover:cursor-pointer'><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
+                    <span className='hover:cursor-pointer' onClick={() => { handleApprovePlanDetail(item.id)}}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
                     <span className='hover:cursor-pointer'><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
                   </div>
                   <div className='flex'>
@@ -185,10 +199,11 @@ const ListPlanDetail = ({ listPlanDetail }) => {
           </div>
         ))}
       </div>
+
       <Modal open={openModalEdit} onClose={() => setOpenModalEdit(false)}>
         <Box sx={style}>
           <div className='modal-container'>
-            <span className='font-medium text-3xl mr-3'>Create plan detail</span>
+            <span className='font-medium text-3xl mr-3'>Edit plan detail</span>
             <form onSubmit={formik.handleSubmit}>
               <div>
                 <div>
@@ -214,6 +229,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
                     </div>
                   </div>
                   <Autocomplete
+                    disabled
                     options={listApprovedRecruitmentPlan}
                     size={'small'}
                     sx={{ width: '100%', marginTop: '1rem' }}
@@ -286,8 +302,8 @@ const ListPlanDetail = ({ listPlanDetail }) => {
                   />
                 </div>
                 <div className='mt-3 flex justify-around'>
-                  <button onClick={() => { setOpenModalEdit(false) }} className='btn-create'>Cancel</button>
-                  <button type='submit' className='btn-create'>Save</button>
+                  <button onClick={() => { setOpenModalEdit(false) }} className='btn-create bg-[#F64E60]'>Cancel</button>
+                  <button type='submit' onClick={formik.handleSubmit} className='btn-create bg-[#20D489]'>Save</button>
                 </div>
 
               </div>

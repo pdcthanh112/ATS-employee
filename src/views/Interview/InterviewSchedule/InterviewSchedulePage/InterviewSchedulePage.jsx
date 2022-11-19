@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react'
-import './InterviewPage.scss'
+import './InterviewSchedulePage.scss'
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
 import { useSelector } from 'react-redux';
-import ReactLoading from 'react-loading'
+import ReactLoading from 'react-loading';
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize, Switch, FormControlLabel } from '@mui/material';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { createInterview, getAllInterview } from '../../../apis/interviewApi';
-import InterviewIcon from '../../../assets/icon/calendar.png'
-import SearchIcon from '../../../assets/icon/filter.png'
-import AddIcon from '../../../assets/icon/plus.png'
-import ListInterviewSchedule from '../ListInterview/ListInterview';
-import { interviewType, positionName, responseStatus } from '../../../utils/constants';
-import { getAllDepartment } from '../../../apis/departmentApi';
-import { getListRecruimentRequestByDepartment, getRecruimentRequestById } from '../../../apis/recruimentRequestApi';
-import { getCandidateAppliedByRecruitmentRequest } from '../../../apis/candidateApi';
-import { getEmployeeByRecruitmentRequest } from '../../../apis/employeeApi';
-import { interviewRound } from '../../../utils/dropdownData';
+import { createInterview, getAllInterview } from '../../../../apis/interviewScheduleApi';
+import InterviewIcon from '../../../../assets/icon/calendar.png'
+import SearchIcon from '../../../../assets/icon/filter.png'
+import AddIcon from '../../../../assets/icon/plus.png'
+import ListInterviewSchedule from '../ListInterviewSchedule/ListInterviewSchedule';
+import { interviewType, positionName, responseStatus } from '../../../../utils/constants';
+import { getAllDepartment } from '../../../../apis/departmentApi';
+import { getListRecruimentRequestByDepartment, getRecruimentRequestById } from '../../../../apis/recruimentRequestApi';
+import { getCandidateAppliedByRecruitmentRequest } from '../../../../apis/candidateApi';
+import { getEmployeeByRecruitmentRequest } from '../../../../apis/employeeApi';
+import { interviewRound } from '../../../../utils/dropdownData';
 
 const InterviewPage = () => {
 
@@ -61,18 +61,18 @@ const InterviewPage = () => {
     fetchData();
   }, [pagination.currentPage])
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      const response = await getAllInterview(currentUser.token, pagination.currentPage - 1, 4);
-      if (response) {
-        setListInterviewSchedule(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })
-        setIsLoading(false)
-      }
-    }
-    fetchData();
-  }, [])
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setIsLoading(true)
+  //     const response = await getAllInterview(currentUser.token, pagination.currentPage - 1, 4);
+  //     if (response) {
+  //       setListInterviewSchedule(response.data.responseList)
+  //       setPagination({ ...pagination, totalPage: response.data.totalPage })
+  //       setIsLoading(false)
+  //     }
+  //   }
+  //   fetchData();
+  // }, [])
 
   const PageDisplay = () => {
     if (tabPage === 0) {
@@ -211,7 +211,7 @@ const InterviewPage = () => {
         <Box sx={style}>
           <div className='modal-container'>
             <div className='flex'>
-              <span className='font-medium text-3xl mr-3'>Create intervieww</span>
+              <span className='font-medium text-3xl mr-3'>Create interview</span>
               <img src={InterviewIcon} alt='' width={'30rem'} />
             </div>
             <div className='modalCreateInterview-content'>
@@ -518,7 +518,6 @@ const FillInformationTab = ({ formik }) => {
         <div className='text-[#ec5555]'>{formik.errors.description}</div>
       )}
     </div>
-
   );
 }
 

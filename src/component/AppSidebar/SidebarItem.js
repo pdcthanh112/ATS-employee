@@ -71,9 +71,31 @@ export const SidebarItem = [
     // ],
   },
   {
-    title: "Interview",
-    path: "/interviews",
+    title: "Job apply",
+    path: "/job-apply",
     icon: <img src={Interview} alt="" width={"30rem"} />,
+  },
+  {
+    title: "Interview",
+    path: "/interview-schedule",
+    icon: <img src={Interview} alt="" width={"30rem"} />,
+    iconClosed: <img src={IconDown} alt="" width={"15rem"} />,
+    iconOpened: <img src={IconUp} alt="" width={"15rem"} />,
+    
+    subNav: [
+      {
+        title: "Interview schedule",
+        path: "/interview-schedule",
+        icon: <img src={Home} alt="" width={"10rem"} />,
+        cName: "sub-nav",
+      },
+      {
+        title: "Interview detai",
+        path: "/interview-detail",
+        icon: <img src={Home} alt="" width={"10rem"} />,
+        cName: "sub-nav",
+      },
+    ],
   },
   {
     title: "Curiculum vitae",

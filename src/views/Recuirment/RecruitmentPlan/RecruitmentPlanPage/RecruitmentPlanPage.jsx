@@ -25,7 +25,6 @@ import { positionName, responseStatus } from '../../../../utils/constants'
 const RecruitmentPlanPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
-  console.log(currentUser);
 
   const [listRecruitmentPlan, setListRecruitmentPlan] = useState([])
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
@@ -46,8 +45,7 @@ const RecruitmentPlanPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllRecruimentPlan(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4) : await getRecruimentPlanByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
-      console.log('adfas', response)
+      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllRecruimentPlan(currentUser.token, pagination.currentPage - 1, 4) : await getRecruimentPlanByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
       if (response) {
         setListRecruitmentPlan(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
@@ -89,10 +87,10 @@ const RecruitmentPlanPage = () => {
           <img src={PlanIcon} alt='' width={'30rem'} />
         </div>
 
-        {currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) && <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
+        {currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) || currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) ? <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
           <span className='mr-1'>Create recruitment plan</span>
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={CreateIcon} alt='' /></span>
-        </div>}
+        </div> : <React.Fragment></React.Fragment>}
 
         <div className='min-h-screen'>{isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListRecruitmentPlan listRecruitmentPlan={listRecruitmentPlan} />}</div>
 

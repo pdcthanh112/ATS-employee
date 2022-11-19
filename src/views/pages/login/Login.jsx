@@ -25,7 +25,7 @@ const Login = () => {
     initialValues: {
       email: "",
       password: "",
-      notificationToken: "",
+      notificationToken: "dIoUZejX7KT9oeRAkQwgB7:APA91bEHDg7r7mz41Q6NUTv1dOgTcVY77W9s7sT7ng_WRE_S1uMzm32KKmw7Gz8H0QoLcZHyJRpC31bV35cw12BlE8r9DsXZCJAA_HoeeMKdRCICQQiBR63-hZxPpMQ2WyFVQo-JC6OE",
     },
     validationSchema: Yup.object({
       email: Yup.string().required('Vui lòng nhập email'),

@@ -18,11 +18,19 @@ export const getPlanDetailById = async (token, id) => {
     .catch((error) => error);
 };
 
-export const getPlanDetailByDepartment = async (token, depId, pageNo, pageSize) => {
+export const getPlanDetailByDepartment = async (
+  token,
+  depId,
+  pageNo,
+  pageSize
+) => {
   return await axiosConfig
-    .get(`planDetail/getByDepartment?id=${depId}&pageNo=${pageNo}&pageSize=${pageSize}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(
+      `planDetail/getByDepartment?id=${depId}&pageNo=${pageNo}&pageSize=${pageSize}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
     .then((response) => response.data)
     .catch((error) => error);
 };
@@ -37,7 +45,7 @@ export const getPlanDetailApprovedByDepartment = async (token, depId) => {
 };
 
 export const createPlanDetail = async (planData, token) => {
-  console.log('api', planData);
+  console.log("api", planData);
   return await axiosConfig
     .post(
       "planDetail/create",
@@ -52,6 +60,47 @@ export const createPlanDetail = async (planData, token) => {
         positionName: planData.positionName,
         reason: planData.reason,
         recruitmentPlanId: planData.recruitmentPlanId,
+        requirement: planData.requirement,
+        salary: planData.salary,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
+export const approvePlanDetail = async (token, empId, planId) => {
+  return await axiosConfig
+    .put(
+      "planDetail/approved",
+      {
+        employeeId: empId,
+        id: planId,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
+
+export const editPlanDetail = async (id, planData, token) => {
+  return await axiosConfig
+    .put(
+      `planDetail/update?id=${id}`,
+      {
+        amount: planData.amount,
+        description: planData.description,
+        name: planData.name,
+        note: planData.note,
+        periodFrom: planData.periodFrom,
+        periodTo: planData.periodTo,
+        positionName: planData.positionName,
+        reason: planData.reason,
         requirement: planData.requirement,
         salary: planData.salary,
       },

@@ -24,7 +24,6 @@ import {positionName} from '../../../../utils/constants'
 const PlanDetailPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
-  console.log(currentUser);
   const categoryData = useSelector((state) => state.categoryData.data);
 
   const [listPlanDetail, setListPlanDetail] = useState([])
@@ -94,7 +93,8 @@ const PlanDetailPage = () => {
       salary: Yup.string().required('Please input salary'),
     }),
     onSubmit: async (values) => {
-      await createPlanDetail(values, currentUser.token).then(response => {       
+      await createPlanDetail(values, currentUser.token).then(response => {   
+        console.log(response);    
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
       })
     }
@@ -108,10 +108,10 @@ const PlanDetailPage = () => {
           <img src={PlanDetailIcon} alt='' width={'30rem'} />
         </div>
 
-        <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
+        {currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) || currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) ? <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
           <span className='mr-1'>Create recruitment plan detail</span>
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={CreateIcon} alt='' /></span>
-        </div>
+        </div> : <React.Fragment></React.Fragment>}
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListPlanDetail listPlanDetail={listPlanDetail} />}
 

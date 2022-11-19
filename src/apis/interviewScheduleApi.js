@@ -65,3 +65,34 @@ export const confirmInterview = async (token, employeeId, interviewId) => {
     .then((response) => response.data)
     .catch((error) => error.response.data);
 };
+
+export const cancelInterview = async (token, data) => {
+  console.log(data);
+  return await axiosConfig
+    .patch(
+      `interview/cancelInterview`,
+      {
+        interviewId: data.interviewId,
+        reason: data.reason,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    .then((response) => response.data)
+    .catch((error) => error.response.data);
+};
+
+export const closeInterview = async (token, id) => {
+  console.log('adadsfasfds', token, id);
+  
+  return await axiosConfig
+    .patch(
+      `interview/closeInterview?id=${id}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    .then((response) => response.data)
+    .catch((error) => error.response.data);
+};

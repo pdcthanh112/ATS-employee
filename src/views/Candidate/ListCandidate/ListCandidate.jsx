@@ -3,7 +3,7 @@ import './ListCandidate.scss'
 
 import { useSelector } from 'react-redux';
 import { Box, Modal, Pagination, Stack, Avatar } from '@mui/material';
-import { getInterviewByCandidateId } from '../../../apis/interviewApi';
+import { getInterviewByCandidateId } from '../../../apis/interviewScheduleApi';
 import { getCVByCandidate } from '../../../apis/candidateApi';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -54,19 +54,19 @@ const ListCandidate = ({ listCandidate }) => {
   }
 
   const getCandidateInterview = async (candidateId) => {
-    // setIsLoading(true)
-    // const response = await getInterviewByCandidateId(candidateId, currentUser.token);
-    // if (response.status === responseStatus.SUCCESS) {
-    //   if (response.data === null || response.data.length < 1) {
-    //     setInterviewSchedule(null)
-    //   } else {
-    //     setInterviewSchedule(response.data);
-    //   }
-    //   setIsLoading(false)
-    //   setOpenScheduleModal(true)
-    // } else {
-    //   toast.error('Somethings error')
-    // }
+    setIsLoading(true)
+    const response = await getInterviewByCandidateId(candidateId, currentUser.token);
+    if (response.status === responseStatus.SUCCESS) {
+      if (response.data === null || response.data.length < 1) {
+        setInterviewSchedule(null)
+      } else {
+        setInterviewSchedule(response.data);
+      }
+      setIsLoading(false)
+      setOpenScheduleModal(true)
+    } else {
+      toast.error('Somethings error')
+    }
   }
 
   // const getCandidateInterview = async (candidateId) => {
