@@ -4,6 +4,7 @@ import './ListRecruitmentRequest.scss'
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
 
 const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
+  console.log('list', listRecruitmentRequest);
 
   return (
     <React.Fragment>
@@ -17,15 +18,17 @@ const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
             <div className='ml-20 mt-3 mr-5 font-medium text-lg'>{item.name}</div>
           </div>
 
-          <div className='request-infor grid grid-cols-4 gap-4 text-[0.8rem] mt-3'>
+          <div className='request-infor flex justify-evenly text-[0.8rem] mt-3'>
             <span><strong className='font-semibold ml-1'>Job level:</strong> {item.jobLevel}</span>
             <span><strong className='font-semibold ml-1'>Experience:</strong> {item.experience}</span>
             <span><strong className='font-semibold ml-1'>Industry:</strong> {item.industry}</span>
             <span><strong className='font-semibold ml-1'>Type of work:</strong> {item.typeOfWork}</span>
+          </div>
+          <div className='request-infor flex justify-evenly text-[0.8rem] mt-3'>
             <span><strong className='font-semibold ml-1'>Create date:</strong> {item.date}</span>
             <span><strong className='font-semibold ml-1'>Expired date:</strong> {item.expiryDate}</span>
-            <span><strong className='font-semibold ml-1'>Salary:</strong> {item.salary}</span>
-            <span><strong className='font-semibold ml-1'>Status:</strong> {item.status}</span>
+            <span><strong className='font-semibold ml-1'>Salary:</strong> {item.salaryDetail}</span>
+            {/* <span><strong className='font-semibold ml-1'>Status:</strong> {item.status}</span> */}
           </div>
           <div><ShowMoreComponent title='Description' content={item.description} /></div>
           <div><ShowMoreComponent title='Requirement' content={item.requirement} /></div>

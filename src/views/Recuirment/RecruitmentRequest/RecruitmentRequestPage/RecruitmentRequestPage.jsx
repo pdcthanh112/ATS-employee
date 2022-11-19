@@ -557,6 +557,7 @@ const ShowPlanDetailData = ({ planDetailId }) => {
       setIsLoading(true)
       const response = await getPlanDetailById(currentUser.token, planDetailId);
       if (response.data) {
+        console.log(response.data);
         setPlanDetailData(response.data)
         setIsLoading(false)
       }

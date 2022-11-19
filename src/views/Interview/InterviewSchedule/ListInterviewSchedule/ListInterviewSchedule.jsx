@@ -7,23 +7,28 @@ import ApproveIcon from '../../../../assets/icon/check.png'
 import RejectIcon from '../../../../assets/icon/close.png'
 import EditIcon from '../../../../assets/icon/edit.png'
 import DeleteIcon from '.././../../../assets/icon/trash.png'
+import CheckDoneIcon from '.././../../../assets/icon/check-done.png'
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import ReactLoading from 'react-loading'
 import { interviewStatus, interviewType, positionName, responseStatus } from '../../../../utils/constants'
 import { cancelInterview, closeInterview, confirmInterview } from '../../../../apis/interviewScheduleApi'
-import { Box, Modal, TextareaAutosize } from '@mui/material';
+import { Autocomplete, Box, Modal, TextareaAutosize, TextField } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { confirm } from "mui-confirm-modal";
+import { interviewResultData } from '../../../../utils/dropdownData'
+import { createInterviewDetail } from '../../../../apis/interviewDetailApi'
 
 const ListInterviewSchedule = ({ listInterviewSchedule }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser);
 
   const [openModalReason, setOpenModalReason] = useState(false)
+  const [openModalInterviewDetail, setOpenModalInterviewDetail] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isCreating, setIsCreating] = useState(false)
 
   const style = {
     position: 'absolute',
@@ -49,12 +54,32 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
     }),
     onSubmit: async (values) => {
       setIsDeleting(true)
-      cancelInterview(currentUser.token, values).then((response) => {
+      await cancelInterview(currentUser.token, values).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Cancel successfully') : toast.error('Cancel fail')
         setIsDeleting(false)
       })
     }
+  })
 
+  const formikCreateDetail = useFormik({
+    initialValues: {
+      description: '',
+      end: new Date().toJSON().slice(0, 10),
+      interviewID: '',
+      recordMeeting: '',
+      result: ''
+    },
+    validationSchema: Yup.object({
+      result: Yup.string().required('Please choose result'),
+    }),
+    onSubmit: async (values) => {
+      console.log('create', values);
+      setIsCreating(true)
+      await createInterviewDetail(currentUser.token, values).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Save successfully') : toast.error('Something error')
+        setIsCreating(false)
+      })
+    }
   })
 
   const confirmInterviewByEmp = async (interviewId) => {
@@ -82,6 +107,11 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
     })
   }
 
+  const handleCreateInterviewDetail = (id) => {
+    setOpenModalInterviewDetail(true)
+    formikCreateDetail.values.interviewID = id;
+  }
+
   return (
     <React.Fragment >
       <div className='listInterview-container'>
@@ -107,10 +137,13 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
                       <span onClick={() => { }}><img src={RejectIcon} alt="" width={'20rem'} className='mt-2 hover:cursor-pointer' title='Reject this interview' /></span> </React.Fragment>}
                   </div>
                 </div>}
-              {item.status === interviewStatus.DONE && <div className='bg-[#E9FCE9] text-[#00FF00] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>DONE</div>}
+              {item.status === interviewStatus.DONE && <div className='flex justify-between'>
+                <div className='bg-[#E9FCE9] text-[#00FF00] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>DONE</div>
+                <div className='mt-2 ml-10 hover:cursor-pointer hover:underline hover:text-[#116835]' onClick={() => handleCreateInterviewDetail(item.id)}>Add result of interview</div>
+              </div>}
               {item.status === interviewStatus.APPROVED && <div className='flex justify-between '>
                 <div className='bg-[#C9F7F5] text-[#1BC5BD] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>APPROVED</div>
-                <div onClick={() => handleCloseInterview(item.id)}>done</div>
+                <div onClick={() => handleCloseInterview(item.id)}><img src={CheckDoneIcon} alt="" width={'30rem'} className='hover:cursor-pointer ml-2' title='Close this interview' /></div>
               </div>}
               {item.status === interviewStatus.CANCELED && <div className='bg-[#FFE2E5] text-[#F64E60] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>CANCELED</div>}
             </div>
@@ -165,6 +198,51 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
                 <button type='button' onClick={() => setOpenModalReason(false)} className='btn-create bg-[#C1C1C1]'>Cancel</button>
                 <button className='btn-create bg-[#F64E60]' onClick={formikCancel.handleSubmit}>Delete</button>
                 {isDeleting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
+              </div>
+            </form>
+          </div>
+        </Box>
+      </Modal>
+
+      <Modal open={openModalInterviewDetail} onClose={() => setOpenModalInterviewDetail(false)}>
+        <Box sx={style}>
+          <div className='px-5 py-5'>
+            <form onSubmit={formikCreateDetail.handleSubmit}>
+
+              <Autocomplete
+                options={interviewResultData()}
+                size={'small'}
+                sx={{ width: '100%', marginRight: '2rem' }}
+                renderInput={(params) => <TextField {...params} label="Result" />}
+                onChange={(event, value) => { formikCreateDetail.setFieldValue('result', value) }} />
+              {formikCreateDetail.errors.result && formikCreateDetail.touched.result && (
+                <div className='text-[#ec5555]'>{formikCreateDetail.errors.result}</div>
+              )}
+
+              <div className='mt-4'>
+                <TextField label='Record meeting' variant="outlined" size='small' style={{ width: '100%' }} name='recordMeeting' value={formikCreateDetail.values.recordMeeting} onChange={formikCreateDetail.handleChange} />
+                {formikCreateDetail.errors.recordMeeting && formikCreateDetail.touched.recordMeeting && (
+                  <div className='text-[#ec5555]'>{formikCreateDetail.errors.recordMeeting}</div>
+                )}
+              </div>
+
+              <div className='mt-4'>Description</div>
+              <TextareaAutosize
+                name='description'
+                value={formikCancel.values.description}
+                minRows={3}
+                maxRows={5}
+                style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                onChange={formikCreateDetail.handleChange}
+              />
+              {formikCreateDetail.errors.description && formikCreateDetail.touched.description && (
+                <div className='text-[#ec5555]'>{formikCreateDetail.errors.description}</div>
+              )}
+
+              <div className='flex justify-evenly mt-5'>
+                <button type='button' onClick={() => setOpenModalInterviewDetail(false)} className='btn-create bg-[#F64E60]'>Cancel</button>
+                <button className='btn-create bg-[#20D489]' onClick={formikCreateDetail.handleSubmit}>Save</button>
+                {isCreating && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
               </div>
             </form>
           </div>

@@ -1,31 +1,42 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './ListInterviewDetail.scss'
 
 import { useSelector } from 'react-redux';
 
+import ShowMoreIcon from '../../../../assets/icon/showMore.png'
+import ShowLessIcon from '../../../../assets/icon/showLess.png'
 
-import { Box, Modal } from '@mui/material';
+import { Box, Collapse, IconButton, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const ListInterviewDetail = ({listInterviewDetail}) => {
+const ListInterviewDetail = ({ listInterviewDetail }) => {
 
-  const currentUser = useSelector((state) => state.auth.login.currentUser)
   return (
     <React.Fragment>
-      <div className='listInterview-container'>
-        {listInterviewDetail.map((item) => (
-          <div key={item.id} className='listInterview-item'>
-     
-          </div>
-        ))}
+      <div className='listInterviewDetail-container'>
+        <TableContainer component={Paper}>
+          <Table aria-label="collapsible table">
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ width: '5%' }} />
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '500', width: '5%' }}>#</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '20%' }}>Candidate</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '25%' }} align='center'>Email</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '8%' }} align='center'>Round</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Result</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '8%' }} align='center'>Date</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {listInterviewDetail.map((item, id) => (
+                <Row key={id} ordinalNumbers={id} item={item} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </div>
 
-      {/* <Modal open={openModalReason} onClose={() => setOpenModalReason(false)}>
-        <Box sx={style}>
-
-        </Box>
-      </Modal> */}
 
       <ToastContainer
         position="top-right"
@@ -39,8 +50,81 @@ const ListInterviewDetail = ({listInterviewDetail}) => {
         pauseOnHover
         theme="light"
       />
+
+
     </React.Fragment>
   )
 }
 
 export default ListInterviewDetail
+
+
+const Row = (props) => {
+
+  const { ordinalNumbers, item } = props;
+  console.log(item);
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <React.Fragment>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableCell>
+          <IconButton size="small" onClick={() => setOpen(!open)}>{open ? <img src={ShowLessIcon} alt="" width={'15rem'} /> : <img src={ShowMoreIcon} alt="" width={'15rem'} />}</IconButton>
+        </TableCell>
+        <TableCell>{ordinalNumbers + 1}</TableCell>
+        <TableCell>{item.interview.candidate.name}</TableCell>
+        <TableCell>{item.interview.candidate.email}</TableCell>
+        <TableCell align="center">{item.interview.round}</TableCell>
+        <TableCell align='center'>{item.result}</TableCell>
+        <TableCell align='center'>{item.end}</TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h6" gutterBottom component="div">Detail</Typography>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '15%' }} align='center'>Phone</TableCell>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Purpose</TableCell>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '15%' }} align='center'>Industry</TableCell>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '15%' }} align='center'>Position</TableCell>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600' }} align='center'>Interview description</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow key={item.date}>
+                    <TableCell sx={{ width: '15%' }} align='center'>{item.interview.candidate.phone}</TableCell>
+                    <TableCell>{item.interview.purpose}</TableCell>
+                    <TableCell align='center'>{item.interview.jobApply.recruitmentRequest.industry}</TableCell>
+                    <TableCell align='center'>{item.interview.jobApply.recruitmentRequest.position.name}</TableCell>
+                    <TableCell align='right'>{item.interview.description}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '10%' }} align='center'>Type</TableCell>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '40%' }} align='center'>Address</TableCell>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '30%' }} align='center'>Record meeting</TableCell>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600' }} align='center'>Detail description</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell align='center'>{item.interview.type}</TableCell>
+                    <TableCell>{item.interview.type === 'ONLINE' ? item.interview.linkMeeting : item.interview.address}</TableCell>
+                    <TableCell align='center'>{item.recordMeeting}</TableCell>
+                    <TableCell align='right'>{item.interview.interviewDetail.description}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </React.Fragment>
+  );
+}

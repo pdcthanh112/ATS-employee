@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import './InterviewDetailPage.scss'
+
+import ListInterviewDetail from '../ListInterviewDetail/ListInterviewDetail'
 import { useSelector } from 'react-redux';
 import { getAllInterviewDetail } from '../../../../apis/interviewDetailApi';
+
+import ReactLoading from 'react-loading';
+import { Box, Modal, Pagination, Stack, TextField, Autocomplete } from '@mui/material';
+import SearchIcon from '../../../../assets/icon/filter.png'
+import AddIcon from '../../../../assets/icon/plus.png'
+import InterviewDetailIcon from '../../../../assets/icon/interview-detailImage.png'
+import { positionName } from '../../../../utils/constants';
+import { interviewTypeData } from '../../../../utils/dropdownData';
 
 const InterviewDetailPage = () => {
 
@@ -10,6 +20,7 @@ const InterviewDetailPage = () => {
   const [listInterviewDetail, setListInterviewDetail] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
+  const [openModalCreate, setOpenModalCreate] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,10 +33,57 @@ const InterviewDetailPage = () => {
       }
     }
     fetchData();
-  },[pagination.currentPage] )
-  
+  }, [pagination.currentPage])
+
   return (
-    <div>InterviewDetailPage</div>
+    <React.Fragment>
+      <div className='interview-container'>
+        <div className='flex px-8 pt-8'>
+          <span className='font-medium text-3xl mr-3'>Interview detail</span>
+          <img src={InterviewDetailIcon} alt='' width={'40rem'} />
+        </div>
+
+        {/* {currentUser.employee.position.name === positionName.POSITION_HR && <div className='create-schedule' onClick={() => setOpenModalCreate(true)} title='Create a new interview'>
+          <span className='mr-1'>Create an interview</span>
+          <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' width={'30rem'} /></span>
+        </div>} */}
+
+        <div className='filter-container'>
+
+          {/* <div className='inputName'>
+            <input type={'text'} className='form-control' placeholder='Input name of candidate...' onChange={formikSearch.handleChange} />
+          </div> */}
+
+          <Autocomplete
+            blurOnSelect={true}
+            options={interviewTypeData()}
+            size={'small'}
+            sx={{ width: 170, marginRight: 2 }}
+            renderInput={(params) => <TextField {...params} label="Status" />}
+          //onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }}
+          />
+
+          {/* <div className='mr-5'>
+            <input type={'date'} className='form-control' onChange={() => { formikSearch.handleChange()}} 
+            />
+          </div>
+
+          <div className='mr-5'> 
+            <input type={'date'} className='form-control' onChange={formikSearch.handleChange} />
+          </div>
+
+          <img src={SearchIcon} alt="" width={'50rem'} title='Search' onClick={formikSearch.handleSubmit} /> */}
+        </div>
+
+        {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListInterviewDetail listInterviewDetail={listInterviewDetail} />}
+
+        <div className='pagination-container'>
+          <Stack spacing={2}>
+            <Pagination count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} />
+          </Stack>
+        </div>
+      </div>
+    </React.Fragment>
   )
 }
 

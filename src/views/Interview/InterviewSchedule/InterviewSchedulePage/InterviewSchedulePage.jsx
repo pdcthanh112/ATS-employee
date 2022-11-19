@@ -20,7 +20,7 @@ import { getAllDepartment } from '../../../../apis/departmentApi';
 import { getListRecruimentRequestByDepartment, getRecruimentRequestById } from '../../../../apis/recruimentRequestApi';
 import { getCandidateAppliedByRecruitmentRequest } from '../../../../apis/candidateApi';
 import { getEmployeeByRecruitmentRequest } from '../../../../apis/employeeApi';
-import { interviewRound } from '../../../../utils/dropdownData';
+import { interviewRoundData, interviewTypeData } from '../../../../utils/dropdownData';
 
 const InterviewPage = () => {
 
@@ -61,66 +61,19 @@ const InterviewPage = () => {
     fetchData();
   }, [pagination.currentPage])
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setIsLoading(true)
-  //     const response = await getAllInterview(currentUser.token, pagination.currentPage - 1, 4);
-  //     if (response) {
-  //       setListInterviewSchedule(response.data.responseList)
-  //       setPagination({ ...pagination, totalPage: response.data.totalPage })
-  //       setIsLoading(false)
-  //     }
-  //   }
-  //   fetchData();
-  // }, [])
 
   const PageDisplay = () => {
     if (tabPage === 0) {
-      return <ChooseRecruitmentRequestTab formik={formik} />;
+      return <ChooseRecruitmentRequestTab formikCreate={formikCreate} />;
     } else if (tabPage === 1) {
-      return <ChoosePaticipantsTab formik={formik} />;
+      return <ChoosePaticipantsTab formikCreate={formikCreate} />;
     } else if (tabPage === 2) {
-      return <FillInformationTab formik={formik} />;
+      return <FillInformationTab formikCreate={formikCreate} />;
     }
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setIsLoading(true)
-  //     const response = await getAllInterview(currentUser.token, pagination.currentPage - 1, 4);
-  //     if (response) {
-  //       console.log(response.data);
-  //       setListInterviewSchedule(response.data.responseList)
-  //       setPagination({ ...pagination, totalPage: response.data.totalPage })
-  //       setIsLoading(false)
-  //     }
-  //   }
-  //   fetchData();
-  // }, [pagination.currentPage])
 
-  const handleChangeSearchObject = (id, value) => {
-    // setSearchObject(() => ({
-    //   ...searchObject,
-    //   [id]: value
-    // }))
-  }
-
-  const onHandleSearch = () => {
-    console.log('search');
-    // searchRecruimentRequest(searchObject).then((response) => {
-    //   console.log(response.data);
-    //   if (response.data.length > 0) {
-    //     setListRecruitment(response.data)
-    //     setSearchError(false)
-    //   } else {
-    //     setSearchError(true)
-    //     setPagination({ ...pagination, currentPage: 1 })
-    //   }
-    // })
-  };
-
-
-  const formik = useFormik({
+  const formikCreate = useFormik({
     initialValues: {
       address: '',
       candidateId: '',
@@ -161,11 +114,42 @@ const InterviewPage = () => {
     }
   })
 
+  const formikSearch = useFormik({
+    initialValues: {
+      round: '',
+      time: '',
+      type: ''
+    },
+    validationSchema: Yup.object({
+      //address: Yup.string().required('Please input address'),
+      candidateId: Yup.string().required('Please choose candidate'),
+      date: Yup.string().required('Please input date'),
+      description: Yup.string().required('Please input description'),
+      employeeId: Yup.array().min(1, 'Please choose at least 1 employee interview'),
+      //linkMeeting: Yup.string().required('Please input link meeting'),
+      purpose: Yup.string().required('Please input purpose'),
+      recruitmentRequestId: Yup.string().required('Please input address'),
+      //room: Yup.string().required('Please input room'),
+      round: Yup.string().required('Please choose round'),
+      subject: Yup.string().required('Please input subject'),
+      time: Yup.string().required('Please input time'),
+      //type: Yup.string().required('Please choose type of interview'),
+    }),
+    onSubmit: async (values) => {
+      console.log('values', values);
+      setIsSubmitting(true)
+      await createInterview(currentUser.token, values).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
+      })
+      setIsSubmitting(false)
+    }
+  })
+
   return (
     <React.Fragment>
       <div className='interview-container'>
         <div className='flex px-8 pt-8'>
-          <span className='font-medium text-3xl mr-3'>Interview</span>
+          <span className='font-medium text-3xl mr-3'>Interview schedule</span>
           <img src={InterviewIcon} alt='' width={'30rem'} />
         </div>
 
@@ -176,26 +160,28 @@ const InterviewPage = () => {
 
         <div className='filter-container'>
           <div className='inputName'>
-            <input type={'text'} className='form-control' placeholder='Nhập tên ứng viên...' onChange={(event) => { handleChangeSearchObject('name', event.target.value) }} />
+            <input type={'text'} className='form-control' placeholder='Input name of candidate...' onChange={formikSearch.handleChange} />
           </div>
 
           <Autocomplete
             blurOnSelect={true}
-            //options={typeOfWorkData()}
+            options={interviewTypeData()}
             size={'small'}
             sx={{ width: 170, marginRight: 2 }}
-            renderInput={(params) => <TextField {...params} label="Loại công việc" />}
-            onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
+            renderInput={(params) => <TextField {...params} label="Status" />}
+            //onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }}
+             />
 
           <div className='mr-5'>
-            <input type={'date'} className='form-control' onChange={(event) => { handleChangeSearchObject('fromDate', event.target.value) }} />
+            <input type={'date'} className='form-control' onChange={() => { formikSearch.handleChange()}} 
+            />
           </div>
 
-          <div className='mr-5'>
-            <input type={'date'} className='form-control' onChange={(event) => { handleChangeSearchObject('toDate', event.target.value) }} />
+          <div className='mr-5'> 
+            <input type={'date'} className='form-control' onChange={formikSearch.handleChange} />
           </div>
 
-          <img src={SearchIcon} alt="" width={'50rem'} title='Search' onClick={() => onHandleSearch()} />
+          <img src={SearchIcon} alt="" width={'50rem'} title='Search' onClick={formikSearch.handleSubmit} />
         </div>
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListInterviewSchedule listInterviewSchedule={listInterviewSchedule} />}
@@ -207,7 +193,7 @@ const InterviewPage = () => {
         </div>
       </div>
 
-      <Modal open={openModalCreate} onClose={() => { setOpenModalCreate(false); formik.resetForm(); setTabPage(0) }}>
+      <Modal open={openModalCreate} onClose={() => { setOpenModalCreate(false); formikCreate.resetForm(); setTabPage(0) }}>
         <Box sx={style}>
           <div className='modal-container'>
             <div className='flex'>
@@ -221,15 +207,15 @@ const InterviewPage = () => {
               <div className="font-medium text-xl">
                 <h1>{FormTitles[tabPage]}</h1>
               </div>
-              <form onSubmit={formik.handleSubmit}>
+              <form onSubmit={formikCreate.handleSubmit}>
                 <div className="modalCreateInterview-body">{PageDisplay()}</div>
                 <div className="modalCreateInterview-footer">
                   {tabPage === 0 &&
                     <div className='flex justify-evenly mt-5'>
                       <button type='button' className='btn-create bg-[#F64E60]'
                         onClick={() => { setOpenModalCreate(false) }}>Cancel</button>
-                      <button type='button' className={`btn-create ${formik.values.recruitmentRequestId ? 'bg-[#1BC5BD]' : 'bg-[#c1c1c1]'}`}
-                        disabled={!formik.values.recruitmentRequestId}
+                      <button type='button' className={`btn-create ${formikCreate.values.recruitmentRequestId ? 'bg-[#1BC5BD]' : 'bg-[#c1c1c1]'}`}
+                        disabled={!formikCreate.values.recruitmentRequestId}
                         onClick={(e) => { setTabPage((currPage) => currPage + 1); e.preventDefault() }}>
                         Next
                       </button>
@@ -238,8 +224,8 @@ const InterviewPage = () => {
                     <div className='flex justify-evenly mt-5'>
                       <button type='button' className='btn-create bg-[#F64E60]'
                         onClick={(e) => { setTabPage((currPage) => currPage - 1); e.preventDefault() }}>Prev</button>
-                      <button type='button' className={`btn-create ${!formik.values.candidateId || formik.values.employeeId.length === 0 ? 'bg-[#C1C1C1]' : 'bg-[#1BC5BD]'}`}
-                        disabled={!formik.values.candidateId || formik.values.employeeId.length === 0}
+                      <button type='button' className={`btn-create ${!formikCreate.values.candidateId || formikCreate.values.employeeId.length === 0 ? 'bg-[#C1C1C1]' : 'bg-[#1BC5BD]'}`}
+                        disabled={!formikCreate.values.candidateId || formikCreate.values.employeeId.length === 0}
                         onClick={(e) => { setTabPage((currPage) => currPage + 1); e.preventDefault() }}>
                         Next
                       </button>
@@ -249,7 +235,7 @@ const InterviewPage = () => {
                       onClick={(e) => { setTabPage((currPage) => currPage - 1); e.preventDefault() }}>
                       Prev
                     </button>
-                    <button className='btn-create bg-[#20D489]' onClick={formik.handleSubmit}>
+                    <button className='btn-create bg-[#20D489]' onClick={formikCreate.handleSubmit}>
                       Submit
                     </button>
                     {isSubmiting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
@@ -280,7 +266,7 @@ const InterviewPage = () => {
 export default InterviewPage
 
 
-const ChooseRecruitmentRequestTab = ({ formik }) => {
+const ChooseRecruitmentRequestTab = ({ formikCreate }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
 
@@ -330,20 +316,20 @@ const ChooseRecruitmentRequestTab = ({ formik }) => {
           disabled={currentDepartment === undefined}
           getOptionLabel={option => option.name}
           renderInput={(params) => <TextField {...params} label="Recruitment request" />}
-          onChange={(event, value) => { formik.setFieldValue('recruitmentRequestId', value.id) }} />
-        {formik.errors.recruitmentRequestId && formik.touched.recruitmentRequestId && (
-          <div className='text-[#ec5555]'>{formik.errors.recruitmentRequestId}</div>
+          onChange={(event, value) => { formikCreate.setFieldValue('recruitmentRequestId', value.id) }} />
+        {formikCreate.errors.recruitmentRequestId && formikCreate.touched.recruitmentRequestId && (
+          <div className='text-[#ec5555]'>{formikCreate.errors.recruitmentRequestId}</div>
         )}
       </div>
 
-      {formik.values.recruitmentRequestId && <ShowRecruitmentRequestDetail id={formik.values.recruitmentRequestId} />}
+      {formikCreate.values.recruitmentRequestId && <ShowRecruitmentRequestDetail id={formikCreate.values.recruitmentRequestId} />}
 
     </React.Fragment>
   );
 }
 
 
-const ChoosePaticipantsTab = ({ formik }) => {
+const ChoosePaticipantsTab = ({ formikCreate }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
 
@@ -355,26 +341,26 @@ const ChoosePaticipantsTab = ({ formik }) => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getCandidateAppliedByRecruitmentRequest(currentUser.token, formik.values.recruitmentRequestId);
+      const response = await getCandidateAppliedByRecruitmentRequest(currentUser.token, formikCreate.values.recruitmentRequestId);
       if (response) {
         setListCandidate(response.data)
         setIsLoading(false)
       }
     }
     fetchData();
-  }, [formik.values.recruitmentRequestId])
+  }, [formikCreate.values.recruitmentRequestId])
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getEmployeeByRecruitmentRequest(currentUser.token, formik.values.recruitmentRequestId);
+      const response = await getEmployeeByRecruitmentRequest(currentUser.token, formikCreate.values.recruitmentRequestId);
       if (response) {
         setListEmployee(response.data)
         setIsLoading(false)
       }
     }
     fetchData();
-  }, [formik.values.recruitmentRequestId])
+  }, [formikCreate.values.recruitmentRequestId])
 
   useEffect(() => {
     const listTmp = []
@@ -382,7 +368,7 @@ const ChoosePaticipantsTab = ({ formik }) => {
       listEmpInterview.map(item => listTmp.push(item.id))
     }
     if (listTmp && listTmp.length > 0) {
-      formik.setFieldValue('employeeId', listTmp)
+      formikCreate.setFieldValue('employeeId', listTmp)
     }
   }, [listEmpInterview])
 
@@ -397,9 +383,9 @@ const ChoosePaticipantsTab = ({ formik }) => {
               sx={{ width: '85%', marginTop: '1rem' }}
               getOptionLabel={option => option.name}
               renderInput={(params) => <TextField {...params} label="Candidate" />}
-              onChange={(event, value) => { formik.setFieldValue('candidateId', value.id) }} />
-            {formik.errors.industry && formik.touched.industry && (
-              <div className='text-[#ec5555]'>{formik.errors.industry}</div>
+              onChange={(event, value) => { formikCreate.setFieldValue('candidateId', value.id) }} />
+            {formikCreate.errors.industry && formikCreate.touched.industry && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.industry}</div>
             )}
           </div>
 
@@ -412,8 +398,8 @@ const ChoosePaticipantsTab = ({ formik }) => {
               getOptionLabel={option => option.name}
               renderInput={(params) => <TextField {...params} label="Employee" />}
               onChange={(event, value) => { setListEmpInterview(value) }} />
-            {formik.errors.employeeId && formik.touched.employeeId && (
-              <div className='text-[#ec5555]'>{formik.errors.employeeId}</div>
+            {formikCreate.errors.employeeId && formikCreate.touched.employeeId && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.employeeId}</div>
             )}
           </div>
         </div>
@@ -422,18 +408,18 @@ const ChoosePaticipantsTab = ({ formik }) => {
   );
 }
 
-const FillInformationTab = ({ formik }) => {
+const FillInformationTab = ({ formikCreate }) => {
 
   const [isOnline, setIsOnline] = useState(false)
 
   useEffect(() => {
     if (isOnline) {
-      formik.values.type = interviewType.ONLINE
-      formik.values.address = ''
-      formik.values.room = ''
+      formikCreate.values.type = interviewType.ONLINE
+      formikCreate.values.address = ''
+      formikCreate.values.room = ''
     } else {
-      formik.values.type = interviewType.OFFLINE
-      formik.values.linkMeeting = ''
+      formikCreate.values.type = interviewType.OFFLINE
+      formikCreate.values.linkMeeting = ''
     }
   }, [isOnline])
 
@@ -442,33 +428,33 @@ const FillInformationTab = ({ formik }) => {
       <div className='w-full flex mt-3'>
         <div className='w-[22%] mr-3'>
           <Autocomplete
-            options={interviewRound()}
+            options={interviewRoundData()}
             size={'small'}
             sx={{ width: '100%', marginRight: '2rem' }}
             renderInput={(params) => <TextField {...params} label="Round" />}
-            onChange={(event, value) => { formik.setFieldValue('round', value) }} />
-          {formik.errors.round && formik.touched.round && (
-            <div className='text-[#ec5555]'>{formik.errors.round}</div>
+            onChange={(event, value) => { formikCreate.setFieldValue('round', value) }} />
+          {formikCreate.errors.round && formikCreate.touched.round && (
+            <div className='text-[#ec5555]'>{formikCreate.errors.round}</div>
           )}
         </div>
         <div className='w-[100%]'>
-          <TextField label='Subject' variant="outlined" size='small' style={{ width: '100%' }} name='subject' value={formik.values.subject} onChange={formik.handleChange} />
-          {formik.errors.subject && formik.touched.subject && (
-            <div className='text-[#ec5555]'>{formik.errors.subject}</div>
+          <TextField label='Subject' variant="outlined" size='small' style={{ width: '100%' }} name='subject' value={formikCreate.values.subject} onChange={formikCreate.handleChange} />
+          {formikCreate.errors.subject && formikCreate.touched.subject && (
+            <div className='text-[#ec5555]'>{formikCreate.errors.subject}</div>
           )}
         </div>
       </div>
       <div className='flex justify-evenly mt-3'>
         <div>
-          <TextField type={'date'} variant="outlined" size='small' style={{ width: '100%' }} name='date' value={formik.values.date} onChange={formik.handleChange} />
-          {formik.errors.date && formik.touched.date && (
-            <div className='text-[#ec5555]'>{formik.errors.date}</div>
+          <TextField type={'date'} variant="outlined" size='small' style={{ width: '100%' }} name='date' value={formikCreate.values.date} onChange={formikCreate.handleChange} />
+          {formikCreate.errors.date && formikCreate.touched.date && (
+            <div className='text-[#ec5555]'>{formikCreate.errors.date}</div>
           )}
         </div>
         <div>
-          <TextField type={'time'} variant="outlined" size='small' style={{ width: '100%' }} name='time' value={formik.values.time} onChange={formik.handleChange} />
-          {formik.errors.time && formik.touched.time && (
-            <div className='text-[#ec5555]'>{formik.errors.time}</div>
+          <TextField type={'time'} variant="outlined" size='small' style={{ width: '100%' }} name='time' value={formikCreate.values.time} onChange={formikCreate.handleChange} />
+          {formikCreate.errors.time && formikCreate.touched.time && (
+            <div className='text-[#ec5555]'>{formikCreate.errors.time}</div>
           )}
         </div>
       </div>
@@ -476,31 +462,31 @@ const FillInformationTab = ({ formik }) => {
       <div className='mt-4'>Purpose</div>
       <TextareaAutosize
         name='purpose'
-        value={formik.values.purpose}
+        value={formikCreate.values.purpose}
         minRows={2}
         maxRows={5}
         style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-        onChange={formik.handleChange}
+        onChange={formikCreate.handleChange}
       />
-      {formik.errors.purpose && formik.touched.purpose && (
-        <div className='text-[#ec5555]'>{formik.errors.purpose}</div>
+      {formikCreate.errors.purpose && formikCreate.touched.purpose && (
+        <div className='text-[#ec5555]'>{formikCreate.errors.purpose}</div>
       )}
 
       <FormControlLabel control={<Switch onChange={(event) => setIsOnline(event.target.checked)} />} label={isOnline ? 'Online' : 'Offline'} />
 
       {isOnline ? <div>
-        <TextField label='Google meet' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='linkMeeting' value={formik.values.linkMeeting} onChange={formik.handleChange} />
+        <TextField label='Google meet' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='linkMeeting' value={formikCreate.values.linkMeeting} onChange={formikCreate.handleChange} />
       </div> : <div>
         <div>
-          <TextField label='Room' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='room' value={formik.values.room} onChange={formik.handleChange} />
-          {formik.errors.room && formik.touched.room && (
-            <div className='text-[#ec5555]'>{formik.errors.room}</div>
+          <TextField label='Room' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='room' value={formikCreate.values.room} onChange={formikCreate.handleChange} />
+          {formikCreate.errors.room && formikCreate.touched.room && (
+            <div className='text-[#ec5555]'>{formikCreate.errors.room}</div>
           )}
         </div>
         <div>
-          <TextField label='Address' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='address' value={formik.values.address} onChange={formik.handleChange} />
-          {formik.errors.address && formik.touched.address && (
-            <div className='text-[#ec5555]'>{formik.errors.address}</div>
+          <TextField label='Address' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='address' value={formikCreate.values.address} onChange={formikCreate.handleChange} />
+          {formikCreate.errors.address && formikCreate.touched.address && (
+            <div className='text-[#ec5555]'>{formikCreate.errors.address}</div>
           )}
         </div>
       </div>}
@@ -508,14 +494,14 @@ const FillInformationTab = ({ formik }) => {
       <div className='mt-4'>Description</div>
       <TextareaAutosize
         name='description'
-        value={formik.values.description}
+        value={formikCreate.values.description}
         minRows={2}
         maxRows={5}
         style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-        onChange={formik.handleChange}
+        onChange={formikCreate.handleChange}
       />
-      {formik.errors.description && formik.touched.description && (
-        <div className='text-[#ec5555]'>{formik.errors.description}</div>
+      {formikCreate.errors.description && formikCreate.touched.description && (
+        <div className='text-[#ec5555]'>{formikCreate.errors.description}</div>
       )}
     </div>
   );
