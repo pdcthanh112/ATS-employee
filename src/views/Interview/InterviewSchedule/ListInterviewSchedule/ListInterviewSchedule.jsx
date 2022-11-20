@@ -13,7 +13,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import ReactLoading from 'react-loading'
 import { interviewStatus, interviewType, positionName, responseStatus } from '../../../../utils/constants'
-import { cancelInterview, closeInterview, confirmInterview } from '../../../../apis/interviewScheduleApi'
+import { cancelInterview, closeInterview, confirmInterview, rejectInterview } from '../../../../apis/interviewScheduleApi'
 import { Autocomplete, Box, Modal, TextareaAutosize, TextField } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -83,13 +83,27 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
   })
 
   const confirmInterviewByEmp = async (interviewId) => {
-    await confirmInterview(currentUser.token, currentUser.employee.id, interviewId).then((response) => {
-      response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
+    await await confirm({ message: "Are you sure to aprrove this interview?" }).then((response) => {
+      if (response) {
+        confirmInterview(currentUser.token, currentUser.employee.id, interviewId).then((response) => {
+          response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
+        })
+      }
+    })
+  }
+
+  const rejectInterviewByEmp = async (interviewId) => {
+    await await confirm({ message: "Are you sure to reject this interview?" }).then((response) => {
+      if (response) {
+        rejectInterview(currentUser.token, currentUser.employee.id, interviewId).then((response) => {
+          response.status === responseStatus.SUCCESS ? toast.success('Reject successfully') : toast.error('Something error')
+        })
+      }
     })
   }
 
   const handleCancelInterview = async (interviewId) => {
-    await confirm({ message: "Are you sure to approve this interview?" }).then((response) => {
+    await confirm({ message: "Are you sure to cancel this interview?" }).then((response) => {
       if (response) {
         setOpenModalReason(true)
         formikCancel.values.interviewId = interviewId
@@ -134,7 +148,7 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
                       <span onClick={() => { handleCancelInterview(item.id) }}><img src={DeleteIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Cancel this interview' /></span>
                     </React.Fragment> : <React.Fragment>
                       <span onClick={() => { confirmInterviewByEmp(item.id) }}><img src={ApproveIcon} alt="" width={'40rem'} className='mr-2 hover:cursor-pointer' title='Approve this interview' /></span>
-                      <span onClick={() => { }}><img src={RejectIcon} alt="" width={'20rem'} className='mt-2 hover:cursor-pointer' title='Reject this interview' /></span> </React.Fragment>}
+                      <span onClick={() => { rejectInterviewByEmp(item.id) }}><img src={RejectIcon} alt="" width={'20rem'} className='mt-2 hover:cursor-pointer' title='Reject this interview' /></span> </React.Fragment>}
                   </div>
                 </div>}
               {item.status === interviewStatus.DONE && <div className='flex justify-between'>

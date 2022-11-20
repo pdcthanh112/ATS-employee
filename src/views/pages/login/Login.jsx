@@ -1,10 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Login.scss'
 import headerLogo from '../../../assets/image/big-logo.png'
 
 import { loginUser } from '../../../apis/authApi'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken } from "firebase/messaging";
+import { firebaseNotificationConfig } from '../../../configs/firebaseConfig'
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -21,11 +25,36 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const requestPermission = () => {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          // const notification = new Notification('Example notification', {
+          //   body: 'this is body',
+          //   data: {hello: 'world'},
+          //   icon: headerLogo
+          // })
+          const app = initializeApp(firebaseNotificationConfig);
+          const messaging = getMessaging(app);
+          getToken(messaging, {
+            vapidKey: process.env.REACT_APP_FIREBASE_KEY_COMPARE,
+          }).then((currentToken) => {
+            if (currentToken) {
+              console.log('token ne: ', currentToken);
+              formik.values.notificationToken = currentToken;
+            }
+          });
+        }
+      });
+    }
+    requestPermission()
+  }, [])
+
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
-      notificationToken: "dIoUZejX7KT9oeRAkQwgB7:APA91bEHDg7r7mz41Q6NUTv1dOgTcVY77W9s7sT7ng_WRE_S1uMzm32KKmw7Gz8H0QoLcZHyJRpC31bV35cw12BlE8r9DsXZCJAA_HoeeMKdRCICQQiBR63-hZxPpMQ2WyFVQo-JC6OE",
+      notificationToken: ''
     },
     validationSchema: Yup.object({
       email: Yup.string().required('Vui lòng nhập email'),

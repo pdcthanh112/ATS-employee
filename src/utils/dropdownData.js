@@ -32,7 +32,9 @@ export const foreignLanguageData = () => ['Tiếng Anh','Tiếng Nhật'];
 
 export const genderData = () => ['Nam', 'Nữ', 'Khác'];
 
-export const interviewTypeData = () => ['Pending', 'Approved', 'Canceled', 'Done']
+export const interviewStatusData = () => ['Pending', 'Approved', 'Canceled', 'Done']
+
+export const interviewTypeData = () => ['Online', 'Offline']
 
 export const interviewRoundData = () => ['1', '2', '3']
 

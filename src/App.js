@@ -1,9 +1,7 @@
 import React, { useEffect, Suspense } from "react";
 import { useSelector } from "react-redux";
 import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
-import { getMessagingToken } from "./firebase";
-import "./scss/style.scss";
-import { useNavigate } from 'react-router-dom'
+
 
 const loading = (
   <div className="pt-3 text-center">
@@ -19,19 +17,6 @@ const Page500 = React.lazy(() => import("./views/pages/page500/Page500"));
 const App = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser);
-
-  // useEffect(() => {
-  //   getMessagingToken();
-  //   const channel = new BroadcastChannel("notifications");
-  //   const onMessage = (event) => {
-  //     console.log("Receive background", event.data);
-  //   };
-  //   channel.addEventListener("message", onMessage);
-  //   return () => {
-  //     channel.removeEventListener("message", onMessage);
-  //     channel.close();
-  //   };
-  // }, []);
   
   return (
     <HashRouter>

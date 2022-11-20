@@ -29,6 +29,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
   const [listApprovedRecruitmentPlan, setListApprovedRecruitmentPlan] = useState([])
   const [openModalEdit, setOpenModalEdit] = useState(false)
 
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await getPlanApprovedByDepartment(currentUser.token, currentUser.employee.department.id);
@@ -80,7 +81,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
     }),
     onSubmit: async (values) => {
       console.log('value', values);
-      await editPlanDetail(formik.values.planDetailId, currentUser.token).then(response => {       
+      await editPlanDetail(formik.values.planDetailId, currentUser.token).then(response => {
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
       })
     }
@@ -97,7 +98,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
   }
 
   const handleEditPlan = (data) => {
-    setOpenModalEdit(true)   
+    setOpenModalEdit(true)
     formik.values.planDetailId = data.id
     formik.values.amount = data.amount
     formik.values.name = data.name
@@ -112,6 +113,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
   }
 
   const handleDeletePlan = async (planDetailId) => {
+    console.log('deleeeeee');
     confirm({ message: "Are you sure to delete this plan?" }).then((response) => {
       if (response) {
 
@@ -130,7 +132,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
               {currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) || currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) ? <React.Fragment>
                 <div className='flex w-full justify-between'>
                   <div className='flex'>
-                    <span className='hover:cursor-pointer' onClick={() => { handleApprovePlanDetail(item.id)}}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
+                    <span className='hover:cursor-pointer' onClick={() => { handleApprovePlanDetail(item.id) }}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
                     <span className='hover:cursor-pointer'><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
                   </div>
                   <div className='flex'>

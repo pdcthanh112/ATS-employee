@@ -9,21 +9,22 @@ import AddIcon from '../../../../assets/icon/plus.png'
 import CurrencyFormat from 'react-currency-format';
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize, FormControlLabel, Checkbox } from '@mui/material';
+import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize, FormControlLabel, Checkbox, InputAdornment } from '@mui/material';
 import { createRecruitmentRequest, getAllRecruimentRequest } from '../../../../apis/recruimentRequestApi'
 import ListRecruitmentRequest from '../ListRecruitmentRequest/ListRecruitmentRequest'
-import { educationLevelData, experienceData, foreignLanguageData, typeOfWorkData } from '../../../../utils/dropdownData'
+import { educationLevelData, experienceData, foreignLanguageData, jobLevelData, typeOfWorkData } from '../../../../utils/dropdownData'
 import { positionName, responseStatus } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAllDepartment } from '../../../../apis/departmentApi'
-import {  getPlanDetailApprovedByDepartment, getPlanDetailById } from '../../../../apis/planDetailApi'
+import { getPlanDetailApprovedByDepartment, getPlanDetailById } from '../../../../apis/planDetailApi'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
 
 const RecruitmentRequestPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
+  const dataCategory = useSelector((state) => state.categoryData.data);
 
   const [listRecruitmentRequest, setListRecruitmentRequest] = useState([])
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
@@ -73,9 +74,9 @@ const RecruitmentRequestPage = () => {
 
   const PageDisplay = () => {
     if (tabPage === 0) {
-      return <ChoosePlanTab formik={formik} />;
+      return <ChoosePlanTab formikCreate={formikCreate} />;
     } else if (tabPage === 1) {
-      return <FillInformationTab formik={formik} />;
+      return <FillInformationTab formikCreate={formikCreate} />;
     }
   };
 
@@ -101,7 +102,7 @@ const RecruitmentRequestPage = () => {
     // })
   };
 
-  const formik = useFormik({
+  const formikCreate = useFormik({
     initialValues: {
       address: '',
       amount: '',
@@ -145,13 +146,28 @@ const RecruitmentRequestPage = () => {
     }),
     onSubmit: async (values) => {
       setIsSubmitting(true)
-      await createRecruitmentRequest(values, currentUser.token).then(response => {     
+      await createRecruitmentRequest(values, currentUser.token).then(response => {
         if (response.message.includes(' expiry date')) {
-          formik.errors.expiryDate = "Invalid expiry date"
+          formikCreate.errors.expiryDate = "Invalid expiry date"
         }
         setIsSubmitting(false)
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
       })
+    }
+  })
+  const formikSearch = useFormik({
+    initialValues: {
+      city: '',
+      experience: '',
+      industry: '',
+      jobLevel: '',
+      jobName: '',
+      salaryFrom: '',
+      salaryTo: '',
+      typeOfWork: ''
+    },
+    onSubmit: async (values) => {
+      console.log('search', values);
     }
   })
 
@@ -169,24 +185,44 @@ const RecruitmentRequestPage = () => {
         </div>}
 
         <div className='filter-container'>
-          <div className='inputName'>
-            <input type={'text'} className='form-control' placeholder='Nhập tên ứng viên...' onChange={(event) => { handleChangeSearchObject('name', event.target.value) }} />
-          </div>
-          <Autocomplete
-            //options={typeOfWorkData()}
-            size={'small'}
-            sx={{ width: 170, marginRight: 2 }}
-            renderInput={(params) => <TextField {...params} label="Loại công việc" />}
-            onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
+         
+        <Autocomplete
+          options={dataCategory.industry}
+          size={'small'}
+          sx={{ width: 180, marginRight: 2 }}
+          renderInput={(params) => <TextField {...params} label="Industry" />}
+          onInputChange={(event, value) => { handleChangeSearchObject('industry', value) }} />
 
-          <Autocomplete
-            //options={typeOfWorkData()}
-            size={'small'}
-            sx={{ width: 170, marginRight: 2 }}
-            renderInput={(params) => <TextField {...params} label="Loại công việc" />}
-            onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
+        <Autocomplete
+          options={dataCategory.jobTitle}
+          size={'small'}
+          sx={{ width: 190, marginRight: 2 }}
+          renderInput={(params) => <TextField {...params} label="Job name" />}
+          onInputChange={(event, value) => { handleChangeSearchObject('jobName', value) }}
+          onChange={(event, value) => { formikSearch.setFieldValue('jobName', value) }} />
 
-          <img src={SearchIcon} alt="" width={'50rem'} title='Search' onClick={() => onHandleSearch()} />
+        <Autocomplete
+          options={typeOfWorkData()}
+          size={'small'}
+          sx={{ width: 235, height: 10, marginRight: 2 }}
+          renderInput={(params) => <TextField {...params} label="Type of work" />}
+          onInputChange={(event, value) => { formikSearch.setFieldValue('typeOfWork', value) }} />
+
+        <Autocomplete
+          options={jobLevelData()}
+          size={'small'}
+          sx={{ width: 145, marginRight: 2 }}
+          renderInput={(params) => <TextField {...params} label="Level" />}
+          onInputChange={(event, value) => { formikSearch.setFieldValue('jobLevel', value) }} />
+
+        <Autocomplete
+          options={dataCategory.province}
+          size={'small'}
+          sx={{ width: 150, marginRight: 2 }}
+          renderInput={(params) => <TextField {...params} label="City" />}
+          onInputChange={(event, value) => { formikSearch.setFieldValue('city', value) }} />
+       
+          <img src={SearchIcon} alt="" width={'50rem'} title='Search' onClick={() => formikSearch.handleSubmit} />
         </div>
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListRecruitmentRequest listRecruitmentRequest={listRecruitmentRequest} />}
@@ -198,7 +234,7 @@ const RecruitmentRequestPage = () => {
         </div>
       </div>
 
-      <Modal open={openModalCreate} onClose={() => {setOpenModalCreate(false); formik.resetForm(); setTabPage(0)}}>
+      <Modal open={openModalCreate} onClose={() => { setOpenModalCreate(false); formikCreate.resetForm(); setTabPage(0) }}>
         <Box sx={style}>
           <div className='modalCreateRequest-container'>
             <div className='modalCreateRequest-title'>
@@ -212,15 +248,15 @@ const RecruitmentRequestPage = () => {
               <div className="font-medium text-xl">
                 <h1>{FormTitles[tabPage]}</h1>
               </div>
-              <form onSubmit={formik.handleSubmit}>
+              <form onSubmit={formikCreate.handleSubmit}>
                 <div className="modalCreateRequest-body">{PageDisplay()}</div>
                 <div className="modalCreateRequest-footer">
                   {tabPage === 0 ?
                     <div className='flex justify-evenly mt-5'>
                       <button type='button' className='btn-create bg-[#F64E60]'
                         onClick={() => { setOpenModalCreate(false) }}>Cancel</button>
-                      <button type='button' className={`btn-create ${formik.values.planDetailId ? 'bg-[#1BC5BD]' : 'bg-[#c1c1c1]'}`}
-                      disabled={!formik.values.planDetailId}
+                      <button type='button' className={`btn-create ${formikCreate.values.planDetailId ? 'bg-[#1BC5BD]' : 'bg-[#c1c1c1]'}`}
+                        disabled={!formikCreate.values.planDetailId}
                         onClick={(e) => { setTabPage((currPage) => currPage + 1); e.preventDefault() }}>
                         Next
                       </button>
@@ -229,7 +265,7 @@ const RecruitmentRequestPage = () => {
                         onClick={() => { setTabPage((currPage) => currPage - 1); }}>
                         Prev
                       </button>
-                      <button className='btn-create bg-[#20D489]' onClick={formik.handleSubmit}>
+                      <button className='btn-create bg-[#20D489]' onClick={formikCreate.handleSubmit}>
                         Submit
                       </button>
                       {isSubmiting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
@@ -260,7 +296,7 @@ const RecruitmentRequestPage = () => {
 export default RecruitmentRequestPage
 
 //////////////////////////////////////////////////////////////////////////////////////////
-const ChoosePlanTab = ({ formik }) => {
+const ChoosePlanTab = ({ formikCreate }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
 
@@ -279,7 +315,7 @@ const ChoosePlanTab = ({ formik }) => {
   }, [])
 
   useEffect(() => {
-    if (currentDepartment) {   
+    if (currentDepartment) {
       const fetchData = async () => {
         const response = await getPlanDetailApprovedByDepartment(currentUser.token, currentDepartment);
         if (response.data && response.data.length > 0) {
@@ -310,20 +346,20 @@ const ChoosePlanTab = ({ formik }) => {
           disabled={currentDepartment === undefined}
           getOptionLabel={option => option.name}
           renderInput={(params) => <TextField {...params} label="Plan detail" />}
-          onChange={(event, value) => { formik.setFieldValue('planDetailId', value.id) }} />
-        {formik.errors.planDetailId && formik.touched.planDetailId && (
-          <div className='text-[#ec5555]'>{formik.errors.planDetailId}</div>
+          onChange={(event, value) => { formikCreate.setFieldValue('planDetailId', value.id) }} />
+        {formikCreate.errors.planDetailId && formikCreate.touched.planDetailId && (
+          <div className='text-[#ec5555]'>{formikCreate.errors.planDetailId}</div>
         )}
       </div>
 
-      {formik.values.planDetailId && <ShowPlanDetailData planDetailId={formik.values.planDetailId} />}
-    
+      {formikCreate.values.planDetailId && <ShowPlanDetailData planDetailId={formikCreate.values.planDetailId} />}
+
     </React.Fragment>
   );
 }
 
 
-const FillInformationTab = ({ formik }) => {
+const FillInformationTab = ({ formikCreate }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
   const categoryData = useSelector((state) => state.categoryData.data);
@@ -335,48 +371,48 @@ const FillInformationTab = ({ formik }) => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getPlanDetailById(currentUser.token, formik.values.planDetailId);
+      const response = await getPlanDetailById(currentUser.token, formikCreate.values.planDetailId);
       if (response) {
         setPlanDetailData(response.data)
         setIsLoading(false)
       }
     }
     fetchData();
-  }, [formik.values.planDetailId])
+  }, [formikCreate.values.planDetailId])
 
   useEffect(() => {
     if (isSalaryNegotiable) {
-      formik.values.salaryFrom = 'Negotiable'
-      formik.values.salaryTo = 'Negotiable'
+      formikCreate.values.salaryFrom = 'Negotiable'
+      formikCreate.values.salaryTo = 'Negotiable'
     } else {
-      formik.values.salaryFrom = ''
-      formik.values.salaryTo = ''
+      formikCreate.values.salaryFrom = ''
+      formikCreate.values.salaryTo = ''
     }
   }, [isSalaryNegotiable])
 
   if (!isLoading) {
-    formik.values.amount = planDetailData.amount
-    formik.values.positionName = planDetailData.position.name
+    formikCreate.values.amount = planDetailData.amount
+    formikCreate.values.positionName = planDetailData.position.name
   }
 
   return (
     <React.Fragment>
       {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
         <div>
-           <div>
-              <TextField label="Recruitment name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='name' value={formik.values.name} onChange={formik.handleChange} />
-              {formik.errors.name && formik.touched.name && (
-                <div className='text-[#ec5555]'>{formik.errors.name}</div>
-              )}
-            </div>
+          <div>
+            <TextField label="Recruitment name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='name' value={formikCreate.values.name} onChange={formikCreate.handleChange} />
+            {formikCreate.errors.name && formikCreate.touched.name && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.name}</div>
+            )}
+          </div>
 
           <div className='grid grid-cols-2 px-1'>
-            <TextField label="Position" variant="outlined" size='small' sx={{ marginTop: '1rem', width: '85%' }} name='positionName' value={formik.values.positionName} disabled />
+            <TextField label="Position" variant="outlined" size='small' sx={{ marginTop: '1rem', width: '85%' }} name='positionName' value={formikCreate.values.positionName} disabled />
 
             <div>
-              <TextField label="Job level" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='jobLevel' value={formik.values.jobLevel} onChange={formik.handleChange} />
-              {formik.errors.jobLevel && formik.touched.jobLevel && (
-                <div className='text-[#ec5555]'>{formik.errors.jobLevel}</div>
+              <TextField label="Job level" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='jobLevel' value={formikCreate.values.jobLevel} onChange={formikCreate.handleChange} />
+              {formikCreate.errors.jobLevel && formikCreate.touched.jobLevel && (
+                <div className='text-[#ec5555]'>{formikCreate.errors.jobLevel}</div>
               )}
             </div>
           </div>
@@ -388,9 +424,9 @@ const FillInformationTab = ({ formik }) => {
                 size={'small'}
                 sx={{ width: '85%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Experience" />}
-                onInputChange={(event, value) => { formik.setFieldValue('experience', value) }} />
-              {formik.errors.experience && formik.touched.experience && (
-                <div className='text-[#ec5555]'>{formik.errors.experience}</div>
+                onInputChange={(event, value) => { formikCreate.setFieldValue('experience', value) }} />
+              {formikCreate.errors.experience && formikCreate.touched.experience && (
+                <div className='text-[#ec5555]'>{formikCreate.errors.experience}</div>
               )}
             </div>
             <div>
@@ -399,9 +435,9 @@ const FillInformationTab = ({ formik }) => {
                 size={'small'}
                 sx={{ width: '100%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Type of work" />}
-                onInputChange={(event, value) => { formik.setFieldValue('typeOfWork', value) }} />
-              {formik.errors.typeOfWork && formik.touched.typeOfWork && (
-                <div className='text-[#ec5555]'>{formik.errors.typeOfWork}</div>
+                onInputChange={(event, value) => { formikCreate.setFieldValue('typeOfWork', value) }} />
+              {formikCreate.errors.typeOfWork && formikCreate.touched.typeOfWork && (
+                <div className='text-[#ec5555]'>{formikCreate.errors.typeOfWork}</div>
               )}
             </div>
           </div>
@@ -413,9 +449,9 @@ const FillInformationTab = ({ formik }) => {
                 size={'small'}
                 sx={{ width: '85%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Education level" />}
-                onInputChange={(event, value) => { formik.setFieldValue('educationLevel', value) }} />
-              {formik.errors.educationLevel && formik.touched.educationLevel && (
-                <div className='text-[#ec5555]'>{formik.errors.educationLevel}</div>
+                onInputChange={(event, value) => { formikCreate.setFieldValue('educationLevel', value) }} />
+              {formikCreate.errors.educationLevel && formikCreate.touched.educationLevel && (
+                <div className='text-[#ec5555]'>{formikCreate.errors.educationLevel}</div>
               )}
             </div>
             <div>
@@ -424,9 +460,9 @@ const FillInformationTab = ({ formik }) => {
                 size={'small'}
                 sx={{ marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Foreign language" />}
-                onInputChange={(event, value) => { formik.setFieldValue('foreignLanguage', value) }} />
-              {formik.errors.foreignLanguage && formik.touched.foreignLanguage && (
-                <div className='text-[#ec5555]'>{formik.errors.foreignLanguage}</div>
+                onInputChange={(event, value) => { formikCreate.setFieldValue('foreignLanguage', value) }} />
+              {formikCreate.errors.foreignLanguage && formikCreate.touched.foreignLanguage && (
+                <div className='text-[#ec5555]'>{formikCreate.errors.foreignLanguage}</div>
               )}
             </div>
           </div>
@@ -438,15 +474,15 @@ const FillInformationTab = ({ formik }) => {
                 size={'small'}
                 sx={{ width: '85%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Industry" />}
-                onInputChange={(event, value) => { formik.setFieldValue('industry', value) }} />
-              {formik.errors.industry && formik.touched.industry && (
-                <div className='text-[#ec5555]'>{formik.errors.industry}</div>
+                onInputChange={(event, value) => { formikCreate.setFieldValue('industry', value) }} />
+              {formikCreate.errors.industry && formikCreate.touched.industry && (
+                <div className='text-[#ec5555]'>{formikCreate.errors.industry}</div>
               )}
             </div>
             <div>
-              <TextField label="Amount" variant="outlined" size='small' sx={{ marginTop: '1rem', width: '100%' }} name='amount' value={formik.values.amount} disabled />
-              {formik.errors.amount && formik.touched.amount && (
-                <div className='text-[#ec5555]'>{formik.errors.amount}</div>
+              <TextField label="Amount" variant="outlined" size='small' sx={{ marginTop: '1rem', width: '100%' }} name='amount' value={formikCreate.values.amount} disabled />
+              {formikCreate.errors.amount && formikCreate.touched.amount && (
+                <div className='text-[#ec5555]'>{formikCreate.errors.amount}</div>
               )}
             </div>
           </div>
@@ -454,26 +490,26 @@ const FillInformationTab = ({ formik }) => {
 
           <div className='mt-3 ml-14 font-semibold'>Expired date</div>
           <div className='flex justify-center'>
-            <TextField type={'date'} variant="outlined" size='small' style={{ width: '80%' }} name='expiryDate' value={formik.values.expiryDate} onChange={formik.handleChange} />
+            <TextField type={'date'} variant="outlined" size='small' style={{ width: '80%' }} name='expiryDate' value={formikCreate.values.expiryDate} onChange={formikCreate.handleChange} />
           </div>
-          {formik.errors.expiryDate && formik.touched.expiryDate && (
-            <div className='text-[#ec5555] w-[80%] ml-12'>{formik.errors.expiryDate}</div>
+          {formikCreate.errors.expiryDate && formikCreate.touched.expiryDate && (
+            <div className='text-[#ec5555] w-[80%] ml-12'>{formikCreate.errors.expiryDate}</div>
           )}
 
           <div className='mt-3 ml-2 font-semibold text-lg'>Salary</div>
           <div className='inline-flex'>
             <div className='w-[40%]'>
               <div>from</div>
-              <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='salaryFrom' placeholder='1,000,000 VNĐ' value={formik.values.salaryFrom} onChange={formik.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '90%' }} disabled={isSalaryNegotiable} />
-              {formik.errors.salaryFrom && formik.touched.salaryFrom && (
-                <div className='text-[#ec5555]'>{formik.errors.salaryFrom}</div>
+              <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='salaryFrom' placeholder='1,000,000 VNĐ' value={formikCreate.values.salaryFrom} onChange={formikCreate.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '90%' }} disabled={isSalaryNegotiable} />
+              {formikCreate.errors.salaryFrom && formikCreate.touched.salaryFrom && (
+                <div className='text-[#ec5555]'>{formikCreate.errors.salaryFrom}</div>
               )}
             </div>
             <div className='w-[40%]'>
               <div>to</div>
-              <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='salaryTo' placeholder='1,000,000 VNĐ' value={formik.values.salaryTo} onChange={formik.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '90%' }} disabled={isSalaryNegotiable} />
-              {formik.errors.salaryTo && formik.touched.salaryTo && (
-                <div className='text-[#ec5555]'>{formik.errors.salaryTo}</div>
+              <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='salaryTo' placeholder='1,000,000 VNĐ' value={formikCreate.values.salaryTo} onChange={formikCreate.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '90%' }} disabled={isSalaryNegotiable} />
+              {formikCreate.errors.salaryTo && formikCreate.touched.salaryTo && (
+                <div className='text-[#ec5555]'>{formikCreate.errors.salaryTo}</div>
               )}
             </div>
             <FormControlLabel
@@ -487,56 +523,56 @@ const FillInformationTab = ({ formik }) => {
               size={'small'}
               sx={{ width: '100%', marginTop: '1rem' }}
               renderInput={(params) => <TextField {...params} label="City name" />}
-              onChange={(event, value) => { formik.setFieldValue('cityName', value) }} />
-            {formik.errors.cityName && formik.touched.cityName && (
-              <div className='text-[#ec5555]'>{formik.errors.cityName}</div>
+              onChange={(event, value) => { formikCreate.setFieldValue('cityName', value) }} />
+            {formikCreate.errors.cityName && formikCreate.touched.cityName && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.cityName}</div>
             )}
           </div>
 
           <div>
-            <TextField label="Address" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='address' value={formik.values.address} onChange={formik.handleChange} />
-            {formik.errors.address && formik.touched.address && (
-              <div className='text-[#ec5555]'>{formik.errors.address}</div>
+            <TextField label="Address" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='address' value={formikCreate.values.address} onChange={formikCreate.handleChange} />
+            {formikCreate.errors.address && formikCreate.touched.address && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.address}</div>
             )}
           </div>
 
           <div className='mt-4'>Description</div>
           <TextareaAutosize
             name='description'
-            value={formik.values.description}
+            value={formikCreate.values.description}
             minRows={2}
             maxRows={5}
             style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-            onChange={formik.handleChange}
+            onChange={formikCreate.handleChange}
           />
-          {formik.errors.description && formik.touched.description && (
-            <div className='text-[#ec5555]'>{formik.errors.description}</div>
+          {formikCreate.errors.description && formikCreate.touched.description && (
+            <div className='text-[#ec5555]'>{formikCreate.errors.description}</div>
           )}
 
           <div className='mt-4'>Requirement</div>
           <TextareaAutosize
             e name='requirement'
-            value={formik.values.requirement}
+            value={formikCreate.values.requirement}
             minRows={2}
             maxRows={5}
             style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-            onChange={formik.handleChange}
+            onChange={formikCreate.handleChange}
           />
-          {formik.errors.requirement && formik.touched.requirement && (
-            <div className='text-[#ec5555]'>{formik.errors.requirement}</div>
+          {formikCreate.errors.requirement && formikCreate.touched.requirement && (
+            <div className='text-[#ec5555]'>{formikCreate.errors.requirement}</div>
           )}
 
           <div className='mt-4'>Benefit</div>
           <TextareaAutosize
             name='benefit'
-            value={formik.values.benefit}
+            value={formikCreate.values.benefit}
             minRows={2}
             maxRows={5}
             style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-            onChange={formik.handleChange}
+            onChange={formikCreate.handleChange}
           />
-          {formik.errors.benefit && formik.touched.benefit && (
-            <div className='text-[#ec5555]'>{formik.errors.benefit}</div>
+          {formikCreate.errors.benefit && formikCreate.touched.benefit && (
+            <div className='text-[#ec5555]'>{formikCreate.errors.benefit}</div>
           )}
         </div>
       }

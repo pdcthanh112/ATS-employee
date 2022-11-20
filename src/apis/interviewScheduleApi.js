@@ -18,9 +18,27 @@ export const getAllInterview = async (token, pageNo, pageSize) => {
     .catch((error) => error);
 };
 
-export const getInterviewByDepartment = async (token, pageNo, pageSize) => {
+export const getInterviewByDepartment = async (token, depId, pageNo, pageSize) => {
   return await axiosConfig
-    .get(`interview/getAllInterview?pageNo=${pageNo}&pageSize=${pageSize}`, {
+    .get(`interview/getInterviewByDepartment?departmentId=${depId}&pageNo=${pageNo}&pageSize=${pageSize}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
+export const getInterviewByEmployee = async (token, id, pageNo, pageSize) => {
+  return await axiosConfig
+    .get(`interview/getInterviewByEmployeeID?employeeId=${id}&pageNo=${pageNo}&pageSize=${pageSize}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
+export const searchInterviewSchedule = async (token, id, pageNo, pageSize) => {///////////////////////////////////////////////////////////////////////////////
+  return await axiosConfig
+    .get(`interview/getInterviewByEmployeeID?employeeId=${id}&pageNo=${pageNo}&pageSize=${pageSize}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => response.data)
@@ -66,6 +84,18 @@ export const confirmInterview = async (token, employeeId, interviewId) => {
     .catch((error) => error.response.data);
 };
 
+export const rejectInterview = async (token, employeeId, interviewId) => {
+  return await axiosConfig
+    .patch(
+      `interview/rejectByEmployee?idEmployee=${employeeId}idInterview=${interviewId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    .then((response) => response.data)
+    .catch((error) => error.response.data);
+};
+
 export const cancelInterview = async (token, data) => {
   console.log(data);
   return await axiosConfig
@@ -84,7 +114,6 @@ export const cancelInterview = async (token, data) => {
 };
 
 export const closeInterview = async (token, id) => {
-  console.log('adadsfasfds', token, id);
   
   return await axiosConfig
     .patch(

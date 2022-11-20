@@ -3,7 +3,7 @@ import './InterviewDetailPage.scss'
 
 import ListInterviewDetail from '../ListInterviewDetail/ListInterviewDetail'
 import { useSelector } from 'react-redux';
-import { getAllInterviewDetail } from '../../../../apis/interviewDetailApi';
+import { getAllInterviewDetail, getInterviewDetailByDepartment } from '../../../../apis/interviewDetailApi';
 
 import ReactLoading from 'react-loading';
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete } from '@mui/material';
@@ -25,7 +25,7 @@ const InterviewDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getAllInterviewDetail(currentUser.token, pagination.currentPage - 1, 4);
+      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllInterviewDetail(currentUser.token, pagination.currentPage - 1, 4) : await getInterviewDetailByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
       if (response) {
         setListInterviewDetail(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })

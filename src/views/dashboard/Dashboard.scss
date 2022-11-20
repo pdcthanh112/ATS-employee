@@ -1,37 +1,39 @@
-.search-container {
-  background-color: #fff;
-  display: inline-flex;
-  padding: 1rem 2rem;
-  justify-content: center;
-  width: 100vw;
-
-  .search-item{
-    border: 1px solid #36CB3E;
-    margin: 0 1rem;
-    padding-top: 0.3rem;
-  }
-
-  .btn-search {
-    width: 8rem;
-    height: 2.5rem;
+.statusChart-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 3rem 0;
+  .statusChart-item {
+    background-color: #fff;
+    width: 30%;
     border-radius: 0.3rem;
-    margin-left: 1rem;
   }
-
-  
 }
 
-.search-error {
-  background-color: #fddac6;
-  color: rgb(247, 10, 10);
-  font-size: 1.2rem;
-  padding: 0.5rem 2rem;
+.interview-container {
+  background-color: #fff;
+  margin-right: 2rem;
+  border-radius: 5px;
+  padding: 1rem 2rem;
+
+  .interview-item{
+    border: 1px solid #000;
+    border-radius: 0.3rem;
+    padding: 0.5rem 1rem;
+    margin: 2rem 0;
+
+    .field-item {
+      border: 1px solid #116835;
+      border-radius: 1rem;
+      padding: 0.2rem 1rem
+    }
+  }
 }
 
-.pagination-container {
-  //background-color: #fff;
-  display: flex; 
-  justify-content: center;
-
-  margin: 0 1rem 1rem 1rem;
+.colleague-container {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 1rem 2rem;
+  height: fit-content;
 }
+
+

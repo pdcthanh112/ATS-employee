@@ -4,7 +4,6 @@ import './ListRecruitmentRequest.scss'
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
 
 const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
-  console.log('list', listRecruitmentRequest);
 
   return (
     <React.Fragment>

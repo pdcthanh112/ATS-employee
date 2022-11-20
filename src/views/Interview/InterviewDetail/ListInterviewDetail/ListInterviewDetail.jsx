@@ -11,6 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ListInterviewDetail = ({ listInterviewDetail }) => {
+  console.log('dddd',listInterviewDetail);
 
   return (
     <React.Fragment>

@@ -132,7 +132,7 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
               {currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) || currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) ? <React.Fragment>
                 <div className='flex w-full justify-between'>
                   <div className='flex'>
-                    <span className='hover:cursor-pointer' onClick={() => { handleApproveRecruitmentPlan(item.id)}}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
+                    <span className='hover:cursor-pointer' onClick={() => { handleApproveRecruitmentPlan(item.id) }}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
                     <span className='hover:cursor-pointer'><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
                   </div>
                   <div className='flex'>

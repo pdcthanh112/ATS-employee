@@ -1,0 +1,19 @@
+.jobApply-container {
+  .title-container {
+    display: inline-flex;
+    padding: 2rem 5rem 0 2rem;
+    width: 100%;
+    margin-bottom: 2rem;
+  }
+
+  .jobApply-content {
+    padding: 0 2rem;
+    .request-item {
+      background-color: #fff;
+      border: 1px solid #116835;
+      border-radius: 0.3rem;
+      margin: 0.7rem 1rem;
+      padding: 15px 12px;
+    }
+  }
+}

@@ -10,7 +10,7 @@ import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosiz
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { createInterview, getAllInterview } from '../../../../apis/interviewScheduleApi';
+import { createInterview, getAllInterview, getInterviewByDepartment } from '../../../../apis/interviewScheduleApi';
 import InterviewIcon from '../../../../assets/icon/calendar.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
 import AddIcon from '../../../../assets/icon/plus.png'
@@ -20,7 +20,7 @@ import { getAllDepartment } from '../../../../apis/departmentApi';
 import { getListRecruimentRequestByDepartment, getRecruimentRequestById } from '../../../../apis/recruimentRequestApi';
 import { getCandidateAppliedByRecruitmentRequest } from '../../../../apis/candidateApi';
 import { getEmployeeByRecruitmentRequest } from '../../../../apis/employeeApi';
-import { interviewRoundData, interviewTypeData } from '../../../../utils/dropdownData';
+import { interviewRoundData, interviewStatusData, interviewTypeData } from '../../../../utils/dropdownData';
 
 const InterviewPage = () => {
 
@@ -51,7 +51,7 @@ const InterviewPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getAllInterview(currentUser.token, pagination.currentPage - 1, 4);
+      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllInterview(currentUser.token, pagination.currentPage - 1, 4) : await getInterviewByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
       if (response) {
         setListInterviewSchedule(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
@@ -116,32 +116,19 @@ const InterviewPage = () => {
 
   const formikSearch = useFormik({
     initialValues: {
+      name: '',
+      date: '',
       round: '',
-      time: '',
-      type: ''
+      type: '',
+      status: ''
     },
-    validationSchema: Yup.object({
-      //address: Yup.string().required('Please input address'),
-      candidateId: Yup.string().required('Please choose candidate'),
-      date: Yup.string().required('Please input date'),
-      description: Yup.string().required('Please input description'),
-      employeeId: Yup.array().min(1, 'Please choose at least 1 employee interview'),
-      //linkMeeting: Yup.string().required('Please input link meeting'),
-      purpose: Yup.string().required('Please input purpose'),
-      recruitmentRequestId: Yup.string().required('Please input address'),
-      //room: Yup.string().required('Please input room'),
-      round: Yup.string().required('Please choose round'),
-      subject: Yup.string().required('Please input subject'),
-      time: Yup.string().required('Please input time'),
-      //type: Yup.string().required('Please choose type of interview'),
-    }),
     onSubmit: async (values) => {
       console.log('values', values);
-      setIsSubmitting(true)
-      await createInterview(currentUser.token, values).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-      })
-      setIsSubmitting(false)
+      // setIsSubmitting(true)
+      // await createInterview(currentUser.token, values).then((response) => {
+      //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
+      // })
+      // setIsSubmitting(false)
     }
   })
 
@@ -160,28 +147,41 @@ const InterviewPage = () => {
 
         <div className='filter-container'>
           <div className='inputName'>
-            <input type={'text'} className='form-control' placeholder='Input name of candidate...' onChange={formikSearch.handleChange} />
+            <input type={'text'} className='form-control' placeholder='Candidate name...' name='name' value={formikSearch.values.name} onChange={formikSearch.handleChange} />
           </div>
+
+          <div className='mr-5'>
+            <input type={'date'} className='form-control' name='date' value={formikSearch.values.date} onChange={formikSearch.handleChange} />
+          </div>
+
+          <Autocomplete
+            blurOnSelect={true}
+            options={interviewRoundData()}
+            size={'small'}
+            sx={{ width: 120, marginRight: 2 }}
+            renderInput={(params) => <TextField {...params} label="Round" />}
+            onChange={(event, value) => { formikSearch.setFieldValue('round', value) }}
+          />
 
           <Autocomplete
             blurOnSelect={true}
             options={interviewTypeData()}
             size={'small'}
             sx={{ width: 170, marginRight: 2 }}
+            renderInput={(params) => <TextField {...params} label="Type" />}
+            onChange={(event, value) => { formikSearch.setFieldValue('type', value) }}
+          />
+
+          <Autocomplete
+            blurOnSelect={true}
+            options={interviewStatusData()}
+            size={'small'}
+            sx={{ width: 170, marginRight: 2 }}
             renderInput={(params) => <TextField {...params} label="Status" />}
-            //onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }}
-             />
+            onChange={(event, value) => { formikSearch.setFieldValue('status', value) }}
+          />
 
-          <div className='mr-5'>
-            <input type={'date'} className='form-control' onChange={() => { formikSearch.handleChange()}} 
-            />
-          </div>
-
-          <div className='mr-5'> 
-            <input type={'date'} className='form-control' onChange={formikSearch.handleChange} />
-          </div>
-
-          <img src={SearchIcon} alt="" width={'50rem'} title='Search' onClick={formikSearch.handleSubmit} />
+          <img src={SearchIcon} alt="" width={'50rem'} title='Search' className='hover:cursor-pointer' onClick={formikSearch.handleSubmit} />
         </div>
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListInterviewSchedule listInterviewSchedule={listInterviewSchedule} />}
@@ -306,7 +306,8 @@ const ChooseRecruitmentRequestTab = ({ formikCreate }) => {
         sx={{ width: '100%', marginTop: '1rem' }}
         getOptionLabel={option => option.name}
         renderInput={(params) => <TextField {...params} label="Department" />}
-        onChange={(event, value) => { setCurrentDepartment(value.id) }} />
+        onChange={(event, value) => { setCurrentDepartment(value.id) }}
+      />
 
       <div>
         <Autocomplete
@@ -316,7 +317,8 @@ const ChooseRecruitmentRequestTab = ({ formikCreate }) => {
           disabled={currentDepartment === undefined}
           getOptionLabel={option => option.name}
           renderInput={(params) => <TextField {...params} label="Recruitment request" />}
-          onChange={(event, value) => { formikCreate.setFieldValue('recruitmentRequestId', value.id) }} />
+          onChange={(event, value) => { formikCreate.setFieldValue('recruitmentRequestId', value.id) }}
+        />
         {formikCreate.errors.recruitmentRequestId && formikCreate.touched.recruitmentRequestId && (
           <div className='text-[#ec5555]'>{formikCreate.errors.recruitmentRequestId}</div>
         )}
@@ -383,7 +385,8 @@ const ChoosePaticipantsTab = ({ formikCreate }) => {
               sx={{ width: '85%', marginTop: '1rem' }}
               getOptionLabel={option => option.name}
               renderInput={(params) => <TextField {...params} label="Candidate" />}
-              onChange={(event, value) => { formikCreate.setFieldValue('candidateId', value.id) }} />
+              onChange={(event, value) => { formikCreate.setFieldValue('candidateId', value.id) }}
+            />
             {formikCreate.errors.industry && formikCreate.touched.industry && (
               <div className='text-[#ec5555]'>{formikCreate.errors.industry}</div>
             )}
@@ -397,7 +400,8 @@ const ChoosePaticipantsTab = ({ formikCreate }) => {
               sx={{ width: '85%', marginTop: '1rem' }}
               getOptionLabel={option => option.name}
               renderInput={(params) => <TextField {...params} label="Employee" />}
-              onChange={(event, value) => { setListEmpInterview(value) }} />
+              onChange={(event, value) => { setListEmpInterview(value) }}
+            />
             {formikCreate.errors.employeeId && formikCreate.touched.employeeId && (
               <div className='text-[#ec5555]'>{formikCreate.errors.employeeId}</div>
             )}
@@ -432,7 +436,8 @@ const FillInformationTab = ({ formikCreate }) => {
             size={'small'}
             sx={{ width: '100%', marginRight: '2rem' }}
             renderInput={(params) => <TextField {...params} label="Round" />}
-            onChange={(event, value) => { formikCreate.setFieldValue('round', value) }} />
+            onChange={(event, value) => { formikCreate.setFieldValue('round', value) }}
+          />
           {formikCreate.errors.round && formikCreate.touched.round && (
             <div className='text-[#ec5555]'>{formikCreate.errors.round}</div>
           )}

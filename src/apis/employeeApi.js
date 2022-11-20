@@ -1,8 +1,8 @@
 import axiosConfig from "../configs/axiosConfig";
 
-export const getEmployeeByDepartment = async (token, id) => {
+export const getEmployeeByDepartment = async (token, id, pageNo, pageSize) => {
   return await axiosConfig
-    .get(`candidate/getCandidateAppliedByRecruitment?recruitmentId=${id}`, {
+    .get(`employee/getEmployeesByDepartment?departmentId=${id}&pageNo=${pageNo}&pageSize=${pageSize}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => response.data)
