@@ -25,7 +25,7 @@ const InterviewDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllInterviewDetail(currentUser.token, pagination.currentPage - 1, 4) : await getInterviewDetailByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
+      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllInterviewDetail(currentUser.token, pagination.currentPage - 1, 4) : await getInterviewDetailByDepartment(currentUser.token, currentUser.employee.department.name, pagination.currentPage - 1, 5);
       if (response) {
         setListInterviewDetail(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
@@ -54,14 +54,14 @@ const InterviewDetailPage = () => {
             <input type={'text'} className='form-control' placeholder='Input name of candidate...' onChange={formikSearch.handleChange} />
           </div> */}
 
-          <Autocomplete
+          {/* <Autocomplete
             blurOnSelect={true}
             options={interviewTypeData()}
             size={'small'}
             sx={{ width: 170, marginRight: 2 }}
             renderInput={(params) => <TextField {...params} label="Status" />}
-          //onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }}
-          />
+          onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }}
+          /> */}
 
           {/* <div className='mr-5'>
             <input type={'date'} className='form-control' onChange={() => { formikSearch.handleChange()}} 
@@ -77,7 +77,7 @@ const InterviewDetailPage = () => {
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListInterviewDetail listInterviewDetail={listInterviewDetail} />}
 
-        <div className='pagination-container'>
+        <div className='flex justify-center bg-[#FFF] w-[90%] mx-auto'>
           <Stack spacing={2}>
             <Pagination count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} />
           </Stack>

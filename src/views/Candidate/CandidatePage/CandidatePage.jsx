@@ -24,11 +24,11 @@ const CandidatePage = () => {
 
   const [isLoading, setIsLoading] = useState(true)
   const [listCandidate, setListCandidate] = useState([])
-  const [searchObject, setSearchObject] = useState({ name: "", position: "" });
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [fileCV, setFileCV] = useState(null)
   const [listPosition, setListPosition] = useState([])
+  const [isRegisting, setIsRegisting] = useState(false)
 
   const style = {
     position: 'absolute',
@@ -48,7 +48,6 @@ const CandidatePage = () => {
       setIsLoading(true)
       const response = await getAllCandidate(pagination.currentPage - 1, 10, currentUser.token);
       if (response) {
-        //console.log('CCCCCCCCCCCCCCC',response.data);
         setListCandidate(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
         setIsLoading(false)
@@ -91,12 +90,11 @@ const CandidatePage = () => {
   const formikCreate = useFormik({
     initialValues: {
       address: '',
-      dob: '',
+      dob: new Date().toJSON().slice(0, 10),
       email: '',
       gender: '',
       image: '',
       name: '',
-      notificationToken: '',
       password: DEFAULT_PASSWORD,
       phone: ''
     },
@@ -107,8 +105,10 @@ const CandidatePage = () => {
       phone: Yup.string().required('Please input candidate phone number').matches(/^[0-9\-\\+]{10}$/, 'This phone number is invalid'),
     }),
     onSubmit: async (values) => {
-      await createCandidate(values).then((response) => {
+      setIsRegisting(true)
+      await createCandidate(values).then((response) => {       
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
+        setIsRegisting(false)
       })
     }
   })
@@ -227,6 +227,7 @@ const CandidatePage = () => {
               <div className='flex justify-evenly'>
                 <button onClick={() => setOpenModalCreate(false)} className='bg-[#F64E60] text-[#FFF] px-5 py-2 rounded-lg'>Cancel</button>
                 <button type='submit' className='bg-[#20D489] text-[#FFF] px-5 py-2 rounded-lg'>Create</button>
+                {isRegisting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} height={37}/>}
               </div>
             </form>
           </div>

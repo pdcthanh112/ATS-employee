@@ -12,10 +12,10 @@ export const getAllInterviewDetail = async (token, pageNo, pageSize) => {
     .catch((error) => error);
 };
 
-export const getInterviewDetailByDepartment = async (token, depId, pageNo, pageSize) => {
+export const getInterviewDetailByDepartment = async (token, depName, pageNo, pageSize) => {
   return await axiosConfig
     .get(
-      `interview-detail/getByDepartment?id=${depId}&pageNo=${pageNo}&pageSize=${pageSize}`,
+      `interview-detail/getAllInterviewDetailByDepartment?departmentName=${depName}&pageNo=${pageNo}&pageSize=${pageSize}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       }

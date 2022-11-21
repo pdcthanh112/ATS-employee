@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './JobApplyPage.scss'
 
+import {Link} from 'react-router-dom'
 import JobApplyImage from '../../../assets/icon/job-applyImage.png'
 import { getOpeningRecruimentRequest } from '../../../apis/recruimentRequestApi'
 import ReactLoading from 'react-loading'
@@ -18,7 +19,7 @@ const JobApplyPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getOpeningRecruimentRequest(pagination.currentPage - 1, 16);
+      const response = await getOpeningRecruimentRequest(pagination.currentPage - 1, 9);
       if (response && response.data) {
         setListRecruitmentRequest(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
@@ -39,17 +40,20 @@ const JobApplyPage = () => {
         </div>
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
-          <div className='jobApply-content grid grid-cols-4'>
+          <div className='jobApply-content grid grid-cols-3'>
             {listRecruitmentRequest && listRecruitmentRequest.map((item) => (
-              <div key={item.id} className='request-item'>
-                <div className='text-[#20D489] font-medium text-lg'>{item.position.name}</div>
-                <div className='flex m-2'><img src={BriefCase} alt="" width={'18rem'} className='mr-2'/><span className='text-sm'>{item.industry}</span></div>
-                <div className='flex m-2'><img src={Calendar} alt="" width={'18rem'} className='mr-2'/><span className='text-sm'>{item.date}</span></div>
-              </div>
+              <Link to={`/view-job-apply/${item.id}`} target='_blank' key={item.id}>
+                <div className='request-item' title={item.name}>
+                  <div className='font-medium aa' style={{maxLines: 1}}>{item.name}</div>
+                  <div className='text-[#20D489] font-medium text-lg'>{item.position.name}</div>
+                  <div className='flex m-2'><img src={BriefCase} alt="" width={'18rem'} className='mr-2' /><span className='text-sm'>{item.industry}</span></div>
+                  <div className='flex m-2'><img src={Calendar} alt="" width={'18rem'} className='mr-2' /><span className='text-sm'>{item.date}</span></div>
+                </div>
+              </Link>
             ))}
           </div>}
 
-          <div className='flex justify-center'>
+        <div className='flex justify-center'>
           <Stack spacing={2}>
             <Pagination count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} />
           </Stack>

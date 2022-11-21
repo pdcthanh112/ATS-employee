@@ -1,17 +1,14 @@
 import React, { useState } from 'react'
 import './ListInterviewDetail.scss'
 
-import { useSelector } from 'react-redux';
+import ShowMoreIcon from '../../../../assets/icon/viewMore.png'
+import ShowLessIcon from '../../../../assets/icon/viewLess.png'
 
-import ShowMoreIcon from '../../../../assets/icon/showMore.png'
-import ShowLessIcon from '../../../../assets/icon/showLess.png'
-
-import { Box, Collapse, IconButton, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const ListInterviewDetail = ({ listInterviewDetail }) => {
-  console.log('dddd',listInterviewDetail);
 
   return (
     <React.Fragment>
@@ -26,7 +23,7 @@ const ListInterviewDetail = ({ listInterviewDetail }) => {
                 <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '25%' }} align='center'>Email</TableCell>
                 <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '8%' }} align='center'>Round</TableCell>
                 <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Result</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '8%' }} align='center'>Date</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '15%' }} align='center'>Date</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -63,7 +60,7 @@ export default ListInterviewDetail
 const Row = (props) => {
 
   const { ordinalNumbers, item } = props;
-  console.log(item);
+
   const [open, setOpen] = React.useState(false);
 
   return (

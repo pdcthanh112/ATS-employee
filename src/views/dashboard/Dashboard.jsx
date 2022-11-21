@@ -27,13 +27,14 @@ const Dashboard = () => {
   const [listColleagues, setListColleagues] = useState([])
   const [listInterview, setListInterview] = useState([])
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true) 
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
       const response = await getTotalStatusDetail(currentUser.token);
       if (response.data) {
+        console.log(response.data);
         setRecruitmentPlanData(response.data.countStatusPlan)
         setPlanDetailData(response.data.countStatusDetail)
         setRecruitmentRequestData(response.data.countStatusRequest)
@@ -80,12 +81,12 @@ const Dashboard = () => {
               <ApexCharts
                 type="donut"
                 width={'80%'}
-                series={recruitmentPlanData.map((item) => item.total)}
+                series={recruitmentPlanData.total}
                 options={{
                   title: { text: "Recruitment plan" },
                   noData: { text: "Empty Data" },
                   colors: ["#FFC700", "#20D489", "#F1416C"],
-                  labels: recruitmentPlanData.map((item) => item.status)
+                  labels: recruitmentPlanData.status
                 }}
               />
             </div>
@@ -93,12 +94,12 @@ const Dashboard = () => {
               <ApexCharts
                 type="donut"
                 width={'80%'}
-                series={planDetailData.map((item) => item.total)}
+                series={planDetailData.total}
                 options={{
                   title: { text: "Plan detail" },
                   noData: { text: "Empty Data" },
                   colors: ["#FFC700", "#20D489", "#F1416C"],
-                  labels: planDetailData.map((item) => item.status)
+                  labels: planDetailData.status
                 }}
               />
             </div>
@@ -106,12 +107,12 @@ const Dashboard = () => {
               <ApexCharts
                 type="pie"
                 width={'80%'}
-                series={recruitmentRequestData.map((item) => item.total)}
+                series={recruitmentRequestData.total}
                 options={{
                   title: { text: "Recruitment request" },
                   noData: { text: "Empty Data" },
                   colors: ["#FFC700", "#20D489", "#F1416C"],
-                  labels: recruitmentRequestData.map((item) => item.status)
+                  labels: recruitmentRequestData.status
                 }}
               />
             </div>

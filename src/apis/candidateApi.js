@@ -56,7 +56,6 @@ export const createCandidate = async (data) => {
       gender: data.gender,
       image: data.image,
       name: data.name,
-      notificationToken: data.notificationToken,
       password: data.password,
       phone: data.phone,
     })
