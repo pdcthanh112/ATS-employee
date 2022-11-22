@@ -11,6 +11,7 @@ const CuriculumVitaePage = React.lazy(() => import('./views/CuriculumVitae/CVPag
 const JobApplyPage = React.lazy(() => import('./views/JobApply/JobApplyPage/JobApplyPage'))
 const ViewJobApplyPage = React.lazy(() => import('./views/JobApply/ViewJobApply/ViewJobApply'))
 const NotificationPage = React.lazy(() => import('./views/Notification/NotificationPage/NotificationPage'))
+const ChangePasswordPage = React.lazy(() => import('./views/Employee/ChangePassword/ChangePassword'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -25,6 +26,7 @@ const routes = [
   { path: '/job-apply', name: 'Job Apply Page', element: JobApplyPage },
   { path: '/view-job-apply/:id', name: 'View Job Apply Page', element: ViewJobApplyPage },
   { path: '/notification', name: 'Notification Page', element: NotificationPage }, 
+  { path: '/change-password', name: 'Notification Page', element: ChangePasswordPage }, 
 ]
 
 export default routes

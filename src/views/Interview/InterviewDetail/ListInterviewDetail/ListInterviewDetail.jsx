@@ -3,6 +3,7 @@ import './ListInterviewDetail.scss'
 
 import ShowMoreIcon from '../../../../assets/icon/viewMore.png'
 import ShowLessIcon from '../../../../assets/icon/viewLess.png'
+import EditIcon from '../../../../assets/icon/edit-icon.png'
 
 import { Box, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
@@ -24,6 +25,7 @@ const ListInterviewDetail = ({ listInterviewDetail }) => {
                 <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '8%' }} align='center'>Round</TableCell>
                 <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Result</TableCell>
                 <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '15%' }} align='center'>Date</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Edit</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -63,6 +65,10 @@ const Row = (props) => {
 
   const [open, setOpen] = React.useState(false);
 
+  const handleEditPlanDetail  = () => {
+
+  }
+
   return (
     <React.Fragment>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -75,9 +81,10 @@ const Row = (props) => {
         <TableCell align="center">{item.interview.round}</TableCell>
         <TableCell align='center'>{item.result}</TableCell>
         <TableCell align='center'>{item.end}</TableCell>
+        <TableCell align='center'><img src={EditIcon} alt="" width={'30rem'} className='flex justify-center' onClick={() => {handleEditPlanDetail()}}/></TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">Detail</Typography>
@@ -123,6 +130,8 @@ const Row = (props) => {
           </Collapse>
         </TableCell>
       </TableRow>
+
+      
     </React.Fragment>
   );
 }

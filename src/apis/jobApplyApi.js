@@ -11,7 +11,7 @@ export const getJobApplyNotReject = async (token, id, pageNo, pageSize) => {
 
 export const approveJobApply = async (token, id, empId) => {
   return await axiosConfig
-    .get(`jobApply/approvedJobApply/{id}?employeeId=${empId}&id=${id}`, {
+    .put(`jobApply/approvedJobApply/{id}?employeeId=${empId}&id=${id}`, {},  {
       headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => response.data)
@@ -20,7 +20,7 @@ export const approveJobApply = async (token, id, empId) => {
 
 export const rejectJobApply = async (token, id, empId) => {
   return await axiosConfig
-    .get(`jobApply/cancelJobApply/{id}?employeeId=${empId}&id=${id}`, {
+    .put(`jobApply/cancelJobApply/{id}?employeeId=${empId}&id=${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => response.data)

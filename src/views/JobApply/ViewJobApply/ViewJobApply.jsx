@@ -3,7 +3,7 @@ import './ViewJobApply.scss'
 
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { getJobApplyNotReject } from '../../../apis/jobApplyApi'
+import { approveJobApply, getJobApplyNotReject, rejectJobApply } from '../../../apis/jobApplyApi'
 import ReactLoading from 'react-loading'
 import { Box, Collapse, IconButton, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import ShowMoreIcon from '../../../assets/icon/viewMore.png'
@@ -32,7 +32,6 @@ const ViewJobApply = () => {
       if (response && response.data) {
         setListJobApply(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
-        console.log(response.data.responseList);
       }
       else {
         setListJobApply([])
@@ -81,7 +80,7 @@ const Row = (props) => {
   const currentUser = useSelector((state) => state.auth.login.currentUser)
   const [open, setOpen] = React.useState(false);
 
-const approveJobApply = async (id) => {
+const handleApproveJobApply = async (id) => {
   await confirm({ message: "Are you sure to aprrove this candidate?" }).then((response) => {
     if (response) {
       approveJobApply(currentUser.token, id, currentUser.employee.id).then((response) => {
@@ -91,7 +90,7 @@ const approveJobApply = async (id) => {
   })
 }
 
-const rejectJobApply = async (id) => {
+const handleRejectJobApply = async (id) => {
   await confirm({ message: "Are you sure to reject this candidate?" }).then((response) => {
     if (response) {
       rejectJobApply(currentUser.token, id, currentUser.employee.id).then((response) => {
@@ -115,12 +114,12 @@ const rejectJobApply = async (id) => {
         <TableCell align="center"><a href={item.cv.linkCV} target='_blank' title='View CV' className='flex justify-center' rel="noreferrer"><img src={cvIcon} alt="" width={'40rem'} /></a></TableCell>
         <TableCell align='center'>{item.status}</TableCell>
         <TableCell align='center' style={{ display: 'flex', justifyContent: 'space-around' }}>
-          <img src={ApproveIcon} alt="" width={'40rem'} title='Approve this candidate' className='hover:cursor-pointer' onClick={() => approveJobApply(item.id)}/>
-          <img src={RejectIcon} alt="" width={'40rem'} title='Reject this candidate' className='hover:cursor-pointer' onClick={() => rejectJobApply(item.id)}/>
+          <img src={ApproveIcon} alt="" width={'40rem'} title='Approve this candidate' className='hover:cursor-pointer' onClick={() => handleApproveJobApply(item.id)}/>
+          <img src={RejectIcon} alt="" width={'40rem'} title='Reject this candidate' className='hover:cursor-pointer' onClick={() => handleRejectJobApply(item.id)}/>
         </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">Detail</Typography>
@@ -140,7 +139,7 @@ const rejectJobApply = async (id) => {
                     <TableCell>{item.foreignLanguage}</TableCell>
                     <TableCell align='center'>{item.recruitmentRequest.experience}</TableCell>
                     <TableCell align='center'>{item.recruitmentRequest.position.name}</TableCell>
-                    <TableCell align='right'>{item.recruitmentRequest.typeOfWork}</TableCell>
+                    <TableCell align='center'>{item.recruitmentRequest.typeOfWork}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

@@ -35,7 +35,7 @@ const JobApplyPage = () => {
 
       <div className='jobApply-container'>
         <div className='title-container'>
-          <span className='font-medium text-3xl mr-3'>Recruitment Request</span>
+          <span className='font-medium text-3xl mr-3'>Choose recruitment request</span>
           <img src={JobApplyImage} alt='' width={'30rem'} />
         </div>
 

@@ -80,10 +80,10 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
       reason: Yup.string().required('Please input reason'),
     }),
     onSubmit: async (values) => {
-      setIsDeleting(true)
+      setIsEditting(true)
       await cancelInterview(currentUser.token, values).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Cancel successfully') : toast.error('Cancel fail')
-        setIsDeleting(false)
+        setIsEditting(false)
       })
     }
   })
@@ -101,6 +101,7 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
       await cancelInterview(currentUser.token, values).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Cancel successfully') : toast.error('Cancel fail')
         setIsDeleting(false)
+        setOpenModalReason(false)
       })
     }
   })
@@ -155,25 +156,6 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
     })
   }
 
-  const handleEditInterview = async (interviewItem) => {
-    setOpenModalEdit(true)
-    formikCancel.values.interviewId = interviewItem.id
-    formikCancel.values.address = interviewItem.address
-    formikCancel.values.candidateId = interviewItem.candidateId
-    formikCancel.values.date = interviewItem.date
-    formikCancel.values.description = interviewItem.description
-    formikCancel.values.employeeIds = interviewItem.employeeIds
-    formikCancel.values.jobApplyId = interviewItem.jobApplyId
-    formikCancel.values.linkMeeting = interviewItem.linkMeeting
-    formikCancel.values.purpose = interviewItem.purpose
-    formikCancel.values.room = interviewItem.room
-    formikCancel.values.round = interviewItem.round
-    formikCancel.values.subject = interviewItem.subject
-    formikCancel.values.time = interviewItem.time
-    formikCancel.values.type = interviewItem.type
-
-  }
-
   const handleCloseInterview = async (interviewId) => {
     await confirm({ message: "Are you sure to close this interview?" }).then((response) => {
       if (response) {
@@ -206,17 +188,19 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
                 <div className='flex justify-between w-[60%] ml-4'>
                   <div className='bg-[#FFF4DE] text-[#FFA800] text-sm font-semibold px-3 py-2 rounded-lg h-9'>PENDING</div>
                   <div className='flex'>
-                    {currentUser.employee.position.name === positionName.POSITION_HR ? <React.Fragment>
-                      <span onClick={() => { handleEditInterview(item) }}><img src={EditIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Edit this interview' /></span>
+                    {currentUser.employee.position.name === positionName.POSITION_HR ?
                       <span onClick={() => { handleCancelInterview(item.id) }}><img src={DeleteIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Cancel this interview' /></span>
-                    </React.Fragment> : <React.Fragment>
-                      <span onClick={() => { confirmInterviewByEmp(item.id) }}><img src={ApproveIcon} alt="" width={'40rem'} className='mr-2 hover:cursor-pointer' title='Approve this interview' /></span>
-                      <span onClick={() => { rejectInterviewByEmp(item.id) }}><img src={RejectIcon} alt="" width={'20rem'} className='mt-2 hover:cursor-pointer' title='Reject this interview' /></span> </React.Fragment>}
+                      : <React.Fragment>
+                        {item.employeeConfirm && <React.Fragment>
+                          <span onClick={() => { confirmInterviewByEmp(item.id) }}><img src={ApproveIcon} alt="" width={'40rem'} className='mr-2 hover:cursor-pointer' title='Approve this interview' /></span>
+                          <span onClick={() => { rejectInterviewByEmp(item.id) }}><img src={RejectIcon} alt="" width={'20rem'} className='mt-2 hover:cursor-pointer' title='Reject this interview' /></span>
+                        </React.Fragment>}
+                      </React.Fragment>}
                   </div>
                 </div>}
               {item.status === interviewStatus.DONE && <div className='flex justify-between'>
                 <div className='bg-[#E9FCE9] text-[#00FF00] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>DONE</div>
-                <div className='mt-2 ml-10 hover:cursor-pointer hover:underline hover:text-[#116835]' onClick={() => handleCreateInterviewDetail(item.id)}>Add result of interview</div>
+                {currentUser.employee.position.name === positionName.POSITION_HR && <div className='mt-2  hover:cursor-pointer hover:underline hover:text-[#116835]' onClick={() => handleCreateInterviewDetail(item.id)}>Add result of interview</div>}
               </div>}
               {item.status === interviewStatus.APPROVED && <div className='flex justify-between '>
                 <div className='bg-[#C9F7F5] text-[#1BC5BD] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>APPROVED</div>

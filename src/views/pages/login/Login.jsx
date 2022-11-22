@@ -99,7 +99,7 @@ const Login = () => {
           </div>
           {loginError && <div className='input-error p-2 rounded'>Tên đăng nhập hoặc mật khẩu không chính xác</div>}
           <div className='my-4'>
-            <a href="/#/forget-password" style={{ marginLeft: '17rem' }}>Quên mật khẩu</a>
+            <a href="/#/forget-password" style={{ marginLeft: '16rem' }}>Quên mật khẩu</a>
           </div>
           <div className='flex'>
             <button type='submit' className='btn-login'>Đăng nhập</button>

@@ -18,29 +18,50 @@ export const getAllInterview = async (token, pageNo, pageSize) => {
     .catch((error) => error);
 };
 
-export const getInterviewByDepartment = async (token, depId, pageNo, pageSize) => {
+export const getInterviewByDepartment = async (
+  token,
+  depId,
+  pageNo,
+  pageSize
+) => {
   return await axiosConfig
-    .get(`interview/getInterviewByDepartment?departmentId=${depId}&pageNo=${pageNo}&pageSize=${pageSize}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(
+      `interview/getInterviewByDepartment?departmentId=${depId}&pageNo=${pageNo}&pageSize=${pageSize}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
     .then((response) => response.data)
     .catch((error) => error);
 };
 
 export const getInterviewByEmployee = async (token, id, pageNo, pageSize) => {
   return await axiosConfig
-    .get(`interview/getInterviewByEmployeeID?employeeId=${id}&pageNo=${pageNo}&pageSize=${pageSize}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(
+      `interview/getInterviewByEmployeeID?employeeId=${id}&pageNo=${pageNo}&pageSize=${pageSize}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
     .then((response) => response.data)
     .catch((error) => error);
 };
 
-export const searchInterviewSchedule = async (token, id, pageNo, pageSize) => {///////////////////////////////////////////////////////////////////////////////
+export const searchInterviewSchedule = async (token, data) => {
   return await axiosConfig
-    .get(`interview/getInterviewByEmployeeID?employeeId=${id}&pageNo=${pageNo}&pageSize=${pageSize}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .put(
+      "interview/searchInterview",
+      {
+        candidateName: data.name,
+        date: data.date,
+        round: data.round,
+        status: data.status.toUpperCase(),
+        type: data.type.toUpperCase(),
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
     .then((response) => response.data)
     .catch((error) => error);
 };
@@ -113,14 +134,11 @@ export const cancelInterview = async (token, data) => {
     .catch((error) => error.response.data);
 };
 
-export const closeInterview = async (token, id) => {  
+export const closeInterview = async (token, id) => {
   return await axiosConfig
-    .patch(
-      `interview/closeInterview?id=${id}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    .put(`interview/closeInterview?id=${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     .then((response) => response.data)
     .catch((error) => error.response.data);
 };

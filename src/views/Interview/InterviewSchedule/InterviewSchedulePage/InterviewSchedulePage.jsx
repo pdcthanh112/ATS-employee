@@ -10,7 +10,7 @@ import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosiz
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { createInterview, getAllInterview, getInterviewByDepartment } from '../../../../apis/interviewScheduleApi';
+import { createInterview, getAllInterview, getInterviewByEmployee, searchInterviewSchedule } from '../../../../apis/interviewScheduleApi';
 import InterviewIcon from '../../../../assets/icon/calendar.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
 import AddIcon from '../../../../assets/icon/plus.png'
@@ -51,7 +51,7 @@ const InterviewPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllInterview(currentUser.token, pagination.currentPage - 1, 4) : await getInterviewByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
+      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllInterview(currentUser.token, pagination.currentPage - 1, 4) : await getInterviewByEmployee(currentUser.token, currentUser.employee.id, pagination.currentPage - 1, 4);
       if (response) {
         setListInterviewSchedule(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
@@ -105,7 +105,6 @@ const InterviewPage = () => {
       //type: Yup.string().required('Please choose type of interview'),
     }),
     onSubmit: async (values) => {
-      console.log('values', values);
       setIsSubmitting(true)
       await createInterview(currentUser.token, values).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
@@ -124,11 +123,13 @@ const InterviewPage = () => {
     },
     onSubmit: async (values) => {
       console.log('values', values);
-      // setIsSubmitting(true)
-      // await createInterview(currentUser.token, values).then((response) => {
-      //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-      // })
-      // setIsSubmitting(false)
+      setIsLoading(true)
+      await searchInterviewSchedule(currentUser.token, values).then((response) => {
+        if(response && response.data) {
+          setListInterviewSchedule(response.data)
+        }
+      })
+      setIsLoading(false)
     }
   })
 
@@ -155,30 +156,27 @@ const InterviewPage = () => {
           </div>
 
           <Autocomplete
-            blurOnSelect={true}
             options={interviewRoundData()}
             size={'small'}
             sx={{ width: 120, marginRight: 2 }}
             renderInput={(params) => <TextField {...params} label="Round" />}
-            onChange={(event, value) => { formikSearch.setFieldValue('round', value) }}
+            onInputChange={(event, value) => { formikSearch.setFieldValue('round', value) }}
           />
 
           <Autocomplete
-            blurOnSelect={true}
             options={interviewTypeData()}
             size={'small'}
             sx={{ width: 170, marginRight: 2 }}
             renderInput={(params) => <TextField {...params} label="Type" />}
-            onChange={(event, value) => { formikSearch.setFieldValue('type', value) }}
+            onInputChange={(event, value) => { formikSearch.setFieldValue('type', value.toUpperCase()) }}
           />
 
           <Autocomplete
-            blurOnSelect={true}
             options={interviewStatusData()}
             size={'small'}
             sx={{ width: 170, marginRight: 2 }}
             renderInput={(params) => <TextField {...params} label="Status" />}
-            onChange={(event, value) => { formikSearch.setFieldValue('status', value) }}
+            onInputChange={(event, value) => { formikSearch.setFieldValue('status', value.toUpperCase()) }}
           />
 
           <img src={SearchIcon} alt="" width={'50rem'} title='Search' className='hover:cursor-pointer' onClick={formikSearch.handleSubmit} />
