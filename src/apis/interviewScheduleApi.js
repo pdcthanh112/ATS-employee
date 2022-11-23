@@ -96,7 +96,7 @@ export const createInterview = async (token, data) => {
 export const confirmInterview = async (token, employeeId, interviewId) => {
   return await axiosConfig
     .patch(
-      `interview/confirmByEmployee?idEmployee=${employeeId}&idInterview=${interviewId}`,
+      `interview/confirmByEmployee?idEmployee=${employeeId}&idInterview=${interviewId}`, {},
       {
         headers: { Authorization: `Bearer ${token}` },
       }
@@ -108,7 +108,7 @@ export const confirmInterview = async (token, employeeId, interviewId) => {
 export const rejectInterview = async (token, employeeId, interviewId) => {
   return await axiosConfig
     .patch(
-      `interview/rejectByEmployee?idEmployee=${employeeId}&idInterview=${interviewId}`,
+      `interview/rejectByEmployee?idEmployee=${employeeId}&idInterview=${interviewId}`, {},
       {
         headers: { Authorization: `Bearer ${token}` },
       }
@@ -136,7 +136,8 @@ export const cancelInterview = async (token, data) => {
 
 export const closeInterview = async (token, id) => {
   return await axiosConfig
-    .put(`interview/closeInterview?id=${id}`, {
+    .put(`interview/closeInterview?id=${id}`, {},
+    {
       headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => response.data)

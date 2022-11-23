@@ -9,7 +9,6 @@ import {
 } from "../redux/authSlice";
 
 export const loginUser = async (user, dispatch, navigate) => {
-  console.log('user', user);
   dispatch(loginStart());
   try {
     const response = await axiosConfig.post("/auth/login", user);
