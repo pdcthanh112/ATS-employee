@@ -13,9 +13,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import CandidateIcon from '../../../assets/icon/candidateImage.png'
 import SearchIcon from '../../../assets/icon/filter.png'
-import { createCandidate, getAllCandidate } from '../../../apis/candidateApi'
+import { createCandidate, getAllActivateCandidate, getAllCandidate } from '../../../apis/candidateApi'
 import ListCandidate from '../ListCandidate/ListCandidate';
-import { DEFAULT_PASSWORD, responseStatus } from '../../../utils/constants'
+import { DEFAULT_PASSWORD, positionName, responseStatus } from '../../../utils/constants'
 import { getPositionByDepartment } from '../../../apis/departmentApi';
 
 const CandidatePage = () => {
@@ -46,7 +46,7 @@ const CandidatePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getAllCandidate(pagination.currentPage - 1, 10, currentUser.token);
+      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllCandidate(currentUser.token, pagination.currentPage - 1, 10) : await getAllActivateCandidate(currentUser.token, pagination.currentPage - 1, 10);
       if (response) {
         setListCandidate(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
@@ -145,7 +145,7 @@ const CandidatePage = () => {
           <div className='flex'>
             <img src={SearchIcon} alt="" width={'40rem'} title='Search' onClick={() => onHandleSearch()} />
             <div className='inputName'>
-              <input type={'text'} className='focus:outline-none' placeholder='Nhập tên ứng viên...' style={{ margin: '5px 7px' }} onChange={(event) => { handleChangeSearchObject('name', event.target.value) }} />
+              <input type={'text'} className='focus:outline-none' placeholder='Candidate name...' style={{ margin: '5px 7px' }} onChange={(event) => { handleChangeSearchObject('name', event.target.value) }} />
             </div>
             <Autocomplete
               options={listPosition}

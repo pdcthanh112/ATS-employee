@@ -188,7 +188,7 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
                 <div className='flex justify-between w-[60%] ml-4'>
                   <div className='bg-[#FFF4DE] text-[#FFA800] text-sm font-semibold px-3 py-2 rounded-lg h-9'>PENDING</div>
                   <div className='flex'>
-                    {currentUser.employee.position.name === positionName.POSITION_HR ?
+                    {currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) ?
                       <span onClick={() => { handleCancelInterview(item.id) }}><img src={DeleteIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Cancel this interview' /></span>
                       : <React.Fragment>
                         {item.employeeConfirm && <React.Fragment>
@@ -204,7 +204,7 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
               </div>}
               {item.status === interviewStatus.APPROVED && <div className='flex justify-between '>
                 <div className='bg-[#C9F7F5] text-[#1BC5BD] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>APPROVED</div>
-                <div onClick={() => handleCloseInterview(item.id)}><img src={CheckDoneIcon} alt="" width={'30rem'} className='hover:cursor-pointer ml-2' title='Close this interview' /></div>
+                {currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) && <div onClick={() => handleCloseInterview(item.id)}><img src={CheckDoneIcon} alt="" width={'30rem'} className='hover:cursor-pointer ml-2' title='Close this interview' /></div>}
               </div>}
               {item.status === interviewStatus.CANCELED && <div className='bg-[#FFE2E5] text-[#F64E60] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>CANCELED</div>}
             </div>

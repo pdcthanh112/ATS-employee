@@ -4,6 +4,7 @@ import './InterviewSchedulePage.scss'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
+import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import ReactLoading from 'react-loading';
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize, Switch, FormControlLabel } from '@mui/material';
@@ -14,6 +15,7 @@ import { createInterview, getAllInterview, getInterviewByEmployee, searchIntervi
 import InterviewIcon from '../../../../assets/icon/calendar.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
 import AddIcon from '../../../../assets/icon/plus.png'
+import DepartmentInterviewIcon from '../../../../assets/icon/department-interview.png'
 import ListInterviewSchedule from '../ListInterviewSchedule/ListInterviewSchedule';
 import { interviewType, positionName, responseStatus } from '../../../../utils/constants';
 import { getAllDepartment } from '../../../../apis/departmentApi';
@@ -125,7 +127,7 @@ const InterviewPage = () => {
       console.log('values', values);
       setIsLoading(true)
       await searchInterviewSchedule(currentUser.token, values).then((response) => {
-        if(response && response.data) {
+        if (response && response.data) {
           setListInterviewSchedule(response.data)
         }
       })
@@ -141,10 +143,17 @@ const InterviewPage = () => {
           <img src={InterviewIcon} alt='' width={'30rem'} />
         </div>
 
-        {currentUser.employee.position.name === positionName.POSITION_HR && <div className='create-schedule' onClick={() => setOpenModalCreate(true)} title='Create a new interview'>
+        {currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) && <div className='create-schedule' onClick={() => setOpenModalCreate(true)} title='Create a new interview'>
           <span className='mr-1'>Create an interview</span>
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' /></span>
         </div>}
+
+        {currentUser.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) || currentUser.employee.position.name.toUpperCase().includes(positionName.MANAGER) ?
+          <div className='flex justify-end mr-20'>
+            <img src={DepartmentInterviewIcon} alt="" width={'30rem'}/>
+            <Link to={`/department-interview/${currentUser.employee.department.id}`} target="_blank" className='text-[#1DAF5A] text-lg ml-2'>View department interview</Link>
+          </div> : <></>
+        }
 
         <div className='filter-container'>
           <div className='inputName'>
