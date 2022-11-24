@@ -87,8 +87,7 @@ export const approvePlanDetail = async (token, empId, planId) => {
     .catch((error) => error);
 };
 
-
-export const editPlanDetail = async (id, planData, token) => {
+export const editPlanDetail = async (token, id, planData) => {
   return await axiosConfig
     .put(
       `planDetail/update?id=${id}`,
@@ -110,4 +109,17 @@ export const editPlanDetail = async (id, planData, token) => {
     )
     .then((response) => response.data)
     .catch((error) => error);
+};
+
+export const cancelPlanDetail = async (token, empId, planId) => {
+  return await axiosConfig.put(
+    "planDetail/canceled",
+    {
+      employeeId: empId,
+      id: planId,
+    },
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
 };

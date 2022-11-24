@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import './ListInterviewDetail.scss'
-
+import { useSelector } from 'react-redux';
 import ShowMoreIcon from '../../../../assets/icon/viewMore.png'
 import ShowLessIcon from '../../../../assets/icon/viewLess.png'
 import EditIcon from '../../../../assets/icon/edit-icon.png'
-
+import { positionName } from '../../../../utils/constants'
 import { Box, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -37,7 +37,6 @@ const ListInterviewDetail = ({ listInterviewDetail }) => {
         </TableContainer>
       </div>
 
-
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -51,7 +50,6 @@ const ListInterviewDetail = ({ listInterviewDetail }) => {
         theme="light"
       />
 
-
     </React.Fragment>
   )
 }
@@ -62,10 +60,11 @@ export default ListInterviewDetail
 const Row = (props) => {
 
   const { ordinalNumbers, item } = props;
+  const currentUser = useSelector((state) => state.auth.login.currentUser)
 
   const [open, setOpen] = React.useState(false);
 
-  const handleEditPlanDetail  = () => {
+  const handleEditPlanDetail = () => {
 
   }
 
@@ -81,7 +80,7 @@ const Row = (props) => {
         <TableCell align="center">{item.interview.round}</TableCell>
         <TableCell align='center'>{item.result}</TableCell>
         <TableCell align='center'>{item.end}</TableCell>
-        <TableCell align='center'><img src={EditIcon} alt="" width={'30rem'} className='flex justify-center' onClick={() => {handleEditPlanDetail()}}/></TableCell>
+        {currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) && <TableCell align='center'><img src={EditIcon} alt="" width={'30rem'} className='mx-auto' onClick={() => { handleEditPlanDetail() }} /></TableCell>}
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
@@ -131,7 +130,6 @@ const Row = (props) => {
         </TableCell>
       </TableRow>
 
-      
     </React.Fragment>
   );
 }

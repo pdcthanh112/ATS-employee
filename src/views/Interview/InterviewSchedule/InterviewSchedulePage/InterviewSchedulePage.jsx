@@ -11,7 +11,7 @@ import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosiz
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { createInterview, getAllInterview, getInterviewByEmployee, searchInterviewSchedule } from '../../../../apis/interviewScheduleApi';
+import { createInterview, getAcceptableInterviewByEmployee, getAllInterview, searchInterviewSchedule } from '../../../../apis/interviewScheduleApi';
 import InterviewIcon from '../../../../assets/icon/calendar.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
 import AddIcon from '../../../../assets/icon/plus.png'
@@ -53,7 +53,7 @@ const InterviewPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllInterview(currentUser.token, pagination.currentPage - 1, 4) : await getInterviewByEmployee(currentUser.token, currentUser.employee.id, pagination.currentPage - 1, 4);
+      const response = currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) ? await getAllInterview(currentUser.token, pagination.currentPage - 1, 4) : await getAcceptableInterviewByEmployee(currentUser.token, currentUser.employee.id, pagination.currentPage - 1, 4);
       if (response) {
         setListInterviewSchedule(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })

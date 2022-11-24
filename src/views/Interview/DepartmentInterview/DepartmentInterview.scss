@@ -1,0 +1,20 @@
+.listInterview-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 2rem 3rem;
+  
+    .listInterview-item {
+      border: 2px solid #000;
+      border-radius: 0.5rem;
+      padding: 1rem 2rem;
+      margin: 0 2rem 2rem 1rem;
+      background-color: #fff;
+      
+      .field-item {
+        border: 2px solid #116835;
+        border-radius: 1rem;
+        padding: 5px 2px 5px 10px;
+      }
+    }
+  }
+  

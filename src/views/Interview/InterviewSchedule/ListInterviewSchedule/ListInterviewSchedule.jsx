@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import InterviewIcon from '../../../../assets/icon/date-time-icon.png'
 import ApproveIcon from '../../../../assets/icon/check.png'
 import RejectIcon from '../../../../assets/icon/close.png'
-import EditIcon from '../../../../assets/icon/edit.png'
 import DeleteIcon from '.././../../../assets/icon/trash.png'
 import CheckDoneIcon from '.././../../../assets/icon/check-done.png'
 

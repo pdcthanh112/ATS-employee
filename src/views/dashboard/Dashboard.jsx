@@ -34,7 +34,6 @@ const Dashboard = () => {
       setIsLoading(true)
       const response = await getTotalStatusDetail(currentUser.token);
       if (response.data) {
-        console.log(response.data);
         setRecruitmentPlanData(response.data.countStatusPlan)
         setPlanDetailData(response.data.countStatusDetail)
         setRecruitmentRequestData(response.data.countStatusRequest)

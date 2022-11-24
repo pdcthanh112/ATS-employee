@@ -18,7 +18,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getPlanApprovedByDepartment } from '../../../../apis/recruitmentPlanApi';
 import { confirm } from "mui-confirm-modal";
-import { approvePlanDetail, editPlanDetail } from '../../../../apis/planDetailApi';
+import { approvePlanDetail, cancelPlanDetail, editPlanDetail } from '../../../../apis/planDetailApi';
 
 
 const ListPlanDetail = ({ listPlanDetail }) => {
@@ -53,7 +53,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
     boxShadow: 24,
   };
 
-  const formik = useFormik({
+  const formikEdit = useFormik({
     initialValues: {
       amount: 0,
       planDetailId: '',
@@ -81,46 +81,45 @@ const ListPlanDetail = ({ listPlanDetail }) => {
     }),
     onSubmit: async (values) => {
       console.log('value', values);
-      await editPlanDetail(formik.values.planDetailId, currentUser.token).then(response => {
-        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
+      await editPlanDetail(currentUser.token, formikEdit.values.planDetailId, values).then(response => {
+        response.status === responseStatus.SUCCESS ? toast.success('Update successfully') : toast.error('Something error')
       })
     }
   })
 
   const handleApprovePlanDetail = async (planId) => {
-    await confirm({ message: "Are you sure to approve this plan?" }).then((response) => {
+    await confirm({ message: "Are you sure to confirm this plan?" }).then((response) => {
       if (response) {
         approvePlanDetail(currentUser.token, currentUser?.employee.id, planId).then((response) => {
-          response.status === responseStatus.SUCCESS ? toast.success('Approve successfully') : toast.error('Something error')
+          response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
+        })
+      }
+    })
+  }
+  const handleRejectPlanDetail = async (planId) => {
+    await confirm({ message: "Are you sure to confirm this plan?" }).then((response) => {
+      if (response) {
+        approvePlanDetail(currentUser.token, currentUser?.employee.id, planId).then((response) => {
+          response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
         })
       }
     })
   }
 
   const handleEditPlan = (data) => {
+    formikEdit.values.planDetailId = data.id
+    formikEdit.values.amount = data.amount
+    formikEdit.values.name = data.name
+    formikEdit.values.note = data.note
+    formikEdit.values.periodFrom = data.periodFrom
+    formikEdit.values.periodTo = data.periodTo
+    formikEdit.values.positionName = data.positionName
+    formikEdit.values.reason = data.reason
+    formikEdit.values.salary = data.salary
+    formikEdit.values.description = data.description
+    formikEdit.values.requirement = data.requirement
     setOpenModalEdit(true)
-    formik.values.planDetailId = data.id
-    formik.values.amount = data.amount
-    formik.values.name = data.name
-    formik.values.note = data.note
-    formik.values.periodFrom = data.periodFrom
-    formik.values.periodTo = data.periodTo
-    formik.values.positionId = data.positionName
-    formik.values.reason = data.reason
-    formik.values.salary = data.salary
-    formik.values.description = data.description
-    formik.values.requirement = data.requirement
   }
-
-  const handleDeletePlan = async (planDetailId) => {
-    console.log('deleeeeee');
-    confirm({ message: "Are you sure to delete this plan?" }).then((response) => {
-      if (response) {
-
-      }
-    })
-  };
-
 
   return (
     <React.Fragment>
@@ -133,37 +132,15 @@ const ListPlanDetail = ({ listPlanDetail }) => {
                 <div className='flex w-full justify-between'>
                   <div className='flex'>
                     <span className='hover:cursor-pointer' onClick={() => { handleApprovePlanDetail(item.id) }}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
-                    <span className='hover:cursor-pointer'><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
+                    <span className='hover:cursor-pointer' onClick={() => { handleRejectPlanDetail(item.id) }}><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
                   </div>
-                  <div className='flex'>
-
-                    <span className='hover:cursor-pointer' onClick={() => handleEditPlan(item)}><img src={EditIcon} alt="" title='Edit this plan' width={'30rem'} className='mr-2' /></span>
-                    <span className='hover:cursor-pointer' onClick={() => handleDeletePlan(item.id)}><img src={DeleteIcon} alt="" title='Delete this plan' width={'30rem'} /></span>
-                  </div>
+                  <div className='hover:cursor-pointer' onClick={() => handleEditPlan(item)}><img src={EditIcon} alt="" title='Edit this plan' width={'30rem'} className='mr-2' /></div>
                 </div>
-              </React.Fragment> : <React.Fragment></React.Fragment>}
+              </React.Fragment> : <></>}
             </div> : <div>
               {item.status === statusName.APPROVED && <span className='process-buton text-[#1BC5BD] bg-[#C9F7F5] hover:cursor-pointer'>APPROVE</span>}
               {item.status === statusName.REJECTED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] hover:cursor-pointer'>Reject</span>}
             </div>}
-            {/* {item.status === statusName.PENDING ? <div className='flex'>
-                <span className='process-buton text-[#FFA800] bg-[#FFF4DE]'>APPROVE</span>
-                <div className='flex'>
-                  <div className='flex'>
-                    <span className='hover:cursor-pointer'><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
-                    <span className='hover:cursor-pointer'><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
-                  </div>
-                  <div className='flex'>
-                    {currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) || currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) ? <React.Fragment>
-                      <span className='hover:cursor-pointer' onClick={() => handleEditPlan(item)}><img src={EditIcon} alt="" title='Edit this plan' width={'30rem'} className='mr-2' /></span>
-                      <span className='hover:cursor-pointer' onClick={() => handleDeletePlan(item.id)}><img src={DeleteIcon} alt="" title='Delete this plan' width={'30rem'} /></span>
-                    </React.Fragment> : <React.Fragment></React.Fragment>}
-                  </div>
-                </div>
-              </div> : <div>
-                {item.status === statusName.APPROVED && <span className='process-buton text-[#1BC5BD] bg-[#C9F7F5] hover:cursor-pointer'>APPROVE</span>}
-                {item.status === statusName.REJECTED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] hover:cursor-pointer'>Reject</span>}
-              </div>}            */}
             <div className='flex justify-center mt-3 font-medium text-2xl'>{item.name}</div>
             <div>
               <div className='font-semibold text-xl mt-1'>Period</div>
@@ -206,27 +183,27 @@ const ListPlanDetail = ({ listPlanDetail }) => {
         <Box sx={style}>
           <div className='modal-container'>
             <span className='font-medium text-3xl mr-3'>Edit plan detail</span>
-            <form onSubmit={formik.handleSubmit}>
+            <form onSubmit={formikEdit.handleSubmit}>
               <div>
                 <div>
-                  <TextField label="Name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='name' value={formik.values.name} onChange={(event) => formik.setFieldValue('name', event.target.value)} />
-                  {formik.errors.name && formik.touched.name && (
-                    <div className='text-[#ec5555]'>{formik.errors.name}</div>
+                  <TextField label="Name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='name' value={formikEdit.values.name} onChange={(event) => formikEdit.setFieldValue('name', event.target.value)} />
+                  {formikEdit.errors.name && formikEdit.touched.name && (
+                    <div className='text-[#ec5555]'>{formikEdit.errors.name}</div>
                   )}
                   <div className='font-semibold text-lg mt-2'>Period</div>
                   <div className='grid grid-cols-2 px-1'>
                     <div>
                       <div className='font-medium text-base'>from</div>
-                      <input type={'date'} className='focus:outline-none' name='periodFrom' value={formik.values.periodFrom} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
-                      {formik.errors.periodFrom && formik.touched.periodFrom && (
-                        <div className='text-[#ec5555]'>{formik.errors.periodFrom}</div>
+                      <input type={'date'} className='focus:outline-none' name='periodFrom' value={formikEdit.values.periodFrom} onChange={formikEdit.handleChange} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
+                      {formikEdit.errors.periodFrom && formikEdit.touched.periodFrom && (
+                        <div className='text-[#ec5555]'>{formikEdit.errors.periodFrom}</div>
                       )}
                     </div>
                     <div>
                       <div className='font-medium text-base'>to</div>
-                      <input type={'date'} className='focus:outline-none' name='periodTo' value={formik.values.periodTo} onChange={formik.handleChange} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
-                      {formik.errors.periodTo && formik.touched.periodTo && (
-                        <div className='text-[#ec5555]'>{formik.errors.periodTo}</div>
+                      <input type={'date'} className='focus:outline-none' name='periodTo' value={formikEdit.values.periodTo} onChange={formikEdit.handleChange} style={{ border: '1px solid #116835', padding: '0.4rem 2rem', borderRadius: '0.5rem' }} />
+                      {formikEdit.errors.periodTo && formikEdit.touched.periodTo && (
+                        <div className='text-[#ec5555]'>{formikEdit.errors.periodTo}</div>
                       )}
                     </div>
                   </div>
@@ -237,75 +214,76 @@ const ListPlanDetail = ({ listPlanDetail }) => {
                     sx={{ width: '100%', marginTop: '1rem' }}
                     getOptionLabel={option => option.name}
                     renderInput={(params) => <TextField {...params} label="Recruitment plan" />}
-                    onChange={(event, value) => { formik.setFieldValue('recruitmentPlanId', value.id) }} />
-                  {formik.errors.recruitmentPlanId && formik.touched.recruitmentPlanId && (
-                    <div className='text-[#ec5555]'>{formik.errors.recruitmentPlanId}</div>
+                    onChange={(event, value) => { formikEdit.setFieldValue('recruitmentPlanId', value.id) }} />
+                  {formikEdit.errors.recruitmentPlanId && formikEdit.touched.recruitmentPlanId && (
+                    <div className='text-[#ec5555]'>{formikEdit.errors.recruitmentPlanId}</div>
                   )}
                   <div className='flex'>
                     <div className='w-[24%]'>
-                      <TextField label="Amount" variant="outlined" size='small' sx={{ margin: '1rem 1rem 0 0' }} name='amount' value={formik.values.amount} onChange={formik.handleChange} />
-                      {formik.errors.amount && formik.touched.amount && (
-                        <div className='text-[#ec5555]'>{formik.errors.amount}</div>
+                      <TextField label="Amount" variant="outlined" size='small' sx={{ margin: '1rem 1rem 0 0' }} name='amount' value={formikEdit.values.amount} onChange={formikEdit.handleChange} />
+                      {formikEdit.errors.amount && formikEdit.touched.amount && (
+                        <div className='text-[#ec5555]'>{formikEdit.errors.amount}</div>
                       )}
                     </div>
                     <div className='w-[42%]'>
-                      <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='salary' placeholder='1,000,000 VNĐ' value={formik.values.salary} onChange={formik.handleChange} className='focus:outline-none' style={{ border: '1px solid #00000050', padding: '0.3rem 1rem', borderRadius: '0.2rem', marginTop: '1.1rem', width: '92%', height: '2.4rem' }} />
-                      {formik.errors.salary && formik.touched.salary && (
-                        <div className='text-[#ec5555]'>{formik.errors.salary}</div>
+                      <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='salary' placeholder='1,000,000 VNĐ' value={formikEdit.values.salary} onChange={formikEdit.handleChange} className='focus:outline-none' style={{ border: '1px solid #00000050', padding: '0.3rem 1rem', borderRadius: '0.2rem', marginTop: '1.1rem', width: '92%', height: '2.4rem' }} />
+                      {formikEdit.errors.salary && formikEdit.touched.salary && (
+                        <div className='text-[#ec5555]'>{formikEdit.errors.salary}</div>
                       )}
                     </div>
                     <div className='w-[34%]' >
                       <Autocomplete
+                        defaultValue={formikEdit.values.positionName}
                         options={categoryData.jobTitle}
                         size={'small'}
                         sx={{ marginTop: '1rem' }}
                         renderInput={(params) => <TextField {...params} label="Position" />}
-                        onChange={(event, value) => { formik.setFieldValue('positionName', value) }} />
-                      {formik.errors.positionName && formik.touched.positionName && (
-                        <div className='text-[#ec5555]'>{formik.errors.positionName}</div>
+                        onChange={(event, value) => { formikEdit.setFieldValue('positionName', value) }} />
+                      {formikEdit.errors.positionName && formikEdit.touched.positionName && (
+                        <div className='text-[#ec5555]'>{formikEdit.errors.positionName}</div>
                       )}
                     </div>
                   </div>
                   <div className='mt-4'>Reason</div>
                   <TextareaAutosize
                     name='reason'
-                    value={formik.values.reason}
+                    value={formikEdit.values.reason}
                     minRows={2}
                     maxRows={5}
                     style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-                    onChange={formik.handleChange}
+                    onChange={formikEdit.handleChange}
                   />
                   <div className='mt-4'>Description</div>
                   <TextareaAutosize
                     name='description'
-                    value={formik.values.description}
+                    value={formikEdit.values.description}
                     minRows={2}
                     maxRows={5}
                     style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-                    onChange={formik.handleChange}
+                    onChange={formikEdit.handleChange}
                   />
                   <div className='mt-4'>Requirement</div>
                   <TextareaAutosize
                     name='requirement'
-                    value={formik.values.requirement}
+                    value={formikEdit.values.requirement}
                     minRows={2}
                     maxRows={5}
                     style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-                    onChange={formik.handleChange}
+                    onChange={formikEdit.handleChange}
                   />
                   <div className='mt-4'>Note</div>
                   <TextareaAutosize
                     name='note'
-                    value={formik.values.note}
+                    value={formikEdit.values.note}
                     minRows={2}
                     maxRows={5}
                     style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-                    onChange={formik.handleChange}
+                    onChange={formikEdit.handleChange}
                   />
                 </div>
                 <div className='mt-3 flex justify-around'>
                   <button onClick={() => { setOpenModalEdit(false) }} className='btn-create bg-[#F64E60]'>Cancel</button>
-                  <button type='submit' onClick={formik.handleSubmit} className='btn-create bg-[#20D489]'>Save</button>
+                  <button type='submit' className='btn-create bg-[#20D489]'>Save</button>
                 </div>
 
               </div>

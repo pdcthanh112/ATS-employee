@@ -47,6 +47,30 @@ export const getInterviewByEmployee = async (token, id, pageNo, pageSize) => {
     .catch((error) => error);
 };
 
+export const getAcceptableInterviewByEmployee = async (token, empId, pageNo, pageSize) => {
+  return await axiosConfig
+    .get(
+      `interview/getAcceptableByEmployee?employeeId=${empId}&pageNo=${pageNo}&pageSize=${pageSize}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
+export const getAcceptableInterviewByDepartment = async (token, depId, pageNo, pageSize) => {
+  return await axiosConfig
+    .get(
+      `interview/getAcceptableByDepartment?departmentId=${depId}&pageNo=${pageNo}&pageSize=${pageSize}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
 export const searchInterviewSchedule = async (token, data) => {
   return await axiosConfig
     .put(
@@ -140,6 +164,29 @@ export const closeInterview = async (token, id) => {
     {
       headers: { Authorization: `Bearer ${token}` },
     })
+    .then((response) => response.data)
+    .catch((error) => error.response.data);
+};
+
+export const getStatusAndName = async (token, interviewId) => {
+  return await axiosConfig
+    .get(`interview/getNameAndStatus?interviewId=${interviewId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
+export const confirmByManager = async (token, interviewId) => {
+  return await axiosConfig
+    .patch(
+      `interview/confirmByManager?idInterview=${interviewId}`, {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
     .then((response) => response.data)
     .catch((error) => error.response.data);
 };

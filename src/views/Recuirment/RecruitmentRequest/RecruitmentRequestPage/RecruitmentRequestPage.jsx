@@ -80,10 +80,6 @@ const RecruitmentRequestPage = () => {
     }
   };
 
-
-
-
-
   const formikCreate = useFormik({
     initialValues: {
       address: '',
