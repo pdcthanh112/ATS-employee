@@ -24,6 +24,7 @@ import { FormControlLabel, Switch } from '@material-ui/core'
 const ListInterviewSchedule = ({ listInterviewSchedule }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser);
+  const categoryData = useSelector((state) => state.categoryData.data);
 
   const [openModalReason, setOpenModalReason] = useState(false)
   const [openModalEdit, setOpenModalEdit] = useState(false)
@@ -110,6 +111,8 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
       description: '',
       end: new Date().toJSON().slice(0, 10),
       interviewID: '',
+      note: '',
+      recommendPositions: '',
       recordMeeting: '',
       result: ''
     },
@@ -118,11 +121,11 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
     }),
     onSubmit: async (values) => {
       console.log('create', values);
-      setIsCreating(true)
-      await createInterviewDetail(currentUser.token, values).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Save successfully') : toast.error('Something error')
-        setIsCreating(false)
-      })
+      // setIsCreating(true)
+      // await createInterviewDetail(currentUser.token, values).then((response) => {
+      //   response.status === responseStatus.SUCCESS ? toast.success('Save successfully') : toast.error('Something error')
+      //   setIsCreating(false)
+      // })
     }
   })
 
@@ -199,7 +202,7 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
                 </div>}
               {item.status === interviewStatus.DONE && <div className='flex justify-between'>
                 <div className='bg-[#E9FCE9] text-[#00FF00] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>DONE</div>
-                {currentUser.employee.position.name === positionName.POSITION_HR && <div className='mt-2  hover:cursor-pointer hover:underline hover:text-[#116835]' onClick={() => handleCreateInterviewDetail(item.id)}>Add result of interview</div>}
+                {currentUser.employee.position.name === positionName.POSITION_HR && <div className='mt-2 ml-5 hover:cursor-pointer hover:underline hover:text-[#116835]' onClick={() => handleCreateInterviewDetail(item.id)}>Add result of interview</div>}
               </div>}
               {item.status === interviewStatus.APPROVED && <div className='flex justify-between '>
                 <div className='bg-[#C9F7F5] text-[#1BC5BD] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>APPROVED</div>
@@ -373,6 +376,16 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
                 <div className='text-[#ec5555]'>{formikCreateDetail.errors.result}</div>
               )}
 
+              <Autocomplete
+                options={categoryData.position}
+                size={'small'}
+                sx={{ width: '100%', marginRight: '2rem' }}
+                renderInput={(params) => <TextField {...params} label="Recommend position" />}
+                onChange={(event, value) => { formikCreateDetail.setFieldValue('recommendPositions', value) }} />
+              {formikCreateDetail.errors.recommendPositions && formikCreateDetail.touched.recommendPositions && (
+                <div className='text-[#ec5555]'>{formikCreateDetail.errors.recommendPositions}</div>
+              )}
+
               <div className='mt-4'>
                 <TextField label='Record meeting' variant="outlined" size='small' style={{ width: '100%' }} name='recordMeeting' value={formikCreateDetail.values.recordMeeting} onChange={formikCreateDetail.handleChange} />
                 {formikCreateDetail.errors.recordMeeting && formikCreateDetail.touched.recordMeeting && (
@@ -383,7 +396,7 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
               <div className='mt-4'>Description</div>
               <TextareaAutosize
                 name='description'
-                value={formikCancel.values.description}
+                value={formikCreateDetail.values.description}
                 minRows={3}
                 maxRows={5}
                 style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
@@ -391,6 +404,19 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
               />
               {formikCreateDetail.errors.description && formikCreateDetail.touched.description && (
                 <div className='text-[#ec5555]'>{formikCreateDetail.errors.description}</div>
+              )}
+
+              <div className='mt-4'>Note</div>
+              <TextareaAutosize
+                name='note'
+                value={formikCreateDetail.values.note}
+                minRows={3}
+                maxRows={5}
+                style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                onChange={formikCreateDetail.handleChange}
+              />
+              {formikCreateDetail.errors.note && formikCreateDetail.touched.note && (
+                <div className='text-[#ec5555]'>{formikCreateDetail.errors.note}</div>
               )}
 
               <div className='flex justify-evenly mt-5'>

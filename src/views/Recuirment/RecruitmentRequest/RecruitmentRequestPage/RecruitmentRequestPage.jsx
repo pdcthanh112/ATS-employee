@@ -273,7 +273,6 @@ const RecruitmentRequestPage = () => {
 
 export default RecruitmentRequestPage
 
-//////////////////////////////////////////////////////////////////////////////////////////
 const ChoosePlanTab = ({ formikCreate }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
@@ -393,15 +392,20 @@ const FillInformationTab = ({ formikCreate }) => {
           </div>
 
           <div className='grid grid-cols-2 px-1'>
-            <TextField
-              label="Position"
-              name='positionName'
-              value={formikCreate.values.positionName}
-              variant="outlined"
-              size='small'
-              sx={{ marginTop: '1rem', width: '85%' }}
-              disabled
-            />
+            <div>
+              <TextField
+                label="Position"
+                name='positionName'
+                value={formikCreate.values.positionName}
+                variant="outlined"
+                size='small'
+                sx={{ marginTop: '1rem', width: '85%' }}
+                onChange={formikCreate.handleChange}
+              />
+              {formikCreate.errors.positionName && formikCreate.touched.positionName && (
+              <div classpositionName='text-[#ec5555]'>{formikCreate.errors.name}</div>
+            )}
+            </div>
 
             <div>
               <TextField
@@ -486,7 +490,8 @@ const FillInformationTab = ({ formikCreate }) => {
                 value={formikCreate.values.amount}
                 variant="outlined" size='small'
                 sx={{ marginTop: '1rem', width: '100%' }}
-                disabled />
+                onChange={formikCreate.handleChange} 
+                />
               {formikCreate.errors.amount && formikCreate.touched.amount && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.amount}</div>
               )}

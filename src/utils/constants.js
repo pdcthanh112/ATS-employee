@@ -8,7 +8,8 @@ export const responseStatus = {
 export const statusName = {
     APPROVED: 'APPROVED',
     PENDING: 'PENDING',  
-    REJECTED: 'REJECTED'
+    REJECTED: 'REJECTED',
+    CANCELED: 'CANCELED',
 };
 
 export const positionName = {

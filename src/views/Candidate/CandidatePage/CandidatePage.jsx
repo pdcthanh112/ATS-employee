@@ -16,18 +16,16 @@ import SearchIcon from '../../../assets/icon/filter.png'
 import { createCandidate, getAllActivateCandidate, getAllCandidate } from '../../../apis/candidateApi'
 import ListCandidate from '../ListCandidate/ListCandidate';
 import { DEFAULT_PASSWORD, positionName, responseStatus } from '../../../utils/constants'
-import { getPositionByDepartment } from '../../../apis/departmentApi';
 
 const CandidatePage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser);
+  const categoryData = useSelector((state) => state.categoryData.data);
 
   const [isLoading, setIsLoading] = useState(true)
   const [listCandidate, setListCandidate] = useState([])
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
-  const [fileCV, setFileCV] = useState(null)
-  const [listPosition, setListPosition] = useState([])
   const [isRegisting, setIsRegisting] = useState(false)
 
   const style = {
@@ -56,37 +54,6 @@ const CandidatePage = () => {
     fetchData();
   }, [pagination.currentPage])
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await getPositionByDepartment(currentUser.token, currentUser.employee.department.id, 0, 20);
-      if (response) {
-        setListPosition(response.data.responseList)
-      }
-    }
-    fetchData();
-  }, [])
-
-  const handleChangeSearchObject = (id, value) => {
-    // setSearchObject(() => ({
-    //   ...searchObject,
-    //   [id]: value
-    // }))
-  }
-
-  const onHandleSearch = () => {
-    console.log('search');
-    // searchRecruimentRequest(searchObject).then((response) => {
-    //   console.log(response.data);
-    //   if (response.data.length > 0) {
-    //     setListRecruitment(response.data)
-    //     setSearchError(false)
-    //   } else {
-    //     setSearchError(true)
-    //     setPagination({ ...pagination, currentPage: 1 })
-    //   }
-    // })
-  };
-
   const formikCreate = useFormik({
     initialValues: {
       address: '',
@@ -106,32 +73,26 @@ const CandidatePage = () => {
     }),
     onSubmit: async (values) => {
       setIsRegisting(true)
-      await createCandidate(values).then((response) => {       
+      await createCandidate(values).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
         setIsRegisting(false)
       })
     }
   })
-  // const formikSearch = useFormik({
-  //   initialValues: {
-  //     name: '',
-  //     position: ''
-  //   },
-  //   onSubmit: async (values) => {
-  //     if (fileImage !== null) {
-  //       const imageRef = ref(storage, `candidate-avatar/${fileImage.name + uuidv4()}`)
-  //       await uploadBytes(imageRef, fileImage).then((snapshot) => {
-  //         getDownloadURL(snapshot.ref).then(url => {
-  //           values.image = url
-  //         })
-  //       })
-  //     }
-  //     console.log('RRRRRRR', values);
-  //     updateProfileCandidate(currentUser.candidate.id, currentUser.token, values).then((response) => {
-  //       response.status === responseStatus.SUCCESS ? toast.success('Edit profile successfully') : toast.error('Edit profile fail')
-  //     })
-  //   }
-  // })
+
+  const formikSearch = useFormik({
+    initialValues: {
+      name: '',
+      position: '',
+      typeOfWork: ''
+    },
+    onSubmit: async (values) => {
+      console.log('RRRRRRR', values);
+      // updateProfileCandidate(currentUser.candidate.id, currentUser.token, values).then((response) => {
+      //   response.status === responseStatus.SUCCESS ? toast.success('Edit profile successfully') : toast.error('Edit profile fail')
+      // })
+    }
+  })
 
   return (
     <React.Fragment>
@@ -142,25 +103,38 @@ const CandidatePage = () => {
         </div>
 
         <div className='bg-[#E9FCE9] flex justify-between px-10 py-4'>
-          <div className='flex'>
-            <img src={SearchIcon} alt="" width={'40rem'} title='Search' onClick={() => onHandleSearch()} />
-            <div className='inputName'>
-              <input type={'text'} className='focus:outline-none' placeholder='Candidate name...' style={{ margin: '5px 7px' }} onChange={(event) => { handleChangeSearchObject('name', event.target.value) }} />
-            </div>
-            <Autocomplete
-              options={listPosition}
-              size={'small'}
-              sx={{ width: 170, marginRight: 2 }}
-              renderInput={(params) => <TextField {...params} label="Position" />}
-              onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
+          <form onSubmit={formikSearch.handleSubmit}>
+            <div className='flex'>
+              <img src={SearchIcon} alt="" width={'40rem'} title='Search' className='hover:cursor-pointer' onClick={() => { formikSearch.handleSubmit() }} />
 
-            <Autocomplete
-              //options={typeOfWorkData()}
-              size={'small'}
-              sx={{ width: 170, marginRight: 2 }}
-              renderInput={(params) => <TextField {...params} label="Job name" />}
-              onChange={(event, value) => { handleChangeSearchObject('typeOfWork', value.value) }} />
-          </div>
+              <div className='inputName'>
+                <input type={'text'}
+                  name='name'
+                  value={formikSearch.values.position}
+                  className='focus:outline-none'
+                  placeholder='Candidate name...' style={{ margin: '5px 7px' }}
+                  onChange={() => { formikSearch.handleChange() }}
+                />
+              </div>
+
+              <Autocomplete
+                options={categoryData.position}
+                size={'small'}
+                sx={{ width: 190, marginRight: 2 }}
+                renderInput={(params) => <TextField {...params} label="Position" />}
+                onChange={(event, value) => { formikSearch.setFieldValue('position', value.value) }}
+              />
+
+              <Autocomplete
+                options={categoryData.jobTitle}
+                size={'small'}
+                sx={{ width: 190, marginRight: 2 }}
+                renderInput={(params) => <TextField {...params} label="Job name" />}
+                onChange={(event, value) => { formikSearch.setFieldValue('typeOfWork', value.value) }}
+              />
+            </div>
+          </form>
+
           <div className='flex bg-[#1DAF5A] px-3 hover:cursor-pointer rounded-lg' onClick={() => setOpenModalCreate(true)} title='Create a new candidate'>
             <i className="fa-solid fa-plus text-white" style={{ marginTop: '0.8rem' }}></i>
             <span className='ml-1 mt-2 font-semibold text-white'>Create candidate</span>
@@ -219,15 +193,12 @@ const CandidatePage = () => {
                 </div>
                 {formikCreate.errors.phone && formikCreate.touched.phone && (
                   <div className='text-[#ec5555]'>{formikCreate.errors.phone}</div>
-                )}
-                {/* {registerStatus !== responseStatus.SUCCESS && registerStatus.includes('Phone number') && (
-                  <div className='text-[#ec5555]'>Phone number is alrealy exist</div>
-                )} */}
+                )}         
               </div>
               <div className='flex justify-evenly'>
                 <button onClick={() => setOpenModalCreate(false)} className='bg-[#F64E60] text-[#FFF] px-5 py-2 rounded-lg'>Cancel</button>
                 <button type='submit' className='bg-[#20D489] text-[#FFF] px-5 py-2 rounded-lg'>Create</button>
-                {isRegisting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} height={37}/>}
+                {isRegisting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} height={37} />}
               </div>
             </form>
           </div>

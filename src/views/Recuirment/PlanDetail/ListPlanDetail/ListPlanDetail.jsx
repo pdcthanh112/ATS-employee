@@ -97,10 +97,11 @@ const ListPlanDetail = ({ listPlanDetail }) => {
     })
   }
   const handleRejectPlanDetail = async (planId) => {
-    await confirm({ message: "Are you sure to confirm this plan?" }).then((response) => {
+    await confirm({ message: "Are you sure to reject this plan?" }).then((response) => {
       if (response) {
-        approvePlanDetail(currentUser.token, currentUser?.employee.id, planId).then((response) => {
-          response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
+        cancelPlanDetail(currentUser.token, currentUser?.employee.id, planId).then((response) => {
+          console.log('asdfsadf', response.status);
+          response.status === 200 ? toast.success('Confirm successfully') : toast.error('Something error')
         })
       }
     })
@@ -139,7 +140,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
               </React.Fragment> : <></>}
             </div> : <div>
               {item.status === statusName.APPROVED && <span className='process-buton text-[#1BC5BD] bg-[#C9F7F5] hover:cursor-pointer'>APPROVE</span>}
-              {item.status === statusName.REJECTED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] hover:cursor-pointer'>Reject</span>}
+              {item.status === statusName.CANCELED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] hover:cursor-pointer'>Reject</span>}
             </div>}
             <div className='flex justify-center mt-3 font-medium text-2xl'>{item.name}</div>
             <div>
