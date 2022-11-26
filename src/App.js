@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense } from "react";
+import React, { Suspense } from "react";
 import { useSelector } from "react-redux";
 import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
 

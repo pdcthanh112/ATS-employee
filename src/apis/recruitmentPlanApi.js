@@ -70,10 +70,45 @@ export const createRecruitmentPlan = async (token, planData) => {
     .catch((error) => error);
 };
 
+export const editRecruitmentPlan = async (token, planId, planData) => {
+  return await axiosConfig
+    .put(
+      `recruitmentPlan/update/{id}?id=${planId}`,
+      {
+        amount: planData.amount,
+        name: planData.name,
+        periodFrom: planData.periodFrom,
+        periodTo: planData.periodTo,
+        totalSalary: planData.totalSalary,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
 export const approveRecruitmentPlan = async (token, empId, planId) => {
   return await axiosConfig
     .put(
       "recruitmentPlan/approved",
+      {
+        employeeId: empId,
+        id: planId,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
+export const rejectRecruitmentPlan = async (token, empId, planId) => {
+  return await axiosConfig
+    .put(
+      "recruitmentPlan/canceled",
       {
         employeeId: empId,
         id: planId,

@@ -30,7 +30,7 @@ const RecruitmentRequestPage = () => {
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [isSubmiting, setIsSubmitting] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false)
 
 
   const [tabPage, setTabPage] = useState(0);
@@ -123,12 +123,12 @@ const RecruitmentRequestPage = () => {
       typeOfWork: Yup.string().required('Please choose type of work'),
     }),
     onSubmit: async (values) => {
-      setIsSubmitting(true)
+      setIsUpdating(true)
       await createRecruitmentRequest(values, currentUser.token).then(response => {
         if (response.message.includes(' expiry date')) {
           formikCreate.errors.expiryDate = "Invalid expiry date"
         }
-        setIsSubmitting(false)
+        setIsUpdating(false)
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
       })
     }
@@ -246,7 +246,7 @@ const RecruitmentRequestPage = () => {
                       <button className='btn-create bg-[#20D489]' onClick={formikCreate.handleSubmit}>
                         Submit
                       </button>
-                      {isSubmiting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
+                      {isUpdating && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
                     </div>}
                 </div>
               </form>

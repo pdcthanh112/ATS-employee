@@ -15,7 +15,8 @@ export const statusName = {
 export const positionName = {
     DIRECTOR: 'DIRECTOR',
     MANAGER: 'MANAGER', 
-    POSITION_HR: 'HR'
+    POSITION_HR: 'HR',
+    POSITION_CEO: 'CEO'
 }
 
 export const interviewType = {

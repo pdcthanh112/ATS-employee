@@ -32,6 +32,8 @@ export const createInterviewDetail = async (token, data) => {
         description: data.description,
         end: data.end,
         interviewID: data.interviewID,
+        note: data.note,
+        recommendPositions: data.recommendPositions,
         recordMeeting: data.recordMeeting,
         result: data.result,
       },
