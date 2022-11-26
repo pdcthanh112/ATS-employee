@@ -10,7 +10,7 @@ import ShowLessIcon from '../../../../assets/icon/viewLess.png'
 import cvIcon from '../../../../assets/icon/cv.png'
 import ApproveIcon from '../../../../assets/icon/approve.png'
 import RejectIcon from '../../../../assets/icon/reject.png'
-import { confirm } from "mui-confirm-modal";
+import { useConfirm } from "material-ui-confirm";
 import { positionName, responseStatus } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -80,24 +80,21 @@ const Row = (props) => {
   const { ordinalNumbers, item } = props;
   const currentUser = useSelector((state) => state.auth.login.currentUser)
   const [open, setOpen] = useState(false);
+  const confirm = useConfirm();
 
   const handleApproveJobApply = async (id) => {
-    await confirm({ message: "Are you sure to aprrove this candidate?" }).then((response) => {
-      if (response) {
-        approveJobApply(currentUser.token, id, currentUser.employee.id).then((response) => {
-          response.status === responseStatus.SUCCESS ? toast.success('Approved successfully') : toast.error('Something error')
-        })
-      }
+    await confirm({ message: "Are you sure to aprrove this candidate?" }).then(() => {
+      approveJobApply(currentUser.token, id, currentUser.employee.id).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Approved successfully') : toast.error('Something error')
+      })
     })
   }
 
   const handleRejectJobApply = async (id) => {
-    await confirm({ message: "Are you sure to reject this candidate?" }).then((response) => {
-      if (response) {
-        rejectJobApply(currentUser.token, id, currentUser.employee.id).then((response) => {
-          response.status === responseStatus.SUCCESS ? toast.success('Rejected successfully') : toast.error('Something error')
-        })
-      }
+    await confirm({ message: "Are you sure to reject this candidate?" }).then(() => {
+      rejectJobApply(currentUser.token, id, currentUser.employee.id).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Rejected successfully') : toast.error('Something error')
+      })
     })
   }
   const showStatusLabel = (status) => {
@@ -153,7 +150,7 @@ const Row = (props) => {
                     <TableCell align='center'>{item.recruitmentRequest.typeOfWork}</TableCell>
                   </TableRow>
                 </TableBody>
-              </Table>             
+              </Table>
             </Box>
           </Collapse>
         </TableCell>

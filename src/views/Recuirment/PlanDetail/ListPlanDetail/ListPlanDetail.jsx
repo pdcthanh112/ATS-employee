@@ -17,7 +17,7 @@ import { positionName, responseStatus, statusName } from '../../../../utils/cons
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getPlanApprovedByDepartment } from '../../../../apis/recruitmentPlanApi';
-import { confirm } from "mui-confirm-modal";
+import { useConfirm } from "material-ui-confirm";
 import { approvePlanDetail, cancelPlanDetail, editPlanDetail } from '../../../../apis/planDetailApi';
 
 
@@ -25,7 +25,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
   const categoryData = useSelector((state) => state.categoryData.data);
-
+  const confirm = useConfirm();
   const [listApprovedRecruitmentPlan, setListApprovedRecruitmentPlan] = useState([])
   const [openModalEdit, setOpenModalEdit] = useState(false)
 
@@ -88,22 +88,18 @@ const ListPlanDetail = ({ listPlanDetail }) => {
   })
 
   const handleApprovePlanDetail = async (planId) => {
-    await confirm({ message: "Are you sure to confirm this plan?" }).then((response) => {
-      if (response) {
-        approvePlanDetail(currentUser.token, currentUser?.employee.id, planId).then((response) => {
-          response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
-        })
-      }
+    await confirm({ description: "Are you sure to confirm this plan?" }).then(() => {
+      approvePlanDetail(currentUser.token, currentUser?.employee.id, planId).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
+      })
     })
   }
   const handleRejectPlanDetail = async (planId) => {
-    await confirm({ message: "Are you sure to reject this plan?" }).then((response) => {
-      if (response) {
-        cancelPlanDetail(currentUser.token, currentUser?.employee.id, planId).then((response) => {
-          console.log('asdfsadf', response.status);
-          response.status === 200 ? toast.success('Confirm successfully') : toast.error('Something error')
-        })
-      }
+    await confirm({ description: "Are you sure to reject this plan?" }).then(() => {
+      cancelPlanDetail(currentUser.token, currentUser?.employee.id, planId).then((response) => {
+        console.log('asdfsadf', response.status);
+        response.status === 200 ? toast.success('Confirm successfully') : toast.error('Something error')
+      })
     })
   }
 

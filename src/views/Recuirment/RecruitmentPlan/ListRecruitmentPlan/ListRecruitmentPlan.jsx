@@ -13,17 +13,16 @@ import { approveRecruitmentPlan } from '../../../../apis/recruitmentPlanApi'
 import ApproveIcon from '../../../../assets/icon/check.png'
 import RejectIcon from '../../../../assets/icon/close.png'
 import EditIcon from '../../../../assets/icon/edit-icon.png'
-import DeleteIcon from '../../../../assets/icon/delete-icon.png'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
 import AddIcon from '../../../../assets/icon/addIcon.png'
 import MinusIcon from '../../../../assets/icon/minusIcon.png'
 import { positionName, responseStatus, statusName } from '../../../../utils/constants'
-import { confirm } from "mui-confirm-modal";
+import { useConfirm } from "material-ui-confirm";
 
 const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser);
-
+  const confirm = useConfirm();
   const [openModalEdit, setOpenModalEdit] = useState(false)
 
   const style = {
@@ -69,12 +68,10 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
   })
 
   const handleApproveRecruitmentPlan = async (planId) => {
-    confirm({ message: "Are you sure to approve this plan?" }).then((response) => {
-      if (response) {
-        approveRecruitmentPlan(currentUser.token, currentUser?.employee.id, planId).then((response) => {
-          response.status === responseStatus.SUCCESS ? toast.success('Approve successfully') : toast.error('Something error')
-        })
-      }
+    confirm({ message: "Are you sure to approve this plan?" }).then(() => {
+      approveRecruitmentPlan(currentUser.token, currentUser?.employee.id, planId).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Approve successfully') : toast.error('Something error')
+      })
     })
   }
 

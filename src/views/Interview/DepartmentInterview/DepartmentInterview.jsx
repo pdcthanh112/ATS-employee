@@ -9,7 +9,7 @@ import CheckedIcon from '../../../assets/icon/checked.png'
 import { interviewStatus, interviewType, responseStatus } from '../../../utils/constants'
 import ReactLoading from 'react-loading'
 import { Box, Modal, Pagination, Stack } from '@mui/material'
-import { confirm } from "mui-confirm-modal";
+import { useConfirm } from "material-ui-confirm";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -18,6 +18,7 @@ const DepartmentInterview = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
   const departmentId = useParams().id
+  const confirm = useConfirm();
 
   const [listInterview, setListInterview] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -62,30 +63,26 @@ const DepartmentInterview = () => {
   }
 
   const confirmContinueInterview = async () => {
-    await confirm({ message: "Are you sure to aprrove this interview?" }).then((response) => {
-      if (response) {
+    await confirm({ message: "Are you sure to aprrove this interview?" }).then(() => {  
         setHandling(true)
         confirmByManager(currentUser.token, currentInterview).then((response) => {
           response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
         })
-        setHandling(false)
-      }
+        setHandling(false)     
     })
   }
 
   const confirmCancelInterview = async () => {
-    await confirm({ message: "Are you sure to cancel this interview?" }).then((response) => {
-      if (response) {
-        setHandling(true)
-        const data = {
-          interviewId: currentInterview,
-          reason: 'We canceled this interview due to the absence of an important member'
-        }
-        cancelInterview(currentUser.token, data).then((response) => {
-          response.status === responseStatus.SUCCESS ? toast.success('Cancel successfully') : toast.error('Something error')
-        })
-        setHandling(false)
+    await confirm({ message: "Are you sure to cancel this interview?" }).then(() => {
+      setHandling(true)
+      const data = {
+        interviewId: currentInterview,
+        reason: 'We canceled this interview due to the absence of an important member'
       }
+      cancelInterview(currentUser.token, data).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Cancel successfully') : toast.error('Something error')
+      })
+      setHandling(false)
     })
   }
 

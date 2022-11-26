@@ -13,19 +13,19 @@ import * as Yup from 'yup'
 import ReactLoading from 'react-loading'
 import { interviewStatus, interviewType, positionName, responseStatus } from '../../../../utils/constants'
 import { cancelInterview, closeInterview, confirmInterview, rejectInterview } from '../../../../apis/interviewScheduleApi'
-import { Autocomplete, Box, Modal, TextareaAutosize, TextField } from '@mui/material';
+import { Autocomplete, Box, Modal, TextareaAutosize, TextField, FormControlLabel, Switch } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { interviewResultData, interviewRoundData } from '../../../../utils/dropdownData';
 import { createInterviewDetail } from '../../../../apis/interviewDetailApi';
-import { FormControlLabel, Switch } from '@material-ui/core';
-import { confirm } from 'mui-confirm-modal'
+import { useConfirm } from "material-ui-confirm";
 
 const ListInterviewSchedule = ({ listInterviewSchedule }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser);
   const categoryData = useSelector((state) => state.categoryData.data);
+  const confirm = useConfirm();
 
   const [openModalReason, setOpenModalReason] = useState(false)
   const [openModalEdit, setOpenModalEdit] = useState(false)
@@ -141,32 +141,25 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
   }
 
   const rejectInterviewByEmp = async (interviewId) => {
-    console.log('ckjagoahsdòigfoid');
-    await confirm({ message: "Are you sure to reject this interview?" }).then((response) => {
-      if (response) {
-        rejectInterview(currentUser.token, currentUser.employee.id, interviewId).then((response) => {
-          response.status === responseStatus.SUCCESS ? toast.success('Reject successfully') : toast.error('Something error')
-        })
-      }
+    await confirm({ description: "Are you sure to reject this interview?" }).then(() => {
+      rejectInterview(currentUser.token, currentUser.employee.id, interviewId).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Reject successfully') : toast.error('Something error')
+      })
     })
   }
 
   const handleCancelInterview = async (interviewId) => {
-    await confirm({ message: "Are you sure to cancel this interview?" }).then((response) => {
-      if (response) {
-        setOpenModalReason(true)
-        formikCancel.values.interviewId = interviewId
-      }
+    await confirm({ description: "Are you sure to cancel this interview?" }).then(() => {
+      setOpenModalReason(true)
+      formikCancel.values.interviewId = interviewId
     })
   }
 
   const handleCloseInterview = async (interviewId) => {
-    await confirm({ message: "Are you sure to close this interview?" }).then((response) => {
-      if (response) {
-        closeInterview(currentUser.token, interviewId).then(response => {
-          response.status === responseStatus.SUCCESS ? toast.success('Close interview successfully') : toast.error('Something error')
-        })
-      }
+    await confirm({ description: "Are you sure to close this interview?" }).then(() => {
+      closeInterview(currentUser.token, interviewId).then(response => {
+        response.status === responseStatus.SUCCESS ? toast.success('Close interview successfully') : toast.error('Something error')
+      })
     })
   }
 

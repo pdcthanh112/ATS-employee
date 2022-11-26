@@ -8,7 +8,7 @@ import { Avatar } from '@mui/material'
 import logo from '../../assets/image/big-logo.png'
 import defaultUser from '../../assets/image/defaultUser.png'
 import NotificationIcon from '../../assets/icon/notification-icon.png'
-import { Badge } from "@material-ui/core";
+//import { Badge } from "@material-ui/core";
 
 const AppHeader = () => {
 
@@ -25,9 +25,9 @@ const AppHeader = () => {
       <a href="/#/dashboard"><img src={logo} alt='' width={'180rem'} className='ml-10' /></a>
 
       <div className="flex w-[25%]">
-        <Badge badgeContent={4} color="primary">
+        {/* <Badge badgeContent={4} color="primary">
           <img src={NotificationIcon} alt="" width={'40rem'} style={{borderRadius: '50%'}}/>
-        </Badge>
+        </Badge> */}
 
         <div className='header-menu'>
           <div className="dropdown">
