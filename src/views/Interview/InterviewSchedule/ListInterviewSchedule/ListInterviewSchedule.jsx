@@ -16,10 +16,11 @@ import { cancelInterview, closeInterview, confirmInterview, rejectInterview } fr
 import { Autocomplete, Box, Modal, TextareaAutosize, TextField } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { confirm } from "mui-confirm-modal";
-import { interviewResultData, interviewRoundData } from '../../../../utils/dropdownData'
-import { createInterviewDetail } from '../../../../apis/interviewDetailApi'
-import { FormControlLabel, Switch } from '@material-ui/core'
+
+import { interviewResultData, interviewRoundData } from '../../../../utils/dropdownData';
+import { createInterviewDetail } from '../../../../apis/interviewDetailApi';
+import { FormControlLabel, Switch } from '@material-ui/core';
+import { confirm } from 'mui-confirm-modal'
 
 const ListInterviewSchedule = ({ listInterviewSchedule }) => {
 
@@ -130,7 +131,7 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
   })
 
   const confirmInterviewByEmp = async (interviewId) => {
-    await confirm({ message: "Are you sure to aprrove this interview?" }).then((response) => {
+    await confirm({ description: "Are you sure to aprrove this interview?" }).then((response) => {
       if (response) {
         confirmInterview(currentUser.token, currentUser.employee.id, interviewId).then((response) => {
           response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
@@ -140,6 +141,7 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
   }
 
   const rejectInterviewByEmp = async (interviewId) => {
+    console.log('ckjagoahsdòigfoid');
     await confirm({ message: "Are you sure to reject this interview?" }).then((response) => {
       if (response) {
         rejectInterview(currentUser.token, currentUser.employee.id, interviewId).then((response) => {
@@ -441,6 +443,7 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
         pauseOnHover
         theme="light"
       />
+
     </React.Fragment >
   )
 }
