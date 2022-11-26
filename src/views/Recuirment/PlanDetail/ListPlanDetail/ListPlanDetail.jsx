@@ -9,7 +9,6 @@ import CalendarIcon from './../../../../assets/icon/calendar.png'
 import ApproveIcon from '../../../../assets/icon/check.png'
 import RejectIcon from '../../../../assets/icon/close.png'
 import EditIcon from '../../../../assets/icon/edit-icon.png'
-import DeleteIcon from '../../../../assets/icon/delete-icon.png'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import CurrencyFormat from 'react-currency-format';
