@@ -11,7 +11,7 @@ import RejectIcon from '../../../../assets/icon/close.png'
 import EditIcon from '../../../../assets/icon/edit-icon.png'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import CurrencyFormat from 'react-currency-format';
+import { NumericFormat } from 'react-number-format';
 import { positionName, responseStatus, statusName } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -222,7 +222,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
                       )}
                     </div>
                     <div className='w-[42%]'>
-                      <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='salary' placeholder='1,000,000 VNĐ' value={formikEdit.values.salary} onChange={formikEdit.handleChange} className='focus:outline-none' style={{ border: '1px solid #00000050', padding: '0.3rem 1rem', borderRadius: '0.2rem', marginTop: '1.1rem', width: '92%', height: '2.4rem' }} />
+                      <NumericFormat thousandSeparator=',' suffix={' VNĐ'} name='salary' placeholder='1,000,000 VNĐ' value={formikEdit.values.salary} onChange={formikEdit.handleChange} className='focus:outline-none' style={{ border: '1px solid #00000050', padding: '0.3rem 1rem', borderRadius: '0.2rem', marginTop: '1.1rem', width: '92%', height: '2.4rem' }} />
                       {formikEdit.errors.salary && formikEdit.touched.salary && (
                         <div className='text-[#ec5555]'>{formikEdit.errors.salary}</div>
                       )}

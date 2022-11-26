@@ -14,7 +14,7 @@ import PlanDetailIcon from '../../../../assets/icon/plan-detailImage.png'
 import CreateIcon from '../../../../assets/icon/plus.png'
 
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize } from '@mui/material';
-import CurrencyFormat from 'react-currency-format';
+import { NumericFormat } from 'react-number-format';
 import { getAllPlanDetail, createPlanDetail, getPlanDetailByDepartment } from '../../../../apis/planDetailApi'
 import ListPlanDetail from '../ListPlanDetail/ListPlanDetail'
 import { responseStatus } from '../../../../utils/constants'
@@ -168,7 +168,7 @@ const PlanDetailPage = () => {
                       )}
                     </div>
                     <div className='w-[42%]'>
-                      <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='salary' placeholder='1,000,000 VNĐ' value={formik.values.salary} onChange={formik.handleChange} className='focus:outline-none' style={{ border: '1px solid #00000050', padding: '0.3rem 1rem', borderRadius: '0.2rem', marginTop: '1.1rem', width: '92%', height: '2.4rem' }} />
+                      <NumericFormat thousandSeparator=',' suffix={' VNĐ'} name='salary' placeholder='1,000,000 VNĐ' value={formik.values.salary} onChange={formik.handleChange} className='focus:outline-none' style={{ border: '1px solid #00000050', padding: '0.3rem 1rem', borderRadius: '0.2rem', marginTop: '1.1rem', width: '92%', height: '2.4rem' }} />
                       {formik.errors.salary && formik.touched.salary && (
                         <div className='text-[#ec5555]'>{formik.errors.salary}</div>
                       )}

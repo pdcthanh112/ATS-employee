@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import RequestIcon from '../../../../assets/icon/recruitment-requestImage.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
 import AddIcon from '../../../../assets/icon/plus.png'
-import CurrencyFormat from 'react-currency-format';
+import { NumericFormat } from 'react-number-format';
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize, FormControlLabel, Checkbox, InputAdornment } from '@mui/material';
@@ -519,14 +519,14 @@ const FillInformationTab = ({ formikCreate }) => {
           <div className='inline-flex'>
             <div className='w-[40%]'>
               <div>from</div>
-              <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='salaryFrom' placeholder='1,000,000 VNĐ' value={formikCreate.values.salaryFrom} onChange={formikCreate.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '90%' }} disabled={isSalaryNegotiable} />
+              <NumericFormat thousandSeparator=',' suffix={' VNĐ'} name='salaryFrom' placeholder='1,000,000 VNĐ' value={formikCreate.values.salaryFrom} onChange={formikCreate.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '90%' }} disabled={isSalaryNegotiable} />
               {formikCreate.errors.salaryFrom && formikCreate.touched.salaryFrom && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.salaryFrom}</div>
               )}
             </div>
             <div className='w-[40%]'>
               <div>to</div>
-              <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='salaryTo' placeholder='1,000,000 VNĐ' value={formikCreate.values.salaryTo} onChange={formikCreate.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '90%' }} disabled={isSalaryNegotiable} />
+              <NumericFormat thousandSeparator=',' suffix={' VNĐ'} name='salaryTo' placeholder='1,000,000 VNĐ' value={formikCreate.values.salaryTo} onChange={formikCreate.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '90%' }} disabled={isSalaryNegotiable} />
               {formikCreate.errors.salaryTo && formikCreate.touched.salaryTo && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.salaryTo}</div>
               )}

@@ -10,7 +10,7 @@ import * as Yup from 'yup'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import CurrencyFormat from 'react-currency-format';
+import { NumericFormat } from 'react-number-format';
 import PlanIcon from '../../../../assets/icon/recruitment-planImage.png'
 import CreateIcon from '../../../../assets/icon/plus.png'
 import AddIcon from '../../../../assets/icon/addIcon.png'
@@ -145,7 +145,7 @@ const RecruitmentPlanPage = () => {
                   </div>
                   <div>
                     <div className='font-semibold text-xl mb-2'>Total salary</div>
-                    <CurrencyFormat thousandSeparator={true} suffix={' VNĐ'} name='totalSalary' placeholder='1,000,000 VNĐ' value={formikEdit.values.totalSalary} onChange={formikEdit.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '100%' }} />
+                    <NumericFormat thousandSeparator=',' suffix={' VNĐ'} name='totalSalary' placeholder='1,000,000 VNĐ' value={formikEdit.values.totalSalary} onChange={formikEdit.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '100%' }} />
                     {formikEdit.errors.totalSalary && formikEdit.touched.totalSalary && (
                       <div className='text-[#ec5555]'>{formikEdit.errors.totalSalary}</div>
                     )}
