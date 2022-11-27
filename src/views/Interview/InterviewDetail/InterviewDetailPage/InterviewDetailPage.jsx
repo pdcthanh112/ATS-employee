@@ -6,12 +6,11 @@ import { useSelector } from 'react-redux';
 import { getAllInterviewDetail, getInterviewDetailByDepartment } from '../../../../apis/interviewDetailApi';
 
 import ReactLoading from 'react-loading';
-import { Box, Modal, Pagination, Stack, TextField, Autocomplete } from '@mui/material';
-import SearchIcon from '../../../../assets/icon/filter.png'
-import AddIcon from '../../../../assets/icon/plus.png'
+import {Pagination, Stack } from '@mui/material';
+
 import InterviewDetailIcon from '../../../../assets/icon/interview-detailImage.png'
 import { positionName } from '../../../../utils/constants';
-import { interviewTypeData } from '../../../../utils/dropdownData';
+
 
 const InterviewDetailPage = () => {
 

@@ -11,9 +11,12 @@ export const getAllCandidate = async (token, pageNo, pageSize) => {
 
 export const getAllActivateCandidate = async (token, pageNo, pageSize) => {
   return await axiosConfig
-    .get(`candidate/getAllActivateCandidates?pageNo=${pageNo}&pageSize=${pageSize}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(
+      `candidate/getAllActivateCandidates?pageNo=${pageNo}&pageSize=${pageSize}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
     .then((response) => response.data)
     .catch((error) => error);
 };
@@ -49,12 +52,15 @@ export const updateProfileCandidate = async (id, token, data) => {
 
 export const getCVByCandidate = async (token, id, pageNo, pageSize) => {
   return await axiosConfig
-    .get(`cv/getAllCvByCandidate?id=${id}&pageNo=${pageNo}&pageSize=${pageSize}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(
+      `cv/getAllCvByCandidate?id=${id}&pageNo=${pageNo}&pageSize=${pageSize}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
     .then((response) => response.data)
     .catch((error) => error);
-}
+};
 
 export const createCandidate = async (data) => {
   return await axiosConfig
@@ -75,6 +81,15 @@ export const createCandidate = async (data) => {
 export const getCandidateAppliedByRecruitmentRequest = async (token, id) => {
   return await axiosConfig
     .get(`candidate/getCandidateAppliedByRecruitment?recruitmentId=${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
+export const getIdAndNameAcitveCandidate = async (token) => {
+  return await axiosConfig
+    .get("candidate/getIdAndNameAcitveCandidate", {
       headers: { Authorization: `Bearer ${token}` },
     })
     .then((response) => response.data)

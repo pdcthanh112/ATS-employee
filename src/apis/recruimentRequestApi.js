@@ -86,3 +86,12 @@ export const createRecruitmentRequest = async (data, token) => {
     .then((response) => response.data)
     .catch((error) => error.response.data);
 };
+
+export const getIdAndNameActiveRequest = async (token) => {
+  return await axiosConfig
+    .get('recruitmentRequest/getAllActiveRequest', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.data)
+    .catch((error) => error);
+};

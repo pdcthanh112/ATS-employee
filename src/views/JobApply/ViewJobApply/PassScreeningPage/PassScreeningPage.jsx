@@ -11,7 +11,7 @@ import cvIcon from '../../../../assets/icon/cv.png'
 import ApproveIcon from '../../../../assets/icon/approve.png'
 import RejectIcon from '../../../../assets/icon/reject.png'
 import { useConfirm } from "material-ui-confirm";
-import { positionName, responseStatus } from '../../../../utils/constants'
+import { positionName, responseStatus, statusName } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react'
@@ -120,10 +120,10 @@ const Row = (props) => {
         <TableCell align="center"><a href={item.cv.linkCV} target='_blank' title='View CV' className='flex justify-center' rel="noreferrer"><img src={cvIcon} alt="" width={'40rem'} /></a></TableCell>
         <TableCell align='center'>{showStatusLabel(item.status)}</TableCell>
         <TableCell align='center' style={{ display: 'flex', justifyContent: 'space-around' }}>
-          {currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) && <React.Fragment>
+          {currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) && item.status === statusName.PENDING ? <React.Fragment>
             <img src={ApproveIcon} alt="" width={'40rem'} title='Approve this candidate' className='hover:cursor-pointer' onClick={() => handleApproveJobApply(item.id)} />
             <img src={RejectIcon} alt="" width={'40rem'} title='Reject this candidate' className='hover:cursor-pointer' onClick={() => handleRejectJobApply(item.id)} />
-          </React.Fragment>}
+          </React.Fragment> : <></>}
         </TableCell>
       </TableRow>
       <TableRow>
