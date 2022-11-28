@@ -428,7 +428,7 @@ const FillInformationTab = ({ formikCreate }) => {
                 size={'small'}
                 sx={{ width: '85%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Experience" />}
-                onInputChange={(event, value) => { formikCreate.setFieldValue('experience', value) }} />
+                onChange={(event, value) => { formikCreate.setFieldValue('experience', value) }} />
               {formikCreate.errors.experience && formikCreate.touched.experience && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.experience}</div>
               )}
@@ -439,7 +439,7 @@ const FillInformationTab = ({ formikCreate }) => {
                 size={'small'}
                 sx={{ width: '100%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Type of work" />}
-                onInputChange={(event, value) => { formikCreate.setFieldValue('typeOfWork', value) }} />
+                onChange={(event, value) => { formikCreate.setFieldValue('typeOfWork', value) }} />
               {formikCreate.errors.typeOfWork && formikCreate.touched.typeOfWork && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.typeOfWork}</div>
               )}
@@ -453,7 +453,7 @@ const FillInformationTab = ({ formikCreate }) => {
                 size={'small'}
                 sx={{ width: '85%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Education level" />}
-                onInputChange={(event, value) => { formikCreate.setFieldValue('educationLevel', value) }} />
+                onChange={(event, value) => { formikCreate.setFieldValue('educationLevel', value) }} />
               {formikCreate.errors.educationLevel && formikCreate.touched.educationLevel && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.educationLevel}</div>
               )}
@@ -464,7 +464,7 @@ const FillInformationTab = ({ formikCreate }) => {
                 size={'small'}
                 sx={{ marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Foreign language" />}
-                onInputChange={(event, value) => { formikCreate.setFieldValue('foreignLanguage', value) }} />
+                onChange={(event, value) => { formikCreate.setFieldValue('foreignLanguage', value) }} />
               {formikCreate.errors.foreignLanguage && formikCreate.touched.foreignLanguage && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.foreignLanguage}</div>
               )}
@@ -478,7 +478,7 @@ const FillInformationTab = ({ formikCreate }) => {
                 size={'small'}
                 sx={{ width: '85%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Industry" />}
-                onInputChange={(event, value) => { formikCreate.setFieldValue('industry', value) }} />
+                onChange={(event, value) => { formikCreate.setFieldValue('industry', value) }} />
               {formikCreate.errors.industry && formikCreate.touched.industry && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.industry}</div>
               )}

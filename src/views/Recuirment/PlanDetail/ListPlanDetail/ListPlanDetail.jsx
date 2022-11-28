@@ -182,7 +182,14 @@ const ListPlanDetail = ({ listPlanDetail }) => {
             <form onSubmit={formikEdit.handleSubmit}>
               <div>
                 <div>
-                  <TextField label="Name" variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='name' value={formikEdit.values.name} onChange={(event) => formikEdit.setFieldValue('name', event.target.value)} />
+                  <TextField label="Name"
+                    variant="outlined"
+                    size='small'
+                    style={{ width: '100%', marginTop: '1rem' }}
+                    name='name'
+                    value={formikEdit.values.name}
+                    onChange={(event) => formikEdit.setFieldValue('name', event.target.value)}
+                  />
                   {formikEdit.errors.name && formikEdit.touched.name && (
                     <div className='text-[#ec5555]'>{formikEdit.errors.name}</div>
                   )}

@@ -8,7 +8,7 @@ const RecruitmentRequestPage = React.lazy(() => import('./views/Recuirment/Recru
 const InterviewSchedulePage = React.lazy(() => import('./views/Interview/InterviewSchedule/InterviewSchedulePage/InterviewSchedulePage'))
 const InterviewDetailPage = React.lazy(() => import('./views/Interview/InterviewDetail/InterviewDetailPage/InterviewDetailPage'))
 const DepartmentInterviewPage = React.lazy(() => import('./views/Interview/DepartmentInterview/DepartmentInterview'))
-const CuriculumVitaePage = React.lazy(() => import('./views/CuriculumVitae/CVPage/CVPage'))
+const CuriculumVitaePage = React.lazy(() => import('./views/CuriculumVitae/CurriculumVitaePage'))
 const JobApplyPage = React.lazy(() => import('./views/JobApply/JobApplyPage/JobApplyPage'))
 const ViewJobApplyPage = React.lazy(() => import('./views/JobApply/ViewJobApply/ViewJobApply'))
 const NotificationPage = React.lazy(() => import('./views/Notification/NotificationPage/NotificationPage'))

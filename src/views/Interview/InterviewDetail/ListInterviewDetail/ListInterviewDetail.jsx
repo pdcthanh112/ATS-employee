@@ -98,7 +98,7 @@ const Row = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  <TableRow key={item.date}>
+                  <TableRow>
                     <TableCell sx={{ width: '15%' }} align='center'>{item.interview.candidate.phone}</TableCell>
                     <TableCell>{item.interview.purpose}</TableCell>
                     <TableCell align='center'>{item.interview.jobApply.recruitmentRequest.industry}</TableCell>
