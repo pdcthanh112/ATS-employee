@@ -142,7 +142,7 @@ const ListCandidate = ({ listCandidate }) => {
                 ))}
                 <div className='flex justify-center'>
                   <Stack spacing={2}>
-                    <Pagination count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} />
+                    <Pagination page={pagination.currentPage} count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} />
                   </Stack>
                 </div>
               </React.Fragment>}

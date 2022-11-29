@@ -92,7 +92,7 @@ const RecruitmentPlanPage = () => {
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={CreateIcon} alt='' /></span>
         </div> : <React.Fragment></React.Fragment>}
 
-        <div className='min-h-screen'>{isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListRecruitmentPlan listRecruitmentPlan={listRecruitmentPlan} />}</div>
+        {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListRecruitmentPlan listRecruitmentPlan={listRecruitmentPlan} />}
 
         <div className='pagination-container'>
           <Stack spacing={2}>
