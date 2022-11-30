@@ -4,10 +4,15 @@ import { useSelector } from 'react-redux';
 import ShowMoreIcon from '../../../../assets/icon/viewMore.png'
 import ShowLessIcon from '../../../../assets/icon/viewLess.png'
 import EditIcon from '../../../../assets/icon/edit-icon.png'
-import { positionName } from '../../../../utils/constants'
-import { Box, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { positionName, responseStatus } from '../../../../utils/constants'
+import { editInterviewDetail } from '../../../../apis/interviewDetailApi'
+import { interviewResultData } from '../../../../utils/dropdownData'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import { Box, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Modal, Autocomplete, TextField, TextareaAutosize } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ReactLoading from 'react-loading'
 
 const ListInterviewDetail = ({ listInterviewDetail }) => {
 
@@ -61,11 +66,60 @@ const Row = (props) => {
 
   const { ordinalNumbers, item } = props;
   const currentUser = useSelector((state) => state.auth.login.currentUser)
+  const categoryData = useSelector((state) => state.categoryData.data);
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [openModalEditDetail, setOpenModalEditDetail] = useState(false)
+  const [isEditting, setIsEditting] = useState(false)
 
-  const handleEditPlanDetail = () => {
+  const style = {
+    position: 'absolute',
+    top: '45%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 600,
+    maxHeight: 600,
+    overflow: 'scroll',
+    bgcolor: 'background.paper',
+    border: '1px solid #0F6B14',
+    boxShadow: 24,
+  };
 
+  const formikEditDetail = useFormik({
+    initialValues: {
+      detailId: '',
+      description: '',
+      end: new Date().toJSON().slice(0, 10),
+      interviewID: '',
+      note: '',
+      recommendPositions: '',
+      recordMeeting: '',
+      result: ''
+    },
+    validationSchema: Yup.object({
+      result: Yup.string().required('Please choose result'),
+    }),
+    onSubmit: async (values) => {
+      setIsEditting(true)
+      formikEditDetail.values.recommendPositions = formikEditDetail.values.recommendPositions.toString();
+      await editInterviewDetail(currentUser.token, values).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Edit successfully') : toast.error('Something error')
+      })
+      setIsEditting(false)
+    }
+  })
+
+  const handleEditPlanDetail = (item) => {
+    formikEditDetail.values.detailId = item.id
+    formikEditDetail.values.description = item.description
+    formikEditDetail.values.end = item.end
+    formikEditDetail.values.interviewID = item.interview.id
+    formikEditDetail.values.note = item.note
+    formikEditDetail.values.recommendPositions = item.recommendPositions
+    formikEditDetail.values.recordMeeting = item.recordMeeting
+    formikEditDetail.values.result = item.result
+    setOpenModalEditDetail(true)
+    console.log(item);
   }
 
   return (
@@ -80,7 +134,7 @@ const Row = (props) => {
         <TableCell align="center">{item.interview.round}</TableCell>
         <TableCell align='center'>{item.result}</TableCell>
         <TableCell align='center'>{item.end}</TableCell>
-        {currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) && <TableCell align='center'><img src={EditIcon} alt="" width={'30rem'} className='mx-auto' onClick={() => { handleEditPlanDetail() }} /></TableCell>}
+        {currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) && <TableCell align='center'><img src={EditIcon} alt="" width={'30rem'} className='mx-auto' onClick={() => { handleEditPlanDetail(item) }} /></TableCell>}
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
@@ -130,6 +184,75 @@ const Row = (props) => {
         </TableCell>
       </TableRow>
 
+      <Modal open={openModalEditDetail} onClose={() => setOpenModalEditDetail(false)}>
+        <Box sx={style}>
+          <div className='px-5 py-5'>
+            <form onSubmit={formikEditDetail.handleSubmit}>
+              <Autocomplete
+                options={interviewResultData()}
+                value={formikEditDetail.values.result}
+                size={'small'}
+                sx={{ width: '100%', marginRight: '2rem' }}
+                renderInput={(params) => <TextField {...params} label="Result" />}
+                onChange={(event, value) => { formikEditDetail.setFieldValue('result', value) }} />
+              {formikEditDetail.errors.result && formikEditDetail.touched.result && (
+                <div className='text-[#ec5555]'>{formikEditDetail.errors.result}</div>
+              )}
+
+              <Autocomplete
+                multiple
+                options={categoryData.position}
+                value={formikEditDetail.values.recommendPositions}
+                size={'small'}
+                sx={{ width: '100%', marginRight: '2rem', marginTop: '2rem' }}
+                renderInput={(params) => <TextField {...params} label="Recommend position" />}
+                onChange={(event, value) => { formikEditDetail.setFieldValue('recommendPositions', value) }} />
+              {formikEditDetail.errors.recommendPositions && formikEditDetail.touched.recommendPositions && (
+                <div className='text-[#ec5555]'>{formikEditDetail.errors.recommendPositions}</div>
+              )}
+
+              <div className='mt-4'>
+                <TextField label='Record meeting' variant="outlined" size='small' style={{ width: '100%' }} name='recordMeeting' value={formikEditDetail.values.recordMeeting} onChange={formikEditDetail.handleChange} />
+                {formikEditDetail.errors.recordMeeting && formikEditDetail.touched.recordMeeting && (
+                  <div className='text-[#ec5555]'>{formikEditDetail.errors.recordMeeting}</div>
+                )}
+              </div>
+
+              <div className='mt-4'>Description</div>
+              <TextareaAutosize
+                name='description'
+                value={formikEditDetail.values.description}
+                minRows={3}
+                maxRows={5}
+                style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                onChange={formikEditDetail.handleChange}
+              />
+              {formikEditDetail.errors.description && formikEditDetail.touched.description && (
+                <div className='text-[#ec5555]'>{formikEditDetail.errors.description}</div>
+              )}
+
+              <div className='mt-4'>Note</div>
+              <TextareaAutosize
+                name='note'
+                value={formikEditDetail.values.note}
+                minRows={3}
+                maxRows={5}
+                style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                onChange={formikEditDetail.handleChange}
+              />
+              {formikEditDetail.errors.note && formikEditDetail.touched.note && (
+                <div className='text-[#ec5555]'>{formikEditDetail.errors.note}</div>
+              )}
+
+              <div className='flex justify-evenly mt-5'>
+                <button type='button' onClick={() => setOpenModalEditDetail(false)} className='btn-create bg-[#F64E60]'>Cancel</button>
+                <button className='btn-create bg-[#20D489]' onClick={formikEditDetail.handleSubmit}>Save</button>
+                {isEditting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
+              </div>
+            </form>
+          </div>
+        </Box>
+      </Modal>
     </React.Fragment>
   );
 }

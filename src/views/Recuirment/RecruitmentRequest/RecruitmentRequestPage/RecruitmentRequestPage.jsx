@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './RecruitmentRequestPage.scss'
 
+import { Link } from 'react-router-dom'
 import ReactLoading from 'react-loading'
 import { useSelector } from 'react-redux'
 import RequestIcon from '../../../../assets/icon/recruitment-requestImage.png'
@@ -157,9 +158,12 @@ const RecruitmentRequestPage = () => {
           <img src={RequestIcon} alt='' width={'30rem'} />
         </div>
 
-        {currentUser.employee.position.name === positionName.POSITION_HR && <div className='create-request hover:cursor-pointer' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
-          <span className='mr-1'>Create recruitment request</span>
-          <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' /></span>
+        {currentUser.employee.position.name === positionName.POSITION_HR && <div className='flex justify-between w-[80%] mx-auto'>
+          <div className='create-request hover:cursor-pointer' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
+            <span className='mr-1'>Create recruitment request</span>
+            <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' /></span>
+          </div>
+          <Link to={'/expired-recruitment-request'} target={'_blank'}>View expired job request</Link>
         </div>}
 
         <form onSubmit={formikSearch.handleSubmit}>
@@ -403,8 +407,8 @@ const FillInformationTab = ({ formikCreate }) => {
                 onChange={formikCreate.handleChange}
               />
               {formikCreate.errors.positionName && formikCreate.touched.positionName && (
-              <div classpositionName='text-[#ec5555]'>{formikCreate.errors.name}</div>
-            )}
+                <div classpositionName='text-[#ec5555]'>{formikCreate.errors.name}</div>
+              )}
             </div>
 
             <div>
@@ -490,8 +494,8 @@ const FillInformationTab = ({ formikCreate }) => {
                 value={formikCreate.values.amount}
                 variant="outlined" size='small'
                 sx={{ marginTop: '1rem', width: '100%' }}
-                onChange={formikCreate.handleChange} 
-                />
+                onChange={formikCreate.handleChange}
+              />
               {formikCreate.errors.amount && formikCreate.touched.amount && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.amount}</div>
               )}

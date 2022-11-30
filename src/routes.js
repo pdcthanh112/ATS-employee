@@ -5,6 +5,7 @@ const CandidatePage = React.lazy(() => import('./views/Candidate/CandidatePage/C
 const RecruitmentPlanPage = React.lazy(() => import('./views/Recuirment/RecruitmentPlan/RecruitmentPlanPage/RecruitmentPlanPage'))
 const PlanDetailPage = React.lazy(() => import('./views/Recuirment/PlanDetail/PlanDetailPage/PlanDetailPage'))
 const RecruitmentRequestPage = React.lazy(() => import('./views/Recuirment/RecruitmentRequest/RecruitmentRequestPage/RecruitmentRequestPage'))
+const ExpiredRecruitmentRequestPage = React.lazy(() => import('./views/Recuirment/RecruitmentRequest/ExpiredRecruitmentRequest/ExpiredRecruitmentRequest'))
 const InterviewSchedulePage = React.lazy(() => import('./views/Interview/InterviewSchedule/InterviewSchedulePage/InterviewSchedulePage'))
 const InterviewDetailPage = React.lazy(() => import('./views/Interview/InterviewDetail/InterviewDetailPage/InterviewDetailPage'))
 const DepartmentInterviewPage = React.lazy(() => import('./views/Interview/DepartmentInterview/DepartmentInterview'))
@@ -21,6 +22,7 @@ const routes = [
   { path: '/recruitment-plan', name: 'Recruitment Request Page', element: RecruitmentPlanPage },
   { path: '/plan-detail', name: 'Recruitment Plan Detail Page', element: PlanDetailPage },
   { path: '/recruitment-request', name: 'Recruitment Request Page', element: RecruitmentRequestPage },
+  { path: '/expired-recruitment-request', name: 'Expired Recruitment Request Page', element: ExpiredRecruitmentRequestPage },
   { path: '/interview-schedule', name: 'Interview Schedule Page', element: InterviewSchedulePage },
   { path: '/interview-detail', name: 'Interview Detail Page', element: InterviewDetailPage },
   { path: '/department-interview/:id', name: 'Department Interview Page', element: DepartmentInterviewPage },

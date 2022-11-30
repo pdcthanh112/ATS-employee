@@ -40,12 +40,7 @@ const InterviewDetailPage = () => {
         <div className='flex px-8 pt-8'>
           <span className='font-medium text-3xl mr-3'>Interview detail</span>
           <img src={InterviewDetailIcon} alt='' width={'40rem'} />
-        </div>
-
-        {/* {currentUser.employee.position.name === positionName.POSITION_HR && <div className='create-schedule' onClick={() => setOpenModalCreate(true)} title='Create a new interview'>
-          <span className='mr-1'>Create an interview</span>
-          <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' width={'30rem'} /></span>
-        </div>} */}
+        </div>      
 
         <div className='filter-container'>
 

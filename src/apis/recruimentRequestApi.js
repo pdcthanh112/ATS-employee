@@ -15,6 +15,13 @@ export const getOpeningRecruimentRequest = async (pageNo, pageSize) => {
     .catch((error) => error);
 };
 
+export const getExpiryDateRecruitmentRequest = async (pageNo, pageSize) => {
+  return await axiosConfig
+    .get(`recruitmentRequest/getOpenRecruitmentRequest?pageNo=${pageNo}&pageSize=${pageSize}`)
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
 export const getRecruimentRequestById = async (id) => {
   return await axiosConfig
     .get(`recruitmentRequest/getById?id=${id}`)

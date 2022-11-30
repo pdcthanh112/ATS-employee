@@ -28,24 +28,9 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
   const confirm = useConfirm();
 
   const [openModalReason, setOpenModalReason] = useState(false)
-  const [openModalEdit, setOpenModalEdit] = useState(false)
   const [openModalInterviewDetail, setOpenModalInterviewDetail] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
-  const [isEditting, setIsEditting] = useState(false)
-
-  const [isOnline, setIsOnline] = useState(false)
-
-  useEffect(() => {
-    if (isOnline) {
-      formikEdit.values.type = interviewType.ONLINE
-      formikEdit.values.address = ''
-      formikEdit.values.room = ''
-    } else {
-      formikEdit.values.type = interviewType.OFFLINE
-      formikEdit.values.linkMeeting = ''
-    }
-  }, [isOnline])
 
   const style = {
     position: 'absolute',
@@ -59,35 +44,6 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
     border: '1px solid #0F6B14',
     boxShadow: 24,
   };
-
-
-  const formikEdit = useFormik({
-    initialValues: {
-      address: '',
-      candidateId: '',
-      date: '',
-      description: '',
-      employeeIds: [],
-      jobApplyId: 0,
-      linkMeeting: '',
-      purpose: '',
-      room: '',
-      round: '',
-      subject: '',
-      time: '',
-      type: ''
-    },
-    validationSchema: Yup.object({
-      reason: Yup.string().required('Please input reason'),
-    }),
-    onSubmit: async (values) => {
-      setIsEditting(true)
-      await cancelInterview(currentUser.token, values).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Cancel successfully') : toast.error('Cancel fail')
-        setIsEditting(false)
-      })
-    }
-  })
 
   const formikCancel = useFormik({
     initialValues: {
@@ -235,100 +191,6 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
         ))}
       </div>
 
-      <Modal open={openModalEdit} onClose={() => setOpenModalEdit(false)}>
-        <Box sx={style}>
-          <div className='px-2 py-3'>
-            <form onSubmit={formikCancel.handleSubmit}>
-              <div className='px-2 py-3'>
-                <div className='w-full flex mt-3'>
-                  <div className='w-[22%] mr-3'>
-                    <Autocomplete
-                      options={interviewRoundData()}
-                      size={'small'}
-                      sx={{ width: '100%', marginRight: '2rem' }}
-                      renderInput={(params) => <TextField {...params} label="Round" />}
-                      onChange={(event, value) => { formikEdit.setFieldValue('round', value) }}
-                    />
-                    {formikEdit.errors.round && formikEdit.touched.round && (
-                      <div className='text-[#ec5555]'>{formikEdit.errors.round}</div>
-                    )}
-                  </div>
-                  <div className='w-[100%]'>
-                    <TextField label='Subject' variant="outlined" size='small' style={{ width: '100%' }} name='subject' value={formikEdit.values.subject} onChange={formikEdit.handleChange} />
-                    {formikEdit.errors.subject && formikEdit.touched.subject && (
-                      <div className='text-[#ec5555]'>{formikEdit.errors.subject}</div>
-                    )}
-                  </div>
-                </div>
-                <div className='flex justify-evenly mt-3'>
-                  <div>
-                    <TextField type={'date'} variant="outlined" size='small' style={{ width: '100%' }} name='date' value={formikEdit.values.date} onChange={formikEdit.handleChange} />
-                    {formikEdit.errors.date && formikEdit.touched.date && (
-                      <div className='text-[#ec5555]'>{formikEdit.errors.date}</div>
-                    )}
-                  </div>
-                  <div>
-                    <TextField type={'time'} variant="outlined" size='small' style={{ width: '100%' }} name='time' value={formikEdit.values.time} onChange={formikEdit.handleChange} />
-                    {formikEdit.errors.time && formikEdit.touched.time && (
-                      <div className='text-[#ec5555]'>{formikEdit.errors.time}</div>
-                    )}
-                  </div>
-                </div>
-
-                <div className='mt-4'>Purpose</div>
-                <TextareaAutosize
-                  name='purpose'
-                  value={formikEdit.values.purpose}
-                  minRows={2}
-                  maxRows={5}
-                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-                  onChange={formikEdit.handleChange}
-                />
-                {formikEdit.errors.purpose && formikEdit.touched.purpose && (
-                  <div className='text-[#ec5555]'>{formikEdit.errors.purpose}</div>
-                )}
-
-                <FormControlLabel control={<Switch onChange={(event) => setIsOnline(event.target.checked)} />} label={isOnline ? 'Online' : 'Offline'} />
-
-                {isOnline ? <div>
-                  <TextField label='Google meet' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='linkMeeting' value={formikEdit.values.linkMeeting} onChange={formikEdit.handleChange} />
-                </div> : <div>
-                  <div>
-                    <TextField label='Room' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='room' value={formikEdit.values.room} onChange={formikEdit.handleChange} />
-                    {formikEdit.errors.room && formikEdit.touched.room && (
-                      <div className='text-[#ec5555]'>{formikEdit.errors.room}</div>
-                    )}
-                  </div>
-                  <div>
-                    <TextField label='Address' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='address' value={formikEdit.values.address} onChange={formikEdit.handleChange} />
-                    {formikEdit.errors.address && formikEdit.touched.address && (
-                      <div className='text-[#ec5555]'>{formikEdit.errors.address}</div>
-                    )}
-                  </div>
-                </div>}
-
-                <div className='mt-4'>Description</div>
-                <TextareaAutosize
-                  name='description'
-                  value={formikEdit.values.description}
-                  minRows={2}
-                  maxRows={5}
-                  style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-                  onChange={formikEdit.handleChange}
-                />
-                {formikEdit.errors.description && formikEdit.touched.description && (
-                  <div className='text-[#ec5555]'>{formikEdit.errors.description}</div>
-                )}
-              </div>
-              <div className='flex justify-evenly'>
-                <button className='btn-create bg-[#20D489]' onClick={formikEdit.handleSubmit}>Save</button>
-                {isEditting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
-              </div>
-            </form>
-          </div>
-        </Box>
-      </Modal>
-
       <Modal open={openModalReason} onClose={() => setOpenModalReason(false)}>
         <Box sx={style}>
           <div className='px-2 py-3'>
@@ -360,7 +222,6 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
         <Box sx={style}>
           <div className='px-5 py-5'>
             <form onSubmit={formikCreateDetail.handleSubmit}>
-
               <Autocomplete
                 options={interviewResultData()}
                 size={'small'}
