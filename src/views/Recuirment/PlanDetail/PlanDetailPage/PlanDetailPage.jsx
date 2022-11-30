@@ -25,6 +25,7 @@ const PlanDetailPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
   const categoryData = useSelector((state) => state.categoryData.data);
+  console.log(categoryData);
 
   const [listPlanDetail, setListPlanDetail] = useState([])
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
@@ -175,7 +176,7 @@ const PlanDetailPage = () => {
                     </div>
                     <div className='w-[34%]' >
                       <Autocomplete
-                        options={categoryData.jobTitle}
+                        options={categoryData.position}
                         size={'small'}
                         sx={{ marginTop: '1rem' }}
                         renderInput={(params) => <TextField {...params} label="Position" />}

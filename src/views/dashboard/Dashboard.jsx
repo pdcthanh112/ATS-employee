@@ -73,7 +73,7 @@ const Dashboard = () => {
 
   return (
     <React.Fragment>
-      {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
+      {/* {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
         <div className='w-[90%] mx-auto'>
           <div className='statusChart-container'>
             <div className='statusChart-item'>
@@ -172,7 +172,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      }
+      } */}
     </React.Fragment>
   )
 }
