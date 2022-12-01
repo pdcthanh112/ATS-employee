@@ -30,14 +30,13 @@ const ExpiredRecruitmentRequest = () => {
 
   const [listExpiredRecruitmentRequest, setListExpiredRecruitmentRequest] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const confirm = useConfirm();
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
       const response = await getExpiryDateRecruitmentRequest();
       if (response) {
-        setListExpiredRecruitmentRequest(response.data.responseList)
+        setListExpiredRecruitmentRequest(response.data)
         setIsLoading(false)
       }
     }
@@ -261,7 +260,7 @@ function EnhancedTableToolbar(props) {
   const confirm = useConfirm();
 
   const handleCloseRecruitment = async (listRequestId) => {
-    await confirm({ message: "Are you sure to close this recruitment request?" }).then(() => {
+    await confirm({ description: "Are you sure to close this recruitment request?" }).then(() => {
       closeRecruimentRequest(currentUser.token, listRequestId).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
       })

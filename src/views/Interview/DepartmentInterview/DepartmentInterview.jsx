@@ -63,7 +63,7 @@ const DepartmentInterview = () => {
   }
 
   const confirmContinueInterview = async () => {
-    await confirm({ message: "Are you sure to aprrove this interview?" }).then(() => {  
+    await confirm({ description: "Are you sure to aprrove this interview?" }).then(() => {  
         setHandling(true)
         confirmByManager(currentUser.token, currentInterview).then((response) => {
           response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
@@ -73,7 +73,7 @@ const DepartmentInterview = () => {
   }
 
   const confirmCancelInterview = async () => {
-    await confirm({ message: "Are you sure to cancel this interview?" }).then(() => {
+    await confirm({ description: "Are you sure to cancel this interview?" }).then(() => {
       setHandling(true)
       const data = {
         interviewId: currentInterview,

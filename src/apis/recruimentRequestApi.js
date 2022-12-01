@@ -17,11 +17,9 @@ export const getOpeningRecruimentRequest = async (pageNo, pageSize) => {
     .catch((error) => error);
 };
 
-export const getExpiryDateRecruitmentRequest = async (pageNo, pageSize) => {
+export const getExpiryDateRecruitmentRequest = async () => {
   return await axiosConfig
-    .get(
-      `recruitmentRequest/getOpenRecruitmentRequest?pageNo=${pageNo}&pageSize=${pageSize}`
-    )
+    .get("recruitmentRequest/getAllExpiredRecruitmentRequest")
     .then((response) => response.data)
     .catch((error) => error);
 };
@@ -106,11 +104,17 @@ export const getIdAndNameActiveRequest = async (token) => {
     .catch((error) => error);
 };
 
-export const closeRecruimentRequest = async (listRequestID) => {
+export const closeRecruimentRequest = async (token, listRequestID) => {
   return await axiosConfig
-    .put("recruitmentRequest/closeListRequest", {
-      listRequestID,
-    })
+    .put(
+      "recruitmentRequest/closeListRequest",
+      {
+        listRequestID,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
     .then((response) => response.data)
     .catch((error) => error);
 };
