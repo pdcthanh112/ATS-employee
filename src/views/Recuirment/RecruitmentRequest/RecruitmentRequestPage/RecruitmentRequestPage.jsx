@@ -14,24 +14,28 @@ import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosiz
 import { createRecruitmentRequest, getAllRecruimentRequest } from '../../../../apis/recruimentRequestApi'
 import ListRecruitmentRequest from '../ListRecruitmentRequest/ListRecruitmentRequest'
 import { educationLevelData, experienceData, foreignLanguageData, jobLevelData, typeOfWorkData } from '../../../../utils/dropdownData'
-import { positionName, responseStatus } from '../../../../utils/constants'
+import { departmentName, responseStatus } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getAllDepartment } from '../../../../apis/departmentApi'
 import { getPlanDetailApprovedByDepartment, getPlanDetailById } from '../../../../apis/planDetailApi'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
+import { createFilterOptions } from '@mui/material/Autocomplete';
+
+const filter = createFilterOptions();
+
 
 const RecruitmentRequestPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
-  const dataCategory = useSelector((state) => state.categoryData.data);
+  const categoryData = useSelector((state) => state.categoryData.data);
 
   const [listRecruitmentRequest, setListRecruitmentRequest] = useState([])
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [isUpdating, setIsUpdating] = useState(false)
+  const [isCreating, setIsCreating] = useState(false)
 
 
   const [tabPage, setTabPage] = useState(0);
@@ -124,12 +128,12 @@ const RecruitmentRequestPage = () => {
       typeOfWork: Yup.string().required('Please choose type of work'),
     }),
     onSubmit: async (values) => {
-      setIsUpdating(true)
+      setIsCreating(true)
       await createRecruitmentRequest(values, currentUser.token).then(response => {
         if (response.message.includes(' expiry date')) {
           formikCreate.errors.expiryDate = "Invalid expiry date"
         }
-        setIsUpdating(false)
+        setIsCreating(false)
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
       })
     }
@@ -158,7 +162,7 @@ const RecruitmentRequestPage = () => {
           <img src={RequestIcon} alt='' width={'30rem'} />
         </div>
 
-        {currentUser.employee.position.name === positionName.POSITION_HR && <div className='flex justify-between w-[80%] mx-auto'>
+        {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='flex justify-between w-[80%] mx-auto'>
           <div className='create-request hover:cursor-pointer' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
             <span className='mr-1'>Create recruitment request</span>
             <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' /></span>
@@ -169,39 +173,43 @@ const RecruitmentRequestPage = () => {
         <form onSubmit={formikSearch.handleSubmit}>
           <div className='filter-container'>
             <Autocomplete
-              options={dataCategory.industry}
+              options={categoryData.industry}
               size={'small'}
               sx={{ width: 180, marginRight: 2 }}
               renderInput={(params) => <TextField {...params} label="Industry" />}
-              onChange={(event, value) => { formikSearch.setFieldValue('industry', value) }} />
-
+              onChange={(event, value) => { formikSearch.setFieldValue('industry', value) }}
+            />
             <Autocomplete
-              options={dataCategory.jobTitle}
+              options={categoryData.jobTitle}
               size={'small'}
               sx={{ width: 190, marginRight: 2 }}
               renderInput={(params) => <TextField {...params} label="Job name" />}
-              onChange={(event, value) => { formikSearch.setFieldValue('jobName', value) }} />
+              onChange={(event, value) => { formikSearch.setFieldValue('jobName', value) }}
+            />
 
             <Autocomplete
               options={typeOfWorkData()}
               size={'small'}
               sx={{ width: 235, height: 10, marginRight: 2 }}
               renderInput={(params) => <TextField {...params} label="Type of work" />}
-              onChange={(event, value) => { formikSearch.setFieldValue('typeOfWork', value) }} />
+              onChange={(event, value) => { formikSearch.setFieldValue('typeOfWork', value) }}
+            />
 
             <Autocomplete
               options={jobLevelData()}
               size={'small'}
               sx={{ width: 145, marginRight: 2 }}
               renderInput={(params) => <TextField {...params} label="Level" />}
-              onInputChange={(event, value) => { formikSearch.setFieldValue('jobLevel', value) }} />
+              onInputChange={(event, value) => { formikSearch.setFieldValue('jobLevel', value) }}
+            />
 
             <Autocomplete
-              options={dataCategory.province}
+              options={categoryData.province}
               size={'small'}
               sx={{ width: 150, marginRight: 2 }}
               renderInput={(params) => <TextField {...params} label="City" />}
-              onInputChange={(event, value) => { formikSearch.setFieldValue('city', value) }} />
+              onInputChange={(event, value) => { formikSearch.setFieldValue('city', value) }}
+            />
 
             <img src={SearchIcon} alt="" width={'50rem'} title='Search' onClick={() => formikSearch.handleSubmit} />
           </div>
@@ -250,7 +258,7 @@ const RecruitmentRequestPage = () => {
                       <button className='btn-create bg-[#20D489]' onClick={formikCreate.handleSubmit}>
                         Submit
                       </button>
-                      {isUpdating && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
+                      {isCreating && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
                     </div>}
                 </div>
               </form>
@@ -349,6 +357,8 @@ const FillInformationTab = ({ formikCreate }) => {
   const [isSalaryNegotiable, setIsSalaryNegotiable] = useState(false)
   const [planDetailData, setPlanDetailData] = useState({})
 
+  const [newIndustry, setNewIndustry] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
@@ -418,7 +428,8 @@ const FillInformationTab = ({ formikCreate }) => {
                 value={formikCreate.values.jobLevel}
                 variant="outlined" size='small'
                 style={{ width: '100%', marginTop: '1rem' }}
-                onChange={formikCreate.handleChange} />
+                onChange={formikCreate.handleChange}
+              />
               {formikCreate.errors.jobLevel && formikCreate.touched.jobLevel && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.jobLevel}</div>
               )}
@@ -432,7 +443,8 @@ const FillInformationTab = ({ formikCreate }) => {
                 size={'small'}
                 sx={{ width: '85%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Experience" />}
-                onChange={(event, value) => { formikCreate.setFieldValue('experience', value) }} />
+                onChange={(event, value) => { formikCreate.setFieldValue('experience', value) }}
+              />
               {formikCreate.errors.experience && formikCreate.touched.experience && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.experience}</div>
               )}
@@ -443,7 +455,8 @@ const FillInformationTab = ({ formikCreate }) => {
                 size={'small'}
                 sx={{ width: '100%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Type of work" />}
-                onChange={(event, value) => { formikCreate.setFieldValue('typeOfWork', value) }} />
+                onChange={(event, value) => { formikCreate.setFieldValue('typeOfWork', value) }}
+              />
               {formikCreate.errors.typeOfWork && formikCreate.touched.typeOfWork && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.typeOfWork}</div>
               )}
@@ -457,7 +470,8 @@ const FillInformationTab = ({ formikCreate }) => {
                 size={'small'}
                 sx={{ width: '85%', marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Education level" />}
-                onChange={(event, value) => { formikCreate.setFieldValue('educationLevel', value) }} />
+                onChange={(event, value) => { formikCreate.setFieldValue('educationLevel', value) }}
+              />
               {formikCreate.errors.educationLevel && formikCreate.touched.educationLevel && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.educationLevel}</div>
               )}
@@ -468,7 +482,8 @@ const FillInformationTab = ({ formikCreate }) => {
                 size={'small'}
                 sx={{ marginTop: '1rem' }}
                 renderInput={(params) => <TextField {...params} label="Foreign language" />}
-                onChange={(event, value) => { formikCreate.setFieldValue('foreignLanguage', value) }} />
+                onChange={(event, value) => { formikCreate.setFieldValue('foreignLanguage', value) }}
+              />
               {formikCreate.errors.foreignLanguage && formikCreate.touched.foreignLanguage && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.foreignLanguage}</div>
               )}
@@ -477,12 +492,14 @@ const FillInformationTab = ({ formikCreate }) => {
 
           <div className='grid grid-cols-2 px-1'>
             <div>
-              <Autocomplete
-                options={categoryData.industry}
-                size={'small'}
-                sx={{ width: '85%', marginTop: '1rem' }}
-                renderInput={(params) => <TextField {...params} label="Industry" />}
-                onChange={(event, value) => { formikCreate.setFieldValue('industry', value) }} />
+              <TextField
+                name='industry'
+                value={formikCreate.values.industry}
+                variant="outlined"
+                size='small'
+                style={{ width: '85%', marginTop: '1rem' }}
+                onChange={formikCreate.handleChange}
+              />
               {formikCreate.errors.industry && formikCreate.touched.industry && (
                 <div className='text-[#ec5555]'>{formikCreate.errors.industry}</div>
               )}
@@ -623,7 +640,6 @@ const ShowPlanDetailData = ({ planDetailId }) => {
       setIsLoading(true)
       const response = await getPlanDetailById(currentUser.token, planDetailId);
       if (response.data) {
-        console.log(response.data);
         setPlanDetailData(response.data)
         setIsLoading(false)
       }

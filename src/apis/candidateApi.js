@@ -95,3 +95,12 @@ export const getIdAndNameAcitveCandidate = async (token) => {
     .then((response) => response.data)
     .catch((error) => error);
 };
+
+export const disableCandidate = async (token, candidateId) => {
+  return await axiosConfig
+    .delete(`candidate/delete/{id}?id=${candidateId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.data)
+    .catch((error) => error);
+};

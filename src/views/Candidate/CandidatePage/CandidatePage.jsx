@@ -202,12 +202,14 @@ const CandidatePage = () => {
           </div>
         </div>
 
-        {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListCandidate listCandidate={listCandidate} />}
+        <div className='w-[90%] mx-auto my-3 py-3 rounded-lg bg-[#FFF]'>
+          {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListCandidate listCandidate={listCandidate} />}
 
-        <div className='pagination-container'>
-          <Stack>
-            <Pagination page={pagination.currentPage} count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} variant="outlined" shape="rounded" />
-          </Stack>
+          <div className='flex justify-center'>
+            <Stack>
+              <Pagination page={pagination.currentPage} count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} variant="outlined" shape="rounded" />
+            </Stack>
+          </div>
         </div>
       </div>
 

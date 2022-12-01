@@ -11,7 +11,7 @@ import CheckDoneIcon from '.././../../../assets/icon/check-done.png'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import ReactLoading from 'react-loading'
-import { interviewStatus, interviewType, positionName, responseStatus } from '../../../../utils/constants'
+import { departmentName, interviewStatus, interviewType, positionName, responseStatus } from '../../../../utils/constants'
 import { cancelInterview, closeInterview, confirmInterview, rejectInterview } from '../../../../apis/interviewScheduleApi'
 import { Autocomplete, Box, Modal, TextareaAutosize, TextField, FormControlLabel, Switch } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
@@ -87,12 +87,10 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
   })
 
   const confirmInterviewByEmp = async (interviewId) => {
-    await confirm({ description: "Are you sure to aprrove this interview?" }).then((response) => {
-      if (response) {
-        confirmInterview(currentUser.token, currentUser.employee.id, interviewId).then((response) => {
-          response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
-        })
-      }
+    await confirm({ description: "Are you sure to aprrove this interview?" }).then(() => {
+      confirmInterview(currentUser.token, currentUser.employee.id, interviewId).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
+      })
     })
   }
 
@@ -129,6 +127,7 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
       <div className='listInterview-container'>
         {listInterviewSchedule && listInterviewSchedule.map((item) => (
           <div key={item.id} className='listInterview-item'>
+            {console.log(item)}
             <div className='inline-flex w-[100%]'>
               <div className='flex'>
                 <div>
@@ -141,10 +140,10 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
                 <div className='flex justify-between w-[60%] ml-4'>
                   <div className='bg-[#FFF4DE] text-[#FFA800] text-sm font-semibold px-3 py-2 rounded-lg h-9'>PENDING</div>
                   <div className='flex'>
-                    {currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) ?
+                    {currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
                       <span onClick={() => { handleCancelInterview(item.id) }}><img src={DeleteIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Cancel this interview' /></span>
                       : <React.Fragment>
-                        {item.employeeConfirm && <React.Fragment>
+                        {item.employeeConfirm == null && <React.Fragment>
                           <span onClick={() => { confirmInterviewByEmp(item.id) }}><img src={ApproveIcon} alt="" width={'40rem'} className='mr-2 hover:cursor-pointer' title='Approve this interview' /></span>
                           <span onClick={() => { rejectInterviewByEmp(item.id) }}><img src={RejectIcon} alt="" width={'20rem'} className='mt-2 hover:cursor-pointer' title='Reject this interview' /></span>
                         </React.Fragment>}

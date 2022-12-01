@@ -19,6 +19,13 @@ export const positionName = {
     POSITION_CEO: 'CEO'
 }
 
+export const jobLevelName = {
+    EMPLOYEE: 'Employee',
+    MANAGER: 'Manager',
+    DIRECTOR: 'Chief',
+    INTERNSHIP: 'Internship'
+}
+
 export const interviewType = {
     ONLINE: 'ONLINE',
     OFFLINE: 'OFFLINE'
@@ -31,4 +38,6 @@ export const interviewStatus = {
     CANCELED: 'CANCELED'
 }
 
-
+export const departmentName = {
+    HR_DEPARTMENT: 3
+}

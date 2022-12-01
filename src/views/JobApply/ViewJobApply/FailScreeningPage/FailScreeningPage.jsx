@@ -4,14 +4,14 @@ import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { approveJobApply, getJobApplyFailScreening, rejectJobApply } from '../../../../apis/jobApplyApi'
 import ReactLoading from 'react-loading'
-import { Box, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Collapse, IconButton, Pagination, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import ShowMoreIcon from '../../../../assets/icon/viewMore.png'
 import ShowLessIcon from '../../../../assets/icon/viewLess.png'
 import cvIcon from '../../../../assets/icon/cv.png'
 import ApproveIcon from '../../../../assets/icon/approve.png'
 import RejectIcon from '../../../../assets/icon/reject.png'
 import { useConfirm } from "material-ui-confirm";
-import { positionName, responseStatus, statusName } from '../../../../utils/constants'
+import { departmentName, responseStatus, statusName } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react'
@@ -32,7 +32,6 @@ const FailScreeningPage = () => {
       if (response && response.data) {
         setListJobApply(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
-        console.log(response.data.responseList);
       }
       else {
         setListJobApply([])
@@ -67,6 +66,12 @@ const FailScreeningPage = () => {
               </TableBody>
             </Table>
           </TableContainer>
+
+          <div className='flex justify-center bg-[#FFF]'>
+            <Stack spacing={2}>
+              <Pagination count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} />
+            </Stack>
+          </div>
         </div>
       }
     </React.Fragment>
@@ -83,7 +88,7 @@ const Row = (props) => {
   const confirm = useConfirm();
 
   const handleApproveJobApply = async (id) => {
-    await confirm({ message: "Are you sure to aprrove this candidate?" }).then(() => {
+    await confirm({ description: "Are you sure to aprrove this candidate?" }).then(() => {
       approveJobApply(currentUser.token, id, currentUser.employee.id).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Approved successfully') : toast.error('Something error')
       })
@@ -91,7 +96,7 @@ const Row = (props) => {
   }
 
   const handleRejectJobApply = async (id) => {
-    await confirm({ message: "Are you sure to reject this candidate?" }).then(() => {
+    await confirm({ description: "Are you sure to reject this candidate?" }).then(() => {
       rejectJobApply(currentUser.token, id, currentUser.employee.id).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Rejected successfully') : toast.error('Something error')
       })
@@ -120,7 +125,7 @@ const Row = (props) => {
         <TableCell align="center"><a href={item.cv.linkCV} target='_blank' title='View CV' className='flex justify-center' rel="noreferrer"><img src={cvIcon} alt="" width={'40rem'} /></a></TableCell>
         <TableCell align='center'>{showStatusLabel(item.status)}</TableCell>
         <TableCell align='center' style={{ display: 'flex', justifyContent: 'space-around' }}>
-        {currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) && item.status === statusName.PENDING ? <React.Fragment>
+          {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && item.status === statusName.PENDING ? <React.Fragment>
             <img src={ApproveIcon} alt="" width={'40rem'} title='Approve this candidate' className='hover:cursor-pointer' onClick={() => handleApproveJobApply(item.id)} />
             <img src={RejectIcon} alt="" width={'40rem'} title='Reject this candidate' className='hover:cursor-pointer' onClick={() => handleRejectJobApply(item.id)} />
           </React.Fragment> : <></>}
@@ -138,7 +143,7 @@ const Row = (props) => {
                     <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Language</TableCell>
                     <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '15%' }} align='center'>Experience</TableCell>
                     <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '15%' }} align='center'>Position</TableCell>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600' }} align='center'>Type of work</TableCell>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600' }} align='center'>City</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -147,7 +152,7 @@ const Row = (props) => {
                     <TableCell>{item.foreignLanguage}</TableCell>
                     <TableCell align='center'>{item.recruitmentRequest.experience}</TableCell>
                     <TableCell align='center'>{item.recruitmentRequest.position.name}</TableCell>
-                    <TableCell align='center'>{item.recruitmentRequest.typeOfWork}</TableCell>
+                    <TableCell align='center'>{item.cities.name}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

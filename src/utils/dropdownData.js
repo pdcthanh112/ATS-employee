@@ -1,6 +1,14 @@
 export const typeOfWorkData = () => ['Fulltime',  'Part Time', 'Work from home'];
 
-export const jobLevelData = () => ['Fresher', 'Junior', 'Senior', 'Suppervisor'];
+export const jobLevelData = () => [
+  "Nhân viên",
+  "Trưởng nhóm",
+  "Trưởng/Phó phòng",
+  "Quản lý/Giám sát",
+  "Phó Giám đốc",
+  "Giám đốc",
+  "Thực tập sinh",
+];
 
 export const experienceData = () => [
   'Chưa có kinh nghiệm',

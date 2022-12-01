@@ -17,7 +17,7 @@ import SearchIcon from '../../../../assets/icon/filter.png'
 import AddIcon from '../../../../assets/icon/plus.png'
 import DepartmentInterviewIcon from '../../../../assets/icon/department-interview.png'
 import ListInterviewSchedule from '../ListInterviewSchedule/ListInterviewSchedule';
-import { interviewType, positionName, responseStatus } from '../../../../utils/constants';
+import { departmentName, interviewType, jobLevelName, positionName, responseStatus } from '../../../../utils/constants';
 import { getAllDepartment } from '../../../../apis/departmentApi';
 import { getListRecruimentRequestByDepartment, getRecruimentRequestById } from '../../../../apis/recruimentRequestApi';
 import { getCandidateAppliedByRecruitmentRequest } from '../../../../apis/candidateApi';
@@ -53,12 +53,12 @@ const InterviewPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) ? await getAllInterview(currentUser.token, pagination.currentPage - 1, 4) : await getAcceptableInterviewByEmployee(currentUser.token, currentUser.employee.id, pagination.currentPage - 1, 4);
+      const response = currentUser.employee.department.id === departmentName.HR_DEPARTMENT ? await getAllInterview(currentUser.token, pagination.currentPage - 1, 4) : await getAcceptableInterviewByEmployee(currentUser.token, currentUser.employee.id, pagination.currentPage - 1, 4);
       if (response) {
         setListInterviewSchedule(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })
-        setIsLoading(false)
+        setPagination({ ...pagination, totalPage: response.data.totalPage })      
       }
+      setIsLoading(false)
     }
     fetchData();
   }, [pagination.currentPage])
@@ -143,12 +143,12 @@ const InterviewPage = () => {
           <img src={InterviewIcon} alt='' width={'30rem'} />
         </div>
 
-        {currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) && <div className='create-schedule' onClick={() => setOpenModalCreate(true)} title='Create a new interview'>
+        {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='create-schedule' onClick={() => setOpenModalCreate(true)} title='Create a new interview'>
           <span className='mr-1'>Create an interview</span>
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' /></span>
         </div>}
 
-        {currentUser.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) || currentUser.employee.position.name.toUpperCase().includes(positionName.MANAGER) ?
+        {currentUser.employee.jobLevel === jobLevelName.MANAGER || currentUser.employee.jobLevel === jobLevelName.DIRECTOR ?
           <div className='flex justify-end mr-20'>
             <img src={DepartmentInterviewIcon} alt="" width={'30rem'}/>
             <Link to={`/department-interview/${currentUser.employee.department.id}`} target="_blank" className='text-[#1DAF5A] text-lg ml-2'>View department interview</Link>
@@ -352,6 +352,7 @@ const ChoosePaticipantsTab = ({ formikCreate }) => {
       setIsLoading(true)
       const response = await getCandidateAppliedByRecruitmentRequest(currentUser.token, formikCreate.values.recruitmentRequestId);
       if (response) {
+        console.log(response);
         setListCandidate(response.data)
         setIsLoading(false)
       }
