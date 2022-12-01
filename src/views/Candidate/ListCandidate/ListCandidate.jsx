@@ -12,7 +12,7 @@ import ReactLoading from 'react-loading'
 import DeleteIcon from '../../../assets/icon/delete-icon.png'
 import folderIcon from '../../../assets/icon/folder-icon.png'
 import PDFImage from '../../../assets/image/pdf.png'
-import { responseStatus } from '../../../utils/constants';
+import { departmentName, responseStatus } from '../../../utils/constants';
 import { useConfirm } from "material-ui-confirm";
 
 const ListCandidate = ({ listCandidate }) => {
@@ -84,7 +84,7 @@ const ListCandidate = ({ listCandidate }) => {
                   {item.status === 'ACTIVATE' ? <span className='status-active'>Active</span> : <span className='status-disable'>Disable</span>}
                 </td>
                 <td>
-                  <img src={DeleteIcon} alt='' title='Disable' width={'30rem'} className='m-auto hover:cursor-pointer' onClick={() => handleDisableCandidate(item.id)} />
+                  {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <img src={DeleteIcon} alt='' title='Disable' width={'30rem'} className='m-auto hover:cursor-pointer' onClick={() => handleDisableCandidate(item.id)} />}
                 </td>
               </tr>
             ))}
