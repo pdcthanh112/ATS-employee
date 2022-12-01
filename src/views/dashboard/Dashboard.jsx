@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './Dashboard.scss'
 
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { getCategory } from '../../apis/recruimentRequestApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTotalStatusDetail } from '../../apis/dashboardApi';
@@ -27,42 +27,34 @@ const Dashboard = () => {
   const [listColleagues, setListColleagues] = useState([])
   const [listInterview, setListInterview] = useState([])
 
-  const [isLoading, setIsLoading] = useState(true) 
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getTotalStatusDetail(currentUser.token);
-      if (response.data) {
-        setRecruitmentPlanData(response.data.countStatusPlan)
-        setPlanDetailData(response.data.countStatusDetail)
-        setRecruitmentRequestData(response.data.countStatusRequest)
-        setIsLoading(false)
-      }
-    }
-    fetchData();
-  }, [])
+      await getTotalStatusDetail(currentUser.token).then((response) => {
+        if (response.data) {
+          setRecruitmentPlanData(response.data.countStatusPlan)
+          setPlanDetailData(response.data.countStatusDetail)
+          setRecruitmentRequestData(response.data.countStatusRequest)
+          setIsLoading(false)
+        }
+      })
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      const response = await getEmployeeByDepartment(currentUser.token, currentUser.employee.department.id, 0, 5);
-      if (response && response.data) {
-        setListColleagues(response.data.responseList)
-        setIsLoading(false)
-      }
-    }
-    fetchData();
-  }, [])
+      await getEmployeeByDepartment(currentUser.token, currentUser.employee.department.id, 0, 5).then((response) => {
+        if (response && response.data) {
+          setListColleagues(response.data.responseList)
+          setIsLoading(false)
+        }
+      })
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      const response = await getInterviewByEmployee(currentUser.token, currentUser.employee.department.id, 0, 3);
-      if (response && response.data) {
-        setListInterview(response.data.responseList)
-        setIsLoading(false)
-      }
+      getInterviewByEmployee(currentUser.token, currentUser.employee.department.id, 0, 3).then((response) => {
+        if (response && response.data) {
+          setListInterview(response.data.responseList)
+          setIsLoading(false)
+        }
+      })
+      setIsLoading(false)
     }
     fetchData();
   }, [])
@@ -73,7 +65,7 @@ const Dashboard = () => {
 
   return (
     <React.Fragment>
-      {/* {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
+      {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
         <div className='w-[90%] mx-auto'>
           <div className='statusChart-container'>
             <div className='statusChart-item'>
@@ -150,7 +142,7 @@ const Dashboard = () => {
                   </div> : <div className='mt-2'>
                     <div className='font-semibold text-lg'>Address</div>
                     <div className='field-item'>{item?.address}</div>
-                  </div>}                               
+                  </div>}
                 </div>
               ))}
             </div>
@@ -172,7 +164,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      } */}
+      }
     </React.Fragment>
   )
 }

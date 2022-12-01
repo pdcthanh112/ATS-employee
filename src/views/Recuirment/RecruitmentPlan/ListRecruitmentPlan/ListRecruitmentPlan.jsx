@@ -170,7 +170,7 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
                     <span className='amount-control'>
                       <span className='mt-1' onClick={() => { formikEdit.setFieldValue(formikEdit.values.amount, parseInt(formikEdit.values.amount) - 1) }}><img src={MinusIcon} alt='' width={'20rem'} /></span>
                       <input type={'text'} style={{ width: '5rem', paddingLeft: 10 }} className='focus:outline-none' name='amount' value={formikEdit.values.amount} onChange={formikEdit.handleChange} />
-                      <span className='mt-1' onClick={() => { console.log(formikEdit.values.amount); formikEdit.setFieldValue(formikEdit.values.amount, parseInt(formikEdit.values.amount) + 1) }}><img src={AddIcon} alt='' width={'20rem'} /></span>
+                      <span className='mt-1' onClick={() => { formikEdit.setFieldValue(formikEdit.values.amount, parseInt(formikEdit.values.amount) + 1) }}><img src={AddIcon} alt='' width={'20rem'} /></span>
                     </span>
 
                   </div>

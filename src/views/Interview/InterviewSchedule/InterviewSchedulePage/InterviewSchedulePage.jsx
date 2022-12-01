@@ -124,7 +124,6 @@ const InterviewPage = () => {
       status: ''
     },
     onSubmit: async (values) => {
-      console.log('values', values);
       setIsLoading(true)
       await searchInterviewSchedule(currentUser.token, values).then((response) => {
         if (response && response.data) {
@@ -352,7 +351,6 @@ const ChoosePaticipantsTab = ({ formikCreate }) => {
       setIsLoading(true)
       const response = await getCandidateAppliedByRecruitmentRequest(currentUser.token, formikCreate.values.recruitmentRequestId);
       if (response) {
-        console.log(response);
         setListCandidate(response.data)
         setIsLoading(false)
       }

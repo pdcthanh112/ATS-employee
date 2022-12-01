@@ -96,7 +96,6 @@ const ListPlanDetail = ({ listPlanDetail }) => {
   const handleRejectPlanDetail = async (planId) => {
     await confirm({ description: "Are you sure to reject this plan?" }).then(() => {
       cancelPlanDetail(currentUser.token, currentUser?.employee.id, planId).then((response) => {
-        console.log('asdfsadf', response.status);
         response.status === 200 ? toast.success('Confirm successfully') : toast.error('Something error')
       })
     })

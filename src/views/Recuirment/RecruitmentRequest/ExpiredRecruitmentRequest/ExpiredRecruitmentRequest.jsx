@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { getExpiryDateRecruitmentRequest } from '../../../../apis/recruimentRequestApi'
+import { closeRecruimentRequest, getExpiryDateRecruitmentRequest } from '../../../../apis/recruimentRequestApi'
 import ReactLoading from 'react-loading'
+import { useSelector } from 'react-redux'
 //import { Box, Paper, Checkbox, TableCell, TableRow, TableBody, Table, TableContainer, TablePagination } from '@mui/material';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -19,10 +20,17 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+
+import { useConfirm } from "material-ui-confirm";
+import { responseStatus } from '../../../../utils/constants';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const ExpiredRecruitmentRequest = () => {
 
   const [listExpiredRecruitmentRequest, setListExpiredRecruitmentRequest] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const confirm = useConfirm();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,7 +104,7 @@ const ExpiredRecruitmentRequest = () => {
       {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
         <Box sx={{ width: '100%' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar numSelected={selected.length} listSelected={selected}/>
+            <EnhancedTableToolbar numSelected={selected.length} listSelected={selected} />
             <TableContainer>
               <Table sx={{ minWidth: 750 }}>
                 <EnhancedTableHead
@@ -106,45 +114,45 @@ const ExpiredRecruitmentRequest = () => {
                   rowCount={listExpiredRecruitmentRequest.length}
                 />
                 <TableBody>
-    
-                  {listExpiredRecruitmentRequest.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                      const isItemSelected = isSelected(row.id);
-                      const labelId = `enhanced-table-checkbox-${index}`;
 
-                      return (
-                        <TableRow
-                          hover
-                          onClick={(event) => handleClick(event, row.id)}
-                          role="checkbox"
-                          aria-checked={isItemSelected}
-                          tabIndex={-1}
-                          key={row.id}
-                          selected={isItemSelected}
+                  {listExpiredRecruitmentRequest.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
+
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.id)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.id}
+                        selected={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              'aria-labelledby': labelId,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
                         >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              color="primary"
-                              checked={isItemSelected}
-                              inputProps={{
-                                'aria-labelledby': labelId,
-                              }}
-                            />
-                          </TableCell>
-                          <TableCell
-                            component="th"
-                            id={labelId}
-                            scope="row"
-                            padding="none"
-                          >
-                            {row.name}
-                          </TableCell>
-                          <TableCell align="right">{row.creator.name}</TableCell>
-                          <TableCell align="right">{row.planDetail.amount}</TableCell>
-                          <TableCell align="right">{row.planDetail.reason}</TableCell>                         
-                          <TableCell align="right">{row.expiryDate}</TableCell>
-                        </TableRow>
-                      );
-                    })}
+                          {row.name}
+                        </TableCell>
+                        <TableCell align="right">{row.creator.name}</TableCell>
+                        <TableCell align="right">{row.planDetail.amount}</TableCell>
+                        <TableCell align="right">{row.planDetail.reason}</TableCell>
+                        <TableCell align="right">{row.expiryDate}</TableCell>
+                      </TableRow>
+                    );
+                  })}
                   {emptyRows > 0 && (
                     <TableRow>
                       <TableCell colSpan={6} />
@@ -207,8 +215,8 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props;
 
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props;
 
   return (
     <TableHead>
@@ -248,45 +256,71 @@ function EnhancedTableHead(props) {
 
 
 function EnhancedTableToolbar(props) {
+  const currentUser = useSelector((state) => state.auth.login.currentUser)
   const { numSelected, listSelected } = props;
+  const confirm = useConfirm();
+
+  const handleCloseRecruitment = async (listRequestId) => {
+    await confirm({ message: "Are you sure to close this recruitment request?" }).then(() => {
+      closeRecruimentRequest(currentUser.token, listRequestId).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
+      })
+
+    })
+  }
 
   return (
-    <Toolbar>
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Choose
-        </Typography>
-      )}
+    <React.Fragment>
+      <Toolbar>
+        {numSelected > 0 ? (
+          <Typography
+            sx={{ flex: '1 1 100%' }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {numSelected} selected
+          </Typography>
+        ) : (
+          <Typography
+            sx={{ flex: '1 1 100%' }}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+          >
+            Choose
+          </Typography>
+        )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon onClick={() => {console.log(listSelected);}}/>
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
-  );
+        {numSelected > 0 ? (
+          <Tooltip title="Delete">
+            <IconButton>
+              <DeleteIcon onClick={() => { handleCloseRecruitment(listSelected) }} />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Filter list">
+            <IconButton>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Toolbar>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+    </React.Fragment>
+  )
 }
 
 

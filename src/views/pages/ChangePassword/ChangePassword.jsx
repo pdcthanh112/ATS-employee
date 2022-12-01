@@ -27,7 +27,7 @@ const ChangePassword = () => {
       confirm: Yup.string().required('Please input confirm password').oneOf([Yup.ref("newPassword"), null], 'Not match'),
     }),
     onSubmit: (values) => {
-      changePassword(currentUser.email, values.newPassword, values.oldPassword).then((response) => { console.log(response);
+      changePassword(currentUser.email, values.newPassword, values.oldPassword).then((response) => {
         response.status === 200 ? setChangePasswordStatus(responseStatus.SUCCESS) : setChangePasswordStatus(responseStatus.FAILURE)
       })
     }

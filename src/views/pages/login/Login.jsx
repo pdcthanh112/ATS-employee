@@ -40,7 +40,6 @@ const Login = () => {
             vapidKey: process.env.REACT_APP_FIREBASE_KEY_COMPARE,
           }).then((currentToken) => {
             if (currentToken) {
-              console.log('token ne: ', currentToken);
               formik.values.notificationToken = currentToken;
             }
           });

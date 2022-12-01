@@ -111,7 +111,6 @@ const CandidatePage = () => {
     }),
     onSubmit: async (values) => {
       formikCreateJobApply.values.foreignLanguage = formikCreateJobApply.values.foreignLanguage.toString();
-      console.log(values)
       setIsApplying(true)
       if (fileCV == null) {
         formikCreateJobApply.errors.linkCV = "Please submit CV";
@@ -138,7 +137,6 @@ const CandidatePage = () => {
       typeOfWork: ''
     },
     onSubmit: async (values) => {
-      console.log('RRRRRRR', values);
       // updateProfileCandidate(currentUser.candidate.id, currentUser.token, values).then((response) => {
       //   response.status === responseStatus.SUCCESS ? toast.success('Edit profile successfully') : toast.error('Edit profile fail')
       // })

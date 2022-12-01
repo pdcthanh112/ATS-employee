@@ -11,7 +11,7 @@ import cvIcon from '../../../../assets/icon/cv.png'
 import ApproveIcon from '../../../../assets/icon/approve.png'
 import RejectIcon from '../../../../assets/icon/reject.png'
 import { useConfirm } from "material-ui-confirm";
-import { departmentName, positionName, responseStatus, statusName } from '../../../../utils/constants'
+import { departmentName, responseStatus, statusName } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react'
@@ -23,7 +23,7 @@ const PassScreeningPage = () => {
 
   const [listJobApply, setListJobApply] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
+  const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,8 +31,7 @@ const PassScreeningPage = () => {
       const response = await getJobApplyPassScreening(currentUser.token, recruimentId, pagination.currentPage - 1, 5);
       if (response && response.data) {
         setListJobApply(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })
-        console.log(response.data);
+        setPagination({ ...pagination, totalPage: response.data.totalPage }) 
       }
       else {
         setListJobApply([])
@@ -104,11 +103,13 @@ const Row = (props) => {
   }
   const showStatusLabel = (status) => {
     if (status === 'APPROVED') {
-      return <span className='bg-[#C9F7F5] text-[#1BC5BD] text-sm px-2 py-1 rounded-md'>APPROVED</span>
+      return <span className='bg-[#C9F7F5] text-[#1BC5BD] text-sm w-[7rem] h-[2.4rem] flex justify-center items-center rounded-md'>APPROVED</span>
     } else if (status === 'REJECTED') {
-      return <span className='bg-[#FFE2E5] text-[#F64E60] text-sm px-2 py-1 rounded-md'>Rejected</span>
+      return <span className='bg-[#FFE2E5] text-[#F64E60] text-sm w-[7rem] h-[2.4rem] flex justify-center items-center rounded-md'>Rejected</span>
+    } else if (status === 'CANCELED') {
+      return <span className='bg-[#FFE2E5] text-[#F64E60] text-sm w-[7rem] h-[2.4rem] flex justify-center items-center rounded-md'>Rejected</span>
     } else {
-      return <span className='bg-[#FFF4DE] text-[#FFA800] text-sm px-2 py-1 rounded-md'>Pending</span>
+      return <span className='bg-[#FFF4DE] text-[#FFA800] text-sm w-[7rem] h-[2.4rem] flex justify-center items-center rounded-md'>Pending</span>
     }
   }
 

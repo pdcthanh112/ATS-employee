@@ -25,7 +25,6 @@ const PlanDetailPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
   const categoryData = useSelector((state) => state.categoryData.data);
-  console.log(categoryData);
 
   const [listPlanDetail, setListPlanDetail] = useState([])
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
@@ -94,8 +93,7 @@ const PlanDetailPage = () => {
       salary: Yup.string().required('Please input salary'),
     }),
     onSubmit: async (values) => {
-      await createPlanDetail(values, currentUser.token).then(response => {   
-        console.log(response);    
+      await createPlanDetail(values, currentUser.token).then(response => {         
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
       })
     }

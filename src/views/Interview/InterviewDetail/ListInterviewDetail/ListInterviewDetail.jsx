@@ -119,7 +119,6 @@ const Row = (props) => {
     formikEditDetail.values.recordMeeting = item.recordMeeting
     formikEditDetail.values.result = item.result
     setOpenModalEditDetail(true)
-    console.log(item);
   }
 
   return (

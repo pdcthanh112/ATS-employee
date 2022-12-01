@@ -156,12 +156,12 @@ const DepartmentInterview = () => {
           <div className='px-4 py-3'>
             <div className='flex justify-center font-medium text-xl mb-4'>Member of this interview</div>
             {confirmList && confirmList.map((item) => (
-              <div className='flex justify-between px-5 my-4'>
+              <div className='flex justify-between px-5 my-4'>   
                 <div>{item.name}</div>
                 <div>
-                  {item.status === 'APPROVED' && <div className='bg-[#E9FCE9] text-[#00FF00] text-sm font-medium px-3 py-1 rounded-lg h-7 items-center'>Approved</div>}
-                  {item.status === 'REJECTED' && <div className='bg-[#FFE2E5] text-[#F64E60] text-sm font-medium px-3 py-1 rounded-lg h-7 items-center'>Reject</div>}
-                  {item.status === 'null' && <div className='bg-[#FFF4DE] text-[#FFA800] text-sm font-medium px-3 py-1 rounded-lg h-7 items-center'>Pending</div>}
+                  {item.status === 'ACCEPTABLE' && <div className='bg-[#E9FCE9] text-[#00FF00] text-sm px-3 py-1 rounded-lg h-7 items-center'>Approved</div>}
+                  {item.status === 'REJECTED' && <div className='bg-[#FFE2E5] text-[#F64E60] text-sm px-3 py-1 rounded-lg h-7 items-center'>Reject</div>}
+                  {item.status === 'null' && <div className='bg-[#FFF4DE] text-[#FFA800] text-sm px-3 py-1 rounded-lg h-7 items-center'>Pending</div>}
                 </div>
               </div>
             ))}

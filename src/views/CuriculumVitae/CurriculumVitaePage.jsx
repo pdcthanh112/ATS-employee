@@ -18,7 +18,6 @@ const CurriculumVitaePage = () => {
       setIsLoading(true)
       const response = await getCVStorage(currentUser.token, pagination.currentPage - 1, 10);
       if (response && response.data) {
-        console.log(response);
         setListCV(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
         setIsLoading(false)

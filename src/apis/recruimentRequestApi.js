@@ -10,14 +10,18 @@ export const getAllRecruimentRequest = async (pageNo, pageSize) => {
 
 export const getOpeningRecruimentRequest = async (pageNo, pageSize) => {
   return await axiosConfig
-    .get(`recruitmentRequest/getOpenRecruitmentRequest?pageNo=${pageNo}&pageSize=${pageSize}`)
+    .get(
+      `recruitmentRequest/getOpenRecruitmentRequest?pageNo=${pageNo}&pageSize=${pageSize}`
+    )
     .then((response) => response.data)
     .catch((error) => error);
 };
 
 export const getExpiryDateRecruitmentRequest = async (pageNo, pageSize) => {
   return await axiosConfig
-    .get(`recruitmentRequest/getOpenRecruitmentRequest?pageNo=${pageNo}&pageSize=${pageSize}`)
+    .get(
+      `recruitmentRequest/getOpenRecruitmentRequest?pageNo=${pageNo}&pageSize=${pageSize}`
+    )
     .then((response) => response.data)
     .catch((error) => error);
 };
@@ -39,7 +43,6 @@ export const getListRecruimentRequestByDepartment = async (token, id) => {
 };
 
 export const searchRecruimentRequest = async (searchObject) => {
-  console.log("apii", searchObject);
   return await axiosConfig
     .put("recruitmentRequest/searchRecruitmentRequest", {
       experience: searchObject.experience,
@@ -96,8 +99,17 @@ export const createRecruitmentRequest = async (data, token) => {
 
 export const getIdAndNameActiveRequest = async (token) => {
   return await axiosConfig
-    .get('recruitmentRequest/getAllActiveRequest', {
+    .get("recruitmentRequest/getAllActiveRequest", {
       headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.data)
+    .catch((error) => error);
+};
+
+export const closeRecruimentRequest = async (listRequestID) => {
+  return await axiosConfig
+    .put("recruitmentRequest/closeListRequest", {
+      listRequestID,
     })
     .then((response) => response.data)
     .catch((error) => error);

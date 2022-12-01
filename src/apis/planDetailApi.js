@@ -45,7 +45,6 @@ export const getPlanDetailApprovedByDepartment = async (token, depId) => {
 };
 
 export const createPlanDetail = async (planData, token) => {
-  console.log("api", planData);
   return await axiosConfig
     .post(
       "planDetail/create",

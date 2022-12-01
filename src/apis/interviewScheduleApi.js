@@ -142,7 +142,6 @@ export const rejectInterview = async (token, employeeId, interviewId) => {
 };
 
 export const cancelInterview = async (token, data) => {
-  console.log(data);
   return await axiosConfig
     .patch(
       `interview/cancelInterview`,

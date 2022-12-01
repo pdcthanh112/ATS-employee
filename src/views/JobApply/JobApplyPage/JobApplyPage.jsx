@@ -24,7 +24,6 @@ const JobApplyPage = () => {
         setListRecruitmentRequest(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
         setIsLoading(false)
-        console.log(response.data.responseList);
       }
     }
     fetchData();
