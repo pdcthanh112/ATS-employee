@@ -151,11 +151,11 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
                 </div>}
               {item.status === interviewStatus.DONE && <div className='flex justify-between'>
                 <div className='bg-[#E9FCE9] text-[#00FF00] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>DONE</div>
-                {currentUser.employee.position.name === positionName.POSITION_HR && <div className='ml-3 hover:cursor-pointer hover:underline hover:text-[#116835]' onClick={() => handleCreateInterviewDetail(item.id)}>Add result of interview</div>}
+                {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='ml-3 hover:cursor-pointer hover:underline hover:text-[#116835]' onClick={() => handleCreateInterviewDetail(item.id)}>Add result of interview</div>}
               </div>}
               {item.status === interviewStatus.APPROVED && <div className='flex justify-between '>
                 <div className='bg-[#C9F7F5] text-[#1BC5BD] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>APPROVED</div>
-                {currentUser.employee.position.name.toUpperCase().includes(positionName.POSITION_HR) && <div onClick={() => handleCloseInterview(item.id)}><img src={CheckDoneIcon} alt="" width={'30rem'} className='hover:cursor-pointer ml-2' title='Close this interview' /></div>}
+                {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div onClick={() => handleCloseInterview(item.id)}><img src={CheckDoneIcon} alt="" width={'30rem'} className='hover:cursor-pointer ml-2' title='Close this interview' /></div>}
               </div>}
               {item.status === interviewStatus.CANCELED && <div className='bg-[#FFE2E5] text-[#F64E60] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>CANCELED</div>}
             </div>

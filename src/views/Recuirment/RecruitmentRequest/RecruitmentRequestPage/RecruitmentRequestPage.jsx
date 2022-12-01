@@ -158,13 +158,13 @@ const RecruitmentRequestPage = () => {
     <React.Fragment>
       <div className='recruitmentrequest-container'>
         <div className='title-container'>
-          <span className='font-medium text-3xl mr-3'>Recruitment Request</span>
+          <span className='font-medium text-3xl mr-3'>Job Request</span>
           <img src={RequestIcon} alt='' width={'30rem'} />
         </div>
 
         {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='flex justify-between w-[80%] mx-auto'>
           <div className='create-request hover:cursor-pointer' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
-            <span className='mr-1'>Create recruitment request</span>
+            <span className='mr-1'>Create job request</span>
             <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' /></span>
           </div>
           <Link to={'/expired-recruitment-request'} target={'_blank'}>View expired job request</Link>

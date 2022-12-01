@@ -191,7 +191,7 @@ const CandidatePage = () => {
 
           <div className='flex bg-[#1DAF5A] px-3 hover:cursor-pointer rounded-lg' onClick={() => handleCreateJobApply().then(() => setOpenModalCreateJobApply(true))} title='Create a new candidate'>
             <i className="fa-solid fa-plus text-white" style={{ marginTop: '0.8rem' }}></i>
-            <span className='ml-1 mt-2 font-semibold text-white'>Create job apply</span>
+            <span className='ml-1 mt-2 font-semibold text-white'>Apply for candidate</span>
           </div>
 
           <div className='flex bg-[#1DAF5A] px-3 hover:cursor-pointer rounded-lg' onClick={() => setOpenModalCreateCandidate(true)} title='Create a new candidate'>

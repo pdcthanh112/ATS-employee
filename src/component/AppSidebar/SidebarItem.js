@@ -37,7 +37,7 @@ export const SidebarItem = [
         icon: <img src={PlanDetail} alt="" width={"25rem"} />,
       },
       {
-        title: "Recruitment request",
+        title: "Job request",
         path: "/recruitment-request",
         icon: <img src={RecruitmentRequest} alt="" width={"25rem"} />,
       },

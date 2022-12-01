@@ -486,7 +486,7 @@ const FillInformationTab = ({ formikCreate }) => {
       <FormControlLabel control={<Switch onChange={(event) => setIsOnline(event.target.checked)} />} label={isOnline ? 'Online' : 'Offline'} />
 
       {isOnline ? <div>
-        <TextField label='Google meet' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='linkMeeting' value={formikCreate.values.linkMeeting} onChange={formikCreate.handleChange} />
+        <TextField label='Link meeting' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='linkMeeting' value={formikCreate.values.linkMeeting} onChange={formikCreate.handleChange} />
       </div> : <div>
         <div>
           <TextField label='Room' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='room' value={formikCreate.values.room} onChange={formikCreate.handleChange} />
