@@ -493,6 +493,7 @@ const FillInformationTab = ({ formikCreate }) => {
           <div className='grid grid-cols-2 px-1'>
             <div>
               <TextField
+                label='industry'
                 name='industry'
                 value={formikCreate.values.industry}
                 variant="outlined"
