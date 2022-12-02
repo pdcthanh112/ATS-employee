@@ -9,7 +9,7 @@ import ReactLoading from 'react-loading';
 import {Pagination, Stack } from '@mui/material';
 
 import InterviewDetailIcon from '../../../../assets/icon/interview-detailImage.png'
-import { positionName } from '../../../../utils/constants';
+import { departmentName, positionName } from '../../../../utils/constants';
 
 
 const InterviewDetailPage = () => {
@@ -24,7 +24,7 @@ const InterviewDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllInterviewDetail(currentUser.token, pagination.currentPage - 1, 4) : await getInterviewDetailByDepartment(currentUser.token, currentUser.employee.department.name, pagination.currentPage - 1, 5);
+      const response = currentUser.employee.department.id === departmentName.HR_DEPARTMENT ? await getAllInterviewDetail(currentUser.token, pagination.currentPage - 1, 4) : await getInterviewDetailByDepartment(currentUser.token, currentUser.employee.department.name, pagination.currentPage - 1, 5);
       if (response) {
         setListInterviewDetail(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
