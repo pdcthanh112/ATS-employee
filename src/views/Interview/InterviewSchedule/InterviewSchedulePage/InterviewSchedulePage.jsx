@@ -17,7 +17,7 @@ import SearchIcon from '../../../../assets/icon/filter.png'
 import AddIcon from '../../../../assets/icon/plus.png'
 import DepartmentInterviewIcon from '../../../../assets/icon/department-interview.png'
 import ListInterviewSchedule from '../ListInterviewSchedule/ListInterviewSchedule';
-import { departmentName, interviewType, jobLevelName, positionName, responseStatus } from '../../../../utils/constants';
+import { departmentName, interviewType, jobLevelName, responseStatus } from '../../../../utils/constants';
 import { getAllDepartment } from '../../../../apis/departmentApi';
 import { getListRecruimentRequestByDepartment, getRecruimentRequestById } from '../../../../apis/recruimentRequestApi';
 import { getCandidateAppliedByRecruitmentRequest } from '../../../../apis/candidateApi';

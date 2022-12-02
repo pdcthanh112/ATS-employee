@@ -20,7 +20,7 @@ import { Box, Modal, Pagination, Stack } from '@mui/material';
 import { createRecruitmentPlan, getAllRecruimentPlan, getRecruimentPlanByDepartment } from '../../../../apis/recruitmentPlanApi'
 import ListRecruitmentPlan from '../ListRecruitmentPlan/ListRecruitmentPlan'
 
-import { positionName, responseStatus } from '../../../../utils/constants'
+import { departmentName, jobLevelName, responseStatus } from '../../../../utils/constants'
 
 const RecruitmentPlanPage = () => {
 
@@ -45,7 +45,7 @@ const RecruitmentPlanPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllRecruimentPlan(currentUser.token, pagination.currentPage - 1, 4) : await getRecruimentPlanByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
+      const response = currentUser.employee.department.id === departmentName.HR_DEPARTMENT ? await getAllRecruimentPlan(currentUser.token, pagination.currentPage - 1, 4) : await getRecruimentPlanByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
       if (response) {
         setListRecruitmentPlan(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
@@ -82,15 +82,18 @@ const RecruitmentPlanPage = () => {
   return (
     <React.Fragment>
       <div className='recruitmentPlan-container'>
-        <div className='title-container'>
-          <span className='font-medium text-3xl mr-3'>Recruitment Plan</span>
-          <img src={PlanIcon} alt='' width={'30rem'} />
+        <div className='flex justify-between px-10 py-4'>
+          <div className='flex'>
+            <span className='font-medium text-3xl mr-3'>Recruitment Plan</span>
+            <img src={PlanIcon} alt='' width={'30rem'} />
+          </div>
+          <div className='font-medium text-2xl mr-10'>{currentUser.employee.department.name}</div>
         </div>
 
-        {currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) || currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) ? <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
+        {currentUser?.employee.jobLevel === jobLevelName.MANAGER || currentUser?.employee.jobLevel === jobLevelName.DIRECTOR ? <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
           <span className='mr-1'>Create recruitment plan</span>
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={CreateIcon} alt='' /></span>
-        </div> : <React.Fragment></React.Fragment>}
+        </div> : <></>}
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListRecruitmentPlan listRecruitmentPlan={listRecruitmentPlan} />}
 

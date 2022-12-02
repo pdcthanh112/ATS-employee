@@ -18,7 +18,7 @@ import CandidateIcon from '../../../assets/icon/candidateImage.png'
 import SearchIcon from '../../../assets/icon/filter.png'
 import { createCandidate, getAllActivateCandidate, getAllCandidate, getIdAndNameAcitveCandidate } from '../../../apis/candidateApi'
 import ListCandidate from '../ListCandidate/ListCandidate';
-import { DEFAULT_PASSWORD, positionName, responseStatus } from '../../../utils/constants'
+import { DEFAULT_PASSWORD, departmentName, positionName, responseStatus } from '../../../utils/constants'
 import { educationLevelData, experienceData, foreignLanguageData } from '../../../utils/dropdownData';
 import { getIdAndNameActiveRequest } from '../../../apis/recruimentRequestApi';
 import { applyJob } from '../../../apis/jobApplyApi';
@@ -151,7 +151,7 @@ const CandidatePage = () => {
   return (
     <React.Fragment>
       <div className='candidatepage-container'>
-        <div className='flex mx-5 my-3'>
+        <div className='flex px-5 py-3 bg-[#FFF]'>
           <span className='font-semibold text-3xl mr-3'>Candidate</span>
           <img src={CandidateIcon} alt='' width={'30rem'} />
         </div>
@@ -189,15 +189,17 @@ const CandidatePage = () => {
             </div>
           </form>
 
-          <div className='flex bg-[#1DAF5A] px-3 hover:cursor-pointer rounded-lg' onClick={() => handleCreateJobApply().then(() => setOpenModalCreateJobApply(true))} title='Create a new candidate'>
-            <i className="fa-solid fa-plus text-white" style={{ marginTop: '0.8rem' }}></i>
-            <span className='ml-1 mt-2 font-semibold text-white'>Apply for candidate</span>
-          </div>
+          {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <>
+            <div className='flex bg-[#1DAF5A] px-3 hover:cursor-pointer rounded-lg' onClick={() => handleCreateJobApply().then(() => setOpenModalCreateJobApply(true))} title='Create a new candidate'>
+              <i className="fa-solid fa-plus text-white" style={{ marginTop: '0.8rem' }}></i>
+              <span className='ml-1 mt-2 font-semibold text-white'>Apply for candidate</span>
+            </div>
 
-          <div className='flex bg-[#1DAF5A] px-3 hover:cursor-pointer rounded-lg' onClick={() => setOpenModalCreateCandidate(true)} title='Create a new candidate'>
-            <i className="fa-solid fa-plus text-white" style={{ marginTop: '0.8rem' }}></i>
-            <span className='ml-1 mt-2 font-semibold text-white'>Create candidate</span>
-          </div>
+            <div className='flex bg-[#1DAF5A] px-3 hover:cursor-pointer rounded-lg' onClick={() => setOpenModalCreateCandidate(true)} title='Create a new candidate'>
+              <i className="fa-solid fa-plus text-white" style={{ marginTop: '0.8rem' }}></i>
+              <span className='ml-1 mt-2 font-semibold text-white'>Create candidate</span>
+            </div>
+          </>}
         </div>
 
         <div className='w-[90%] mx-auto my-3 py-3 rounded-lg bg-[#FFF]'>

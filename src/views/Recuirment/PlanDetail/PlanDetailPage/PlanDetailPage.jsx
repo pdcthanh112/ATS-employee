@@ -17,9 +17,8 @@ import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosiz
 import { NumericFormat } from 'react-number-format';
 import { getAllPlanDetail, createPlanDetail, getPlanDetailByDepartment } from '../../../../apis/planDetailApi'
 import ListPlanDetail from '../ListPlanDetail/ListPlanDetail'
-import { responseStatus } from '../../../../utils/constants'
+import { departmentName, jobLevelName, responseStatus } from '../../../../utils/constants'
 import { getPlanApprovedByDepartment } from '../../../../apis/recruitmentPlanApi'
-import {positionName} from '../../../../utils/constants'
 
 const PlanDetailPage = () => {
 
@@ -48,7 +47,7 @@ const PlanDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllPlanDetail(currentUser.token, pagination.currentPage - 1, 2) : await getPlanDetailByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 2)
+      const response = currentUser.employee.department.id === departmentName.HR_DEPARTMENT ? await getAllPlanDetail(currentUser.token, pagination.currentPage - 1, 2) : await getPlanDetailByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 2)
       if (response) {
         setListPlanDetail(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })
@@ -66,7 +65,7 @@ const PlanDetailPage = () => {
       }
     }
     fetchData();
-  }, [currentUser.employee.department.id, currentUser.token])
+  }, [])
 
   const formik = useFormik({
     initialValues: {
@@ -107,10 +106,10 @@ const PlanDetailPage = () => {
           <img src={PlanDetailIcon} alt='' width={'30rem'} />
         </div>
 
-        {currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) || currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) ? <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
+        {currentUser?.employee.jobLevel === jobLevelName.MANAGER || currentUser?.employee.jobLevel === jobLevelName.DIRECTOR ? <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
           <span className='mr-1'>Create recruitment plan detail</span>
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={CreateIcon} alt='' /></span>
-        </div> : <React.Fragment></React.Fragment>}
+        </div> : <></>}
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListPlanDetail listPlanDetail={listPlanDetail} />}
 
