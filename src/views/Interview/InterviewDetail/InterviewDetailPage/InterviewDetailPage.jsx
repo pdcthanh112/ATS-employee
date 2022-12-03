@@ -9,7 +9,7 @@ import ReactLoading from 'react-loading';
 import {Pagination, Stack } from '@mui/material';
 
 import InterviewDetailIcon from '../../../../assets/icon/interview-detailImage.png'
-import { departmentName, positionName } from '../../../../utils/constants';
+import { departmentName } from '../../../../utils/constants';
 
 
 const InterviewDetailPage = () => {
@@ -18,8 +18,7 @@ const InterviewDetailPage = () => {
 
   const [listInterviewDetail, setListInterviewDetail] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
-  const [openModalCreate, setOpenModalCreate] = useState(false)
+  const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,9 +26,9 @@ const InterviewDetailPage = () => {
       const response = currentUser.employee.department.id === departmentName.HR_DEPARTMENT ? await getAllInterviewDetail(currentUser.token, pagination.currentPage - 1, 4) : await getInterviewDetailByDepartment(currentUser.token, currentUser.employee.department.name, pagination.currentPage - 1, 5);
       if (response) {
         setListInterviewDetail(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })
-        setIsLoading(false)
+        setPagination({ ...pagination, totalPage: response.data.totalPage })      
       }
+      setIsLoading(false)
     }
     fetchData();
   }, [pagination.currentPage])

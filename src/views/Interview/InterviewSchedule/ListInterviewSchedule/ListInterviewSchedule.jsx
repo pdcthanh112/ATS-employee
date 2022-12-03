@@ -7,17 +7,18 @@ import ApproveIcon from '../../../../assets/icon/check.png'
 import RejectIcon from '../../../../assets/icon/close.png'
 import DeleteIcon from '.././../../../assets/icon/trash.png'
 import CheckDoneIcon from '.././../../../assets/icon/check-done.png'
+import AddResultIcon from '.././../../../assets/icon/addInterviewResult.png'
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import ReactLoading from 'react-loading'
-import { departmentName, interviewStatus, interviewType, positionName, responseStatus } from '../../../../utils/constants'
+import { departmentName, interviewStatus, interviewType, responseStatus } from '../../../../utils/constants'
 import { cancelInterview, closeInterview, confirmInterview, rejectInterview } from '../../../../apis/interviewScheduleApi'
-import { Autocomplete, Box, Modal, TextareaAutosize, TextField, FormControlLabel, Switch } from '@mui/material';
+import { Autocomplete, Box, Modal, TextareaAutosize, TextField } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { interviewResultData, interviewRoundData } from '../../../../utils/dropdownData';
+import { interviewResultData } from '../../../../utils/dropdownData';
 import { createInterviewDetail } from '../../../../apis/interviewDetailApi';
 import { useConfirm } from "material-ui-confirm";
 
@@ -149,9 +150,9 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
                       </React.Fragment>}
                   </div>
                 </div>}
-              {item.status === interviewStatus.DONE && <div className='flex justify-between'>
+              {item.status === interviewStatus.DONE && <div className='flex justify-between w-[65%]'>
                 <div className='bg-[#E9FCE9] text-[#00FF00] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>DONE</div>
-                {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='ml-3 hover:cursor-pointer hover:underline hover:text-[#116835]' onClick={() => handleCreateInterviewDetail(item.id)}>Add result of interview</div>}
+                {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='hover:cursor-pointer bg-[#1daf5a] flex rounded-lg px-3 h-9' onClick={() => handleCreateInterviewDetail(item.id)}><img src={AddResultIcon} alt='' style={{width: '1.4rem', height: '1.4rem', margin: 'auto 0.2rem auto 0', padding: 0}}/><div className='text-[#FFF] my-auto'>Add result</div></div>}
               </div>}
               {item.status === interviewStatus.APPROVED && <div className='flex justify-between '>
                 <div className='bg-[#C9F7F5] text-[#1BC5BD] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>APPROVED</div>

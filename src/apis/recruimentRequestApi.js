@@ -109,7 +109,7 @@ export const closeRecruimentRequest = async (token, listRequestID) => {
     .put(
       "recruitmentRequest/closeListRequest",
       {
-        listRequestID,
+        listId: listRequestID,
       },
       {
         headers: { Authorization: `Bearer ${token}` },

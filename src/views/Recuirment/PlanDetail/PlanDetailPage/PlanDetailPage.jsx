@@ -101,9 +101,12 @@ const PlanDetailPage = () => {
   return (
     <React.Fragment>
       <div className='planDetail-container'>
-        <div className='title-container'>
+        <div className='flex justify-between px-12 py-4'>
+        <div className='flex'>
           <span className='font-medium text-3xl mr-3'>Recruitment plan details</span>
           <img src={PlanDetailIcon} alt='' width={'30rem'} />
+        </div>
+        <div className='font-medium text-2xl'>{currentUser.employee.department.name}</div>
         </div>
 
         {currentUser?.employee.jobLevel === jobLevelName.MANAGER || currentUser?.employee.jobLevel === jobLevelName.DIRECTOR ? <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>

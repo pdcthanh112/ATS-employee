@@ -82,7 +82,7 @@ const RecruitmentPlanPage = () => {
   return (
     <React.Fragment>
       <div className='recruitmentPlan-container'>
-        <div className='flex justify-between px-10 py-4'>
+        <div className='flex justify-between px-12 py-4'>
           <div className='flex'>
             <span className='font-medium text-3xl mr-3'>Recruitment Plan</span>
             <img src={PlanIcon} alt='' width={'30rem'} />
