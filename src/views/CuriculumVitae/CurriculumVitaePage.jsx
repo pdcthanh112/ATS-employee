@@ -32,7 +32,7 @@ const CurriculumVitaePage = () => {
       setIsLoading(true)
       const response = await getCVStorage(currentUser.token);
       if (response && response.data) {
-        setListCV(response.data) 
+        setListCV(response.data)
         setIsLoading(false)
       }
     }
@@ -139,6 +139,7 @@ const CurriculumVitaePage = () => {
                   onSelectAllClick={handleSelectAllClick}
                   rowCount={listCV.length}
                 />
+
                 <TableBody>
                   {listCV.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                     const isItemSelected = isSelected(row.id);
@@ -147,7 +148,6 @@ const CurriculumVitaePage = () => {
                       <React.Fragment>
                         <TableRow
                           hover
-                          // onClick={(event) => handleClick(event, row.id)}
                           role="checkbox"
                           aria-checked={isItemSelected}
                           tabIndex={-1}
@@ -172,9 +172,7 @@ const CurriculumVitaePage = () => {
                               <Box sx={{ margin: 1 }}>
                                 <Table size="small" aria-label="purchases">
                                   <TableBody>
-                                    {/* {listCV.map((item, id) => ( */}
                                     <Row item={row} />
-                                    {/* ))} */}
                                   </TableBody>
                                 </Table>
                               </Box>
@@ -190,6 +188,7 @@ const CurriculumVitaePage = () => {
                     </TableRow>
                   )}
                 </TableBody>
+
               </Table>
             </TableContainer>
             <TablePagination
@@ -213,8 +212,8 @@ export default CurriculumVitaePage
 const Row = (props) => {
 
   const { item } = props;
+  const currentUser = useSelector((state) => state.auth.login.currentUser)
 
-  const [open, setOpen] = useState(false);
   const [openModalInvite, setOpenModalInvite] = useState(false);
   const [isInviting, setIsInviting] = useState(false);
 
@@ -242,11 +241,12 @@ const Row = (props) => {
       content: Yup.string().required('Please input content'),
     }),
     onSubmit: async (values) => {
-      // setIsSubmitting(true)
+      console.log("invite", values);
+      // setIsInviting(true)
       // await createInterview(currentUser.token, values).then((response) => {
       //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
       // })
-      // setIsSubmitting(false)
+      // setIsInviting(false)
     }
   })
 
@@ -266,7 +266,6 @@ const Row = (props) => {
       </TableRow> */}
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
-          {/* <Collapse in={open} timeout="auto" unmountOnExit> */}
           <Box sx={{ margin: 1 }}>
             <Typography variant="h6" gutterBottom component="div">Detail</Typography>
             <Table size="small">
@@ -290,14 +289,15 @@ const Row = (props) => {
               </TableBody>
             </Table>
           </Box>
-          {/* </Collapse> */}
         </TableCell>
       </TableRow>
 
       <Modal open={openModalInvite} onClose={() => { setOpenModalInvite(false) }}>
         <Box sx={style}>
           <div className='px-5 py-3'>
-            <div className='flex justify-end font-medium text-lg hover:cursor-pointer' title='Close' onClick={() => openModalInvite(false)}>x</div>
+            <div className='flex justify-end font-medium text-lg'>
+              <span className='hover:cursor-pointer' title='Close' onClick={() => setOpenModalInvite(false)}>x</span>
+            </div>
             <form onSubmit={formikInvite.handleSubmit}>
               <div className='mt-4'>
                 <TextField
@@ -382,15 +382,46 @@ function EnhancedTableToolbar(props) {
   const currentUser = useSelector((state) => state.auth.login.currentUser)
   const { numSelected, listSelected } = props;
   const confirm = useConfirm();
+  const [openModalInvite, setOpenModalInvite] = useState(false);
+  const [isInviting, setIsInviting] = useState(false);
 
-  const handleInviteCandidate = async (listRequestId) => {
-    console.log(listRequestId);
-    // await confirm({ description: "Are you sure to close this recruitment request?" }).then(() => {
-    //   closeRecruimentRequest(currentUser.token, listRequestId).then((response) => {
-    //     response.status === responseStatus.SUCCESS ? toast.success('Delete successfully') : toast.error('Something error')
-    //   })
-    // })
+  const style = {
+    position: 'absolute',
+    top: '20rem',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 550,
+    maxHeight: 600,
+    overflow: 'scroll',
+    bgcolor: 'background.paper',
+    border: '1px solid #0F6B14',
+    boxShadow: 24,
+  };
+  const formikInvite = useFormik({
+    initialValues: {
+      email: '',
+      title: 'Thư mời ứng viên',
+      content: 'Chào bạn \n Chúng tôi đang tuyển vị trí ..... \n Qua quá trình xem xét hồ sơ chúng tôi nhận thấy bạn phù hợp với công việc này, vì vậy chúng tôi mời bạn ứng tuyển vào vị trí này'
+    },
+    validationSchema: Yup.object({
+      title: Yup.string().required('Please input title'),
+      content: Yup.string().required('Please input content'),
+    }),
+    onSubmit: async (values) => {
+      console.log("invite", values);
+      // setIsInviting(true)
+      // await createInterview(currentUser.token, values).then((response) => {
+      //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
+      // })
+      // setIsInviting(false)
+    }
+  })
+
+  const handleInviteCandidate = (listEmail) => {
+    formikInvite.values.email = listEmail
+    setOpenModalInvite(true)
   }
+
 
   return (
     <React.Fragment>
@@ -400,13 +431,13 @@ function EnhancedTableToolbar(props) {
           :
           <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">Choose</Typography>}
 
-        {numSelected > 0 ? 
+        {numSelected > 0 ?
           <Tooltip title="Invite all">
             <IconButton>
               <MarkunreadIcon onClick={() => { handleInviteCandidate(listSelected) }} />
             </IconButton>
           </Tooltip>
-         : 
+          :
           <Tooltip title="Filter list">
             <IconButton>
               <FilterListIcon />
@@ -414,6 +445,50 @@ function EnhancedTableToolbar(props) {
           </Tooltip>
         }
       </Toolbar>
+
+      <Modal open={openModalInvite} onClose={() => { setOpenModalInvite(false) }}>
+        <Box sx={style}>
+          <div className='px-5 py-3'>
+            <div className='flex justify-end font-medium text-lg'>
+              <span className='hover:cursor-pointer' title='Close' onClick={() => setOpenModalInvite(false)}>x</span>
+            </div>
+            <form onSubmit={formikInvite.handleSubmit}>
+              <div className='mt-4'>
+                <TextField
+                  label='Title'
+                  name='title'
+                  variant="outlined"
+                  size='small'
+                  style={{ width: '100%' }}
+                  value={formikInvite.values.title}
+                  onChange={formikInvite.handleChange} />
+                {formikInvite.errors.title && formikInvite.touched.title && (
+                  <div className='text-[#ec5555]'>{formikInvite.errors.title}</div>
+                )}
+              </div>
+
+              <div className='mt-4'>Content</div>
+              <TextareaAutosize
+                name='content'
+                value={formikInvite.values.content}
+                minRows={5}
+                maxRows={8}
+                style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                onChange={formikInvite.handleChange}
+              />
+              {formikInvite.errors.content && formikInvite.touched.content && (
+                <div className='text-[#ec5555]'>{formikInvite.errors.content}</div>
+              )}
+
+              <div className='my-3 flex justify-center'>
+                <button className='w-28 h-10 rounded-lg flex justify-center items-center bg-[#1DAF5A] text-[#FFE2E5]'>
+                  {isInviting ? <ReactLoading className='ml-2' type='spin' color='#FFF' width={25} height={25} /> : <span>Send</span>}
+                </button>
+              </div>
+            </form>
+          </div>
+        </Box>
+      </Modal>
 
       <ToastContainer
         position="top-right"
