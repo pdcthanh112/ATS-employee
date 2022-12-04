@@ -1,5 +1,12 @@
+.filter-container {
+  display: flex;
+  justify-content: space-evenly;
+  background-color: #E9FCE9;
+  padding: 1.5rem 0 1rem 0;
+}
+
 .cv-container {
-  width: 90%;
+  width: 95%;
   margin: 1rem auto;
 
   .label-status {

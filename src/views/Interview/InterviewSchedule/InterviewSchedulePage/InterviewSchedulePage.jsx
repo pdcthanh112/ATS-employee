@@ -56,7 +56,7 @@ const InterviewPage = () => {
       const response = currentUser.employee.department.id === departmentName.HR_DEPARTMENT ? await getAllInterview(currentUser.token, pagination.currentPage - 1, 4) : await getAcceptableInterviewByEmployee(currentUser.token, currentUser.employee.id, pagination.currentPage - 1, 4);
       if (response) {
         setListInterviewSchedule(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })      
+        setPagination({ ...pagination, totalPage: response.data.totalPage })
       }
       setIsLoading(false)
     }
@@ -78,7 +78,7 @@ const InterviewPage = () => {
   const formikCreate = useFormik({
     initialValues: {
       address: '',
-      candidateId: '',
+      candidateId: [],
       date: '',
       description: '',
       employeeId: [],
@@ -86,14 +86,14 @@ const InterviewPage = () => {
       purpose: '',
       recruitmentRequestId: '',
       room: '',
-      round: '',
+      round: '1',
       subject: '',
       time: '',
       type: ''
     },
     validationSchema: Yup.object({
       //address: Yup.string().required('Please input address'),
-      candidateId: Yup.string().required('Please choose candidate'),
+      candidateId: Yup.array().min(1, 'Please choose at least 1 candidate'),
       date: Yup.string().required('Please input date'),
       description: Yup.string().required('Please input description'),
       employeeId: Yup.array().min(1, 'Please choose at least 1 employee interview'),
@@ -107,11 +107,12 @@ const InterviewPage = () => {
       //type: Yup.string().required('Please choose type of interview'),
     }),
     onSubmit: async (values) => {
-      setIsSubmitting(true)
-      await createInterview(currentUser.token, values).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-      })
-      setIsSubmitting(false)
+      console.log(values);
+      // setIsSubmitting(true)
+      // await createInterview(currentUser.token, values).then((response) => {
+      //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
+      // })
+      // setIsSubmitting(false)
     }
   })
 
@@ -149,7 +150,7 @@ const InterviewPage = () => {
 
         {currentUser.employee.jobLevel === jobLevelName.MANAGER || currentUser.employee.jobLevel === jobLevelName.DIRECTOR ?
           <div className='flex justify-end mr-20'>
-            <img src={DepartmentInterviewIcon} alt="" width={'30rem'}/>
+            <img src={DepartmentInterviewIcon} alt="" width={'30rem'} />
             <Link to={`/department-interview/${currentUser.employee.department.id}`} target="_blank" className='text-[#1DAF5A] text-lg ml-2'>View department interview</Link>
           </div> : <></>
         }
@@ -230,8 +231,8 @@ const InterviewPage = () => {
                     <div className='flex justify-evenly mt-5'>
                       <button type='button' className='btn-create bg-[#F64E60]'
                         onClick={(e) => { setTabPage((currPage) => currPage - 1); e.preventDefault() }}>Prev</button>
-                      <button type='button' className={`btn-create ${!formikCreate.values.candidateId || formikCreate.values.employeeId.length === 0 ? 'bg-[#C1C1C1]' : 'bg-[#1BC5BD]'}`}
-                        disabled={!formikCreate.values.candidateId || formikCreate.values.employeeId.length === 0}
+                      <button type='button' className={`btn-create ${formikCreate.values.candidateId.length === 0 || formikCreate.values.employeeId.length === 0 ? 'bg-[#C1C1C1]' : 'bg-[#1BC5BD]'}`}
+                        disabled={formikCreate.values.candidateId.length === 0 || formikCreate.values.employeeId.length === 0}
                         onClick={(e) => { setTabPage((currPage) => currPage + 1); e.preventDefault() }}>
                         Next
                       </button>
@@ -344,6 +345,7 @@ const ChoosePaticipantsTab = ({ formikCreate }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [listEmployee, setListEmployee] = useState([])
   const [listCandidate, setListCandidate] = useState([])
+  const [listCandidateInterview, setListCandidateInterview] = useState([])
   const [listEmpInterview, setListEmpInterview] = useState([])
 
   useEffect(() => {
@@ -372,6 +374,16 @@ const ChoosePaticipantsTab = ({ formikCreate }) => {
 
   useEffect(() => {
     const listTmp = []
+    if (listCandidateInterview) {
+      listCandidateInterview.map(item => listTmp.push(item.id))
+    }
+    if (listTmp && listTmp.length > 0) {
+      formikCreate.setFieldValue('candidateId', listTmp)
+    }
+  }, [listCandidateInterview])
+
+  useEffect(() => {
+    const listTmp = []
     if (listEmpInterview) {
       listEmpInterview.map(item => listTmp.push(item.id))
     }
@@ -386,12 +398,13 @@ const ChoosePaticipantsTab = ({ formikCreate }) => {
         <div>
           <div>
             <Autocomplete
+              multiple
               options={listCandidate}
               size={'small'}
               sx={{ width: '85%', marginTop: '1rem' }}
               getOptionLabel={option => option.name}
               renderInput={(params) => <TextField {...params} label="Candidate" />}
-              onChange={(event, value) => { formikCreate.setFieldValue('candidateId', value.id) }}
+              onChange={(event, value) => { setListCandidateInterview(value) }}
             />
             {formikCreate.errors.industry && formikCreate.touched.industry && (
               <div className='text-[#ec5555]'>{formikCreate.errors.industry}</div>
@@ -437,19 +450,25 @@ const FillInformationTab = ({ formikCreate }) => {
     <div>
       <div className='w-full flex mt-3'>
         <div className='w-[22%] mr-3'>
-          <Autocomplete
-            options={interviewRoundData()}
-            size={'small'}
-            sx={{ width: '100%', marginRight: '2rem' }}
-            renderInput={(params) => <TextField {...params} label="Round" />}
-            onChange={(event, value) => { formikCreate.setFieldValue('round', value) }}
+          <TextField
+            name='round'
+            variant="outlined"
+            size='small'
+            style={{ width: '100%' }}
+            value={formikCreate.values.round}
+            disabled
           />
-          {formikCreate.errors.round && formikCreate.touched.round && (
-            <div className='text-[#ec5555]'>{formikCreate.errors.round}</div>
-          )}
         </div>
         <div className='w-[100%]'>
-          <TextField label='Subject' variant="outlined" size='small' style={{ width: '100%' }} name='subject' value={formikCreate.values.subject} onChange={formikCreate.handleChange} />
+          <TextField
+            label='Subject'
+            name='subject'
+            variant="outlined"
+            size='small'
+            style={{ width: '100%' }}
+            value={formikCreate.values.subject}
+            onChange={formikCreate.handleChange}
+          />
           {formikCreate.errors.subject && formikCreate.touched.subject && (
             <div className='text-[#ec5555]'>{formikCreate.errors.subject}</div>
           )}
@@ -457,13 +476,29 @@ const FillInformationTab = ({ formikCreate }) => {
       </div>
       <div className='flex justify-evenly mt-3'>
         <div>
-          <TextField type={'date'} variant="outlined" size='small' style={{ width: '100%' }} name='date' value={formikCreate.values.date} onChange={formikCreate.handleChange} />
+          <TextField
+            type={'date'}
+            name='date'
+            variant="outlined"
+            size='small'
+            style={{ width: '100%' }}
+            value={formikCreate.values.date}
+            onChange={formikCreate.handleChange}
+          />
           {formikCreate.errors.date && formikCreate.touched.date && (
             <div className='text-[#ec5555]'>{formikCreate.errors.date}</div>
           )}
         </div>
         <div>
-          <TextField type={'time'} variant="outlined" size='small' style={{ width: '100%' }} name='time' value={formikCreate.values.time} onChange={formikCreate.handleChange} />
+          <TextField
+            type={'time'}
+            name='time'
+            variant="outlined"
+            size='small'
+            style={{ width: '100%' }}
+            value={formikCreate.values.time}
+            onChange={formikCreate.handleChange}
+          />
           {formikCreate.errors.time && formikCreate.touched.time && (
             <div className='text-[#ec5555]'>{formikCreate.errors.time}</div>
           )}
@@ -486,16 +521,39 @@ const FillInformationTab = ({ formikCreate }) => {
       <FormControlLabel control={<Switch onChange={(event) => setIsOnline(event.target.checked)} />} label={isOnline ? 'Online' : 'Offline'} />
 
       {isOnline ? <div>
-        <TextField label='Link meeting' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='linkMeeting' value={formikCreate.values.linkMeeting} onChange={formikCreate.handleChange} />
+        <TextField
+          label='Link meeting'
+          name='linkMeeting'
+          variant="outlined"
+          size='small'
+          style={{ width: '100%', marginTop: '1rem' }}
+          value={formikCreate.values.linkMeeting}
+          onChange={formikCreate.handleChange}
+        />
       </div> : <div>
         <div>
-          <TextField label='Room' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='room' value={formikCreate.values.room} onChange={formikCreate.handleChange} />
+          <TextField
+            label='Room'
+            name='room'
+            variant="outlined"
+            size='small'
+            style={{ width: '100%', marginTop: '1rem' }}
+            value={formikCreate.values.room}
+            onChange={formikCreate.handleChange}
+          />
           {formikCreate.errors.room && formikCreate.touched.room && (
             <div className='text-[#ec5555]'>{formikCreate.errors.room}</div>
           )}
         </div>
         <div>
-          <TextField label='Address' variant="outlined" size='small' style={{ width: '100%', marginTop: '1rem' }} name='address' value={formikCreate.values.address} onChange={formikCreate.handleChange} />
+          <TextField
+            label='Address'
+            name='address'
+            variant="outlined"
+            size='small'
+            style={{ width: '100%', marginTop: '1rem' }}
+            value={formikCreate.values.address}
+            onChange={formikCreate.handleChange} />
           {formikCreate.errors.address && formikCreate.touched.address && (
             <div className='text-[#ec5555]'>{formikCreate.errors.address}</div>
           )}

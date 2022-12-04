@@ -134,7 +134,7 @@ const Row = (props) => {
         <TableCell align="center">{item.interview.round}</TableCell>
         <TableCell align='center'>{item.result}</TableCell>
         <TableCell align='center'>{item.end}</TableCell>
-        {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <TableCell align='center'><img src={EditIcon} alt="" width={'30rem'} className='mx-auto' onClick={() => { handleEditPlanDetail(item) }} /></TableCell>}
+        {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <TableCell align='center'><img src={EditIcon} alt="" width={'30rem'} className='mx-auto hover:cursor-pointer' onClick={() => { handleEditPlanDetail(item) }} /></TableCell>}
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>

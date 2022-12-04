@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './CurriculumVitaePage.scss'
 import { useSelector } from 'react-redux'
-import { Box, Modal, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Stack, Pagination, TextField, TextareaAutosize } from '@mui/material';
+import { Box, Modal, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Stack, Pagination, TextField, TextareaAutosize, Autocomplete, TablePagination, Checkbox, Toolbar, Tooltip } from '@mui/material';
 import { getCVStorage } from '../../apis/CVApi'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -10,55 +10,199 @@ import ShowLessIcon from '../../assets/icon/viewLess.png'
 import SendMailIcon from '../../assets/icon/send-mail.png'
 import ReactLoading from 'react-loading'
 import FileIcon from '../../assets/icon/file-icon.png'
+import SearchIcon from '../../assets/icon/filter.png'
+
+import MarkunreadIcon from '@mui/icons-material/Markunread';
+import FilterListIcon from '@mui/icons-material/FilterList';
+
+import { useConfirm } from "material-ui-confirm";
+import { responseStatus } from '../../utils/constants';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CurriculumVitaePage = () => {
   const currentUser = useSelector((state) => state.auth.login.currentUser)
-  const [ListCV, setListCV] = useState([])
-  const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
+  const categoryData = useSelector((state) => state.categoryData.data);
+
+  const [listCV, setListCV] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getCVStorage(currentUser.token, pagination.currentPage - 1, 10);
+      const response = await getCVStorage(currentUser.token);
       if (response && response.data) {
-        setListCV(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })
+        setListCV(response.data) 
         setIsLoading(false)
       }
     }
     fetchData();
-  }, [pagination.currentPage])
+  }, [])
+
+
+  const formikSearch = useFormik({
+    initialValues: {
+      positionApplied: '',
+      recommendPositions: []
+    },
+    onSubmit: async (values) => {
+      console.log('search', values);
+      // setIsLoading(true)
+      // await searchInterviewSchedule(currentUser.token, values).then((response) => {
+      //   if (response && response.data) {
+      //     setListInterviewSchedule(response.data)
+      //   }
+      // })
+      // setIsLoading(false)
+    }
+  })
+
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelected = listCV.map((n) => n.id);
+      setSelected(newSelected);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleClick = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    setSelected(newSelected);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const isSelected = (id) => selected.indexOf(id) !== -1;
+
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listCV.length) : 0;
 
   return (
     <React.Fragment>
-      {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <div className='cv-container'>
-        <TableContainer component={Paper}>
-          <Table aria-label="collapsible table">
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ width: '3%' }} />
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '500', width: '3%' }}>#</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '5%' }}>CV</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '15%' }} align='center'>Candidate</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '8%' }} align='center'>Position</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Recommend</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '8%' }} align='center'>Status</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {ListCV.map((item, id) => (
-                <Row key={id} ordinalNumbers={(pagination.currentPage - 1) * 10 + id} item={item} />
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
 
-        <div className='flex justify-center bg-[#FFF]'>
-          <Stack spacing={2}>
-            <Pagination variant="outlined" shape="rounded" count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} />
-          </Stack>
-        </div>
+      <div className='filter-container'>
+        <Autocomplete
+          options={categoryData.jobTitle}
+          size={'small'}
+          sx={{ width: 220, marginRight: 2 }}
+          renderInput={(params) => <TextField {...params} label="Position applied" />}
+          onInputChange={(event, value) => { formikSearch.setFieldValue('round', value) }}
+        />
+
+        <Autocomplete
+          options={categoryData.jobTitle}
+          size={'small'}
+          sx={{ width: 270, marginRight: 2 }}
+          renderInput={(params) => <TextField {...params} label="Recommend position" />}
+          onInputChange={(event, value) => { formikSearch.setFieldValue('type', value) }}
+        />
+
+        <img src={SearchIcon} alt="" width={'45rem'} title='Search' className='hover:cursor-pointer' onClick={formikSearch.handleSubmit} />
+      </div>
+
+      {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <div className='cv-container'>
+        <Box sx={{ width: '100%' }}>
+          <Paper sx={{ width: '100%', mb: 2 }}>
+            <EnhancedTableToolbar numSelected={selected.length} listSelected={selected} />
+            <TableContainer>
+              <Table sx={{ minWidth: 750 }}>
+                <EnhancedTableHead
+                  numSelected={selected.length}
+                  onSelectAllClick={handleSelectAllClick}
+                  rowCount={listCV.length}
+                />
+                <TableBody>
+                  {listCV.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+
+                    return (
+                      <React.Fragment>
+                        <TableRow
+                          hover
+                          // onClick={(event) => handleClick(event, row.id)}
+                          role="checkbox"
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={row.id}
+                          selected={isItemSelected}
+                        >
+                          <TableCell padding="checkbox">
+                            <Checkbox color="primary" checked={isItemSelected} onClick={(event) => handleClick(event, row.id)} />
+                          </TableCell>
+                          <TableCell>
+                            <IconButton size="small" onClick={() => setOpen(!open)}>{open ? <img src={ShowLessIcon} alt="" width={'15rem'} /> : <img src={ShowMoreIcon} alt="" width={'15rem'} />}</IconButton>
+                          </TableCell>
+                          <TableCell><a href={row.linkCV} target='_blank' rel="noreferrer"><img src={FileIcon} alt="" style={{ width: '2rem' }} /></a></TableCell>
+                          <TableCell align="right">{row.candidate.name}</TableCell>
+                          <TableCell align="center">{row.positionApplied}</TableCell>
+                          <TableCell align="center">{row.recommendPositions}</TableCell>
+                          <TableCell style={{ display: 'flex', justifyContent: 'center' }}>{row.candidate.status === 'ACTIVATE' ? <div className='label-status bg-[#BDF5CA] text-[#1BC55F]'>active</div> : <div className='label-status bg-[#FFE2E5] text-[#F64E60]'>inactive</div>}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+                            <Collapse in={open} timeout="auto" unmountOnExit>
+                              <Box sx={{ margin: 1 }}>
+                                <Table size="small" aria-label="purchases">
+                                  <TableBody>
+                                    {/* {listCV.map((item, id) => ( */}
+                                    <Row item={row} />
+                                    {/* ))} */}
+                                  </TableBody>
+                                </Table>
+                              </Box>
+                            </Collapse>
+                          </TableCell>
+                        </TableRow>
+                      </React.Fragment>
+                    );
+                  })}
+                  {emptyRows > 0 && (
+                    <TableRow>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[10, 15, 20, 25, 50]}
+              component="div"
+              count={listCV.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Paper>
+        </Box>
       </div>}
     </React.Fragment>
   )
@@ -68,7 +212,7 @@ export default CurriculumVitaePage
 
 const Row = (props) => {
 
-  const { ordinalNumbers, item } = props;
+  const { item } = props;
 
   const [open, setOpen] = useState(false);
   const [openModalInvite, setOpenModalInvite] = useState(false);
@@ -113,62 +257,40 @@ const Row = (props) => {
 
   return (
     <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell>
-          <IconButton size="small" onClick={() => setOpen(!open)}>{open ? <img src={ShowLessIcon} alt="" width={'15rem'} /> : <img src={ShowMoreIcon} alt="" width={'15rem'} />}</IconButton>
-        </TableCell>
-        <TableCell>{ordinalNumbers + 1}</TableCell>
+      {/* <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
         <TableCell><a href={item.linkCV} target='_blank' rel="noreferrer"><img src={FileIcon} alt="" title='View CV' width={'30rem'} /></a></TableCell>
         <TableCell>{item.candidate.name}</TableCell>
         <TableCell align="center">{item.positionApplied}</TableCell>
         <TableCell align='center'>{item.recommendPositions}</TableCell>
         <TableCell style={{ display: 'flex', justifyContent: 'center' }}>{item.candidate.status === 'ACTIVATE' ? <div className='label-status bg-[#BDF5CA] text-[#1BC55F]'>active</div> : <div className='label-status bg-[#FFE2E5] text-[#F64E60]'>inactive</div>}</TableCell>
-      </TableRow>
+      </TableRow> */}
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">Detail</Typography>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '15%' }} align='center'>Phone</TableCell>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Email</TableCell>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '35%' }} align='center'>Address</TableCell>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Note</TableCell>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Invite</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow key={item.id}>
-                    <TableCell sx={{ width: '15%' }} align='center'>{item.candidate.phone}</TableCell>
-                    <TableCell>{item.candidate.email}</TableCell>
-                    <TableCell align='center'>{item.candidate.address}</TableCell>
-                    <TableCell align='center'>{item.note}</TableCell>
-                    <TableCell align='center'><img src={SendMailIcon} alt="" title='invite candidate for job' width={'30rem'} className='hover:cursor-pointer' onClick={() => handleInviteCandidate(item)} /></TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-              {/* <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '10%' }} align='center'>Type</TableCell>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '40%' }} align='center'>Address</TableCell>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '30%' }} align='center'>Record meeting</TableCell>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600' }} align='center'>Detail description</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell align='center'>{item.interview.type}</TableCell>
-                    <TableCell>{item.interview.type === 'ONLINE' ? item.interview.linkMeeting : item.interview.address}</TableCell>
-                    <TableCell align='center'>{item.recordMeeting}</TableCell>
-                    <TableCell align='right'>{item.interview.interviewDetail.description}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table> */}
-            </Box>
-          </Collapse>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
+          {/* <Collapse in={open} timeout="auto" unmountOnExit> */}
+          <Box sx={{ margin: 1 }}>
+            <Typography variant="h6" gutterBottom component="div">Detail</Typography>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '15%' }} align='center'>Phone</TableCell>
+                  <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Email</TableCell>
+                  <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '35%' }} align='center'>Address</TableCell>
+                  <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Note</TableCell>
+                  <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Invite</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow key={item.id}>
+                  <TableCell sx={{ width: '15%' }} align='center'>{item.candidate.phone}</TableCell>
+                  <TableCell>{item.candidate.email}</TableCell>
+                  <TableCell align='center'>{item.candidate.address}</TableCell>
+                  <TableCell align='center'>{item.note}</TableCell>
+                  <TableCell align='center'><img src={SendMailIcon} alt="" title='invite candidate for job' width={'30rem'} className='hover:cursor-pointer' onClick={() => handleInviteCandidate(item)} /></TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </Box>
+          {/* </Collapse> */}
         </TableCell>
       </TableRow>
 
@@ -218,8 +340,8 @@ const Row = (props) => {
 
               <div className='my-3 flex justify-center'>
                 <button className='w-28 h-10 rounded-lg flex justify-center items-center bg-[#1DAF5A] text-[#FFE2E5]'>
-                {isInviting ? <ReactLoading className='ml-2' type='spin' color='#FFF' width={25} height={25}/> : <span>Send</span>}
-                  </button>               
+                  {isInviting ? <ReactLoading className='ml-2' type='spin' color='#FFF' width={25} height={25} /> : <span>Send</span>}
+                </button>
               </div>
             </form>
           </div>
@@ -228,3 +350,85 @@ const Row = (props) => {
     </React.Fragment>
   );
 }
+
+function EnhancedTableHead(props) {
+
+  const { onSelectAllClick, numSelected, rowCount } = props;
+
+  return (
+    <TableHead>
+      <TableRow>
+        <TableCell padding="checkbox">
+          <Checkbox
+            color="primary"
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{ 'aria-label': 'select all desserts', }}
+          />
+        </TableCell>
+        <TableCell align={'center'} width='5%'>Show</TableCell>
+        <TableCell align={'center'} width='5%'>CV</TableCell>
+        <TableCell align={'center'} width='15%'>Candidate</TableCell>
+        <TableCell align={'center'}>Position</TableCell>
+        <TableCell align={'center'}>Recommend</TableCell>
+        <TableCell align={'center'}>status</TableCell>
+      </TableRow>
+    </TableHead>
+  );
+}
+
+function EnhancedTableToolbar(props) {
+  const currentUser = useSelector((state) => state.auth.login.currentUser)
+  const { numSelected, listSelected } = props;
+  const confirm = useConfirm();
+
+  const handleInviteCandidate = async (listRequestId) => {
+    console.log(listRequestId);
+    // await confirm({ description: "Are you sure to close this recruitment request?" }).then(() => {
+    //   closeRecruimentRequest(currentUser.token, listRequestId).then((response) => {
+    //     response.status === responseStatus.SUCCESS ? toast.success('Delete successfully') : toast.error('Something error')
+    //   })
+    // })
+  }
+
+  return (
+    <React.Fragment>
+      <Toolbar>
+        {numSelected > 0 ?
+          <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">{numSelected} selected</Typography>
+          :
+          <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">Choose</Typography>}
+
+        {numSelected > 0 ? 
+          <Tooltip title="Invite all">
+            <IconButton>
+              <MarkunreadIcon onClick={() => { handleInviteCandidate(listSelected) }} />
+            </IconButton>
+          </Tooltip>
+         : 
+          <Tooltip title="Filter list">
+            <IconButton>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
+        }
+      </Toolbar>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+    </React.Fragment>
+  )
+}
+
+

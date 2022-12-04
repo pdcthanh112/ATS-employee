@@ -157,9 +157,12 @@ const RecruitmentRequestPage = () => {
   return (
     <React.Fragment>
       <div className='recruitmentrequest-container'>
-        <div className='title-container'>
-          <span className='font-medium text-3xl mr-3'>Job Request</span>
-          <img src={RequestIcon} alt='' width={'30rem'} />
+        <div className='flex justify-between mx-10 my-4'>
+          <div className='flex'>
+            <span className='font-medium text-3xl mr-3'>Job Request</span>
+            <img src={RequestIcon} alt='' width={'30rem'} />
+          </div>
+          <div className='font-medium text-2xl'>{currentUser.employee.department.name}</div>
         </div>
 
         {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='flex justify-between w-[80%] mx-auto'>
@@ -356,8 +359,6 @@ const FillInformationTab = ({ formikCreate }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [isSalaryNegotiable, setIsSalaryNegotiable] = useState(false)
   const [planDetailData, setPlanDetailData] = useState({})
-
-  const [newIndustry, setNewIndustry] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
