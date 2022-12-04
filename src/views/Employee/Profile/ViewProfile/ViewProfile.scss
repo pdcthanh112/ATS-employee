@@ -1,0 +1,88 @@
+.viewProfile-container {
+  margin: 0 1rem;
+
+  .profile-container {
+    background-color: #fff;
+    margin: 0 auto;
+    border-radius: 0.4rem;
+    padding-bottom: 1rem;
+
+    .edit-icon {
+      position: absolute;
+      right: 23vw;
+    }
+  }
+}
+
+.uploadFolder-container {
+  margin: 1rem 1rem;
+  border-radius: 0.4rem;
+  background-color: #fff;
+  padding-bottom: 3rem;
+
+  .modal-CV-container {
+    display: flex;
+    flex-wrap: wrap;
+
+    .tabs__label {
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+
+    .tabs__radio {
+      display: none;
+    }
+
+    .tabs__content {
+      order: 1;
+      width: 200%;
+      height: 17rem;
+      font-size: 0.9em;
+      display: none;
+      background-color: #fff;
+      padding: 0 4rem;
+    }
+
+    .tabs__radio:checked + .tabs__label {
+      font-weight: bold;
+      color: #009578;
+      border-bottom: 2px solid #009578;
+    }
+
+    .tabs__radio:checked + .tabs__label + .tabs__content {
+      display: initial;
+    }
+
+    .cancel-icon {
+      position: absolute;
+      top: 16px;
+      right: 25px;
+      cursor: pointer;
+    }
+
+    .btn-auth {
+      width: 100%;
+      height: 2.8rem;
+      border-radius: 0.2rem;
+      background-color: #09a912;
+      font-size: larger;
+      font-weight: 500;
+      color: #fff;
+    }
+  }
+
+  .uploadFolder-content {
+    display: flex;
+    justify-content: center;
+    width: 30%;
+    margin: 1rem auto;
+    .inputfile {
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1;
+    }
+  }
+}

@@ -5,11 +5,11 @@ import RecruitmentPlan from "../../assets/icon/recruitment-planNavbar.png";
 import PlanDetail from "../../assets/icon/plan-detailNavbar.png";
 import RecruitmentRequest from "../../assets/icon/recruitment-requestNavbar.png";
 import Candidates from "../../assets/icon/candidatesNavbar.png";
+import JobApply from "../../assets/icon/jobApply-sidebar.png";
 import Interview from "../../assets/icon/job-interviewNavbar.png";
 import CuriculumVitae from "../../assets/icon/curriculum-vitaeNavbar.png";
 import IconUp from "../../assets/icon/caret-arrow-up.png";
 import IconDown from "../../assets/icon/caret-arrow-down.png";
-
 import Notification from "../../assets/icon/notification-iconNavbar.png"
 
 export const SidebarItem = [
@@ -49,31 +49,11 @@ export const SidebarItem = [
     icon: <img src={Candidates} alt="" width={"30rem"} />,
     iconClosed: <img src={IconDown} alt="" width={"15rem"} />,
     iconOpened: <img src={IconUp} alt="" width={"15rem"} />,
-
-    // subNav: [
-    //   {
-    //     title: "Reports",
-    //     path: "/reports/reports1",
-    //     icon: <img src={Home} alt="" width={"10rem"} />,
-    //     cName: "sub-nav",
-    //   },
-    //   {
-    //     title: "Reports 2",
-    //     path: "/reports/reports2",
-    //     icon: <img src={Home} alt="" width={"10rem"} />,
-    //     cName: "sub-nav",
-    //   },
-    //   {
-    //     title: "Reports 3",
-    //     path: "/reports/reports3",
-    //     icon: <img src={Home} alt="" width={"10rem"} />,
-    //   },
-    // ],
   },
   {
     title: "Job apply",
     path: "/job-apply",
-    icon: <img src={Interview} alt="" width={"30rem"} />,
+    icon: <img src={JobApply} alt="" width={"30rem"} />,
   },
   {
     title: "Interview",

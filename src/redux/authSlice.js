@@ -12,6 +12,10 @@ const authSlice = createSlice({
       isFetching: false,
       error: false,
     },
+    edit: {
+      isFetching: false,
+      error: false,
+    },
   },
   reducers: {
     //LOGIN
@@ -40,7 +44,24 @@ const authSlice = createSlice({
       // state.logout.isFetching = false;
       // state.logout.error = true;
     },
-
+  //EDIT
+  editStart: (state, action) => {
+    //state.login.isFetching = true;
+  },
+  editSuccess: (state, action) => {
+    //state.login.isFetching = false;
+    state.login.currentUser.candidate.address = action.payload.address;
+    state.login.currentUser.candidate.dob = action.payload.dob;
+    state.login.currentUser.candidate.gender = action.payload.gender;
+    state.login.currentUser.candidate.image = action.payload.image;
+    state.login.currentUser.candidate.name = action.payload.name;
+    state.login.currentUser.candidate.phone = action.payload.phone;
+    //state.login.error = false;
+  },
+  editFailed: (state, action) => {
+    //state.login.isFetching = false;
+    //.login.error = true;
+  },
   },
 });
 
@@ -51,5 +72,8 @@ export const {
   logoutStart,
   logoutSuccess,
   logoutFailed,
+  editStart,
+  editSuccess,
+  editFailed,
 } = authSlice.actions;
 export default authSlice.reducer;

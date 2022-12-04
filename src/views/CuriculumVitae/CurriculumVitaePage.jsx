@@ -140,7 +140,7 @@ const CurriculumVitaePage = () => {
 
                 <TableBody>
                   {listCV.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
-                    <Row item={row} handleClick={handleClick} selected={selected}/>
+                    <Row item={row} handleClick={handleClick} selected={selected} />
                   ))}
                   {emptyRows > 0 && (
                     <TableRow>
@@ -220,17 +220,6 @@ const Row = (props) => {
 
   return (
     <React.Fragment>
-      {/* <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell><a href={item.linkCV} target='_blank' rel="noreferrer"><img src={FileIcon} alt="" title='View CV' width={'30rem'} /></a></TableCell>
-        <TableCell>{item.candidate.name}</TableCell>
-        <TableCell align="center">{item.positionApplied}</TableCell>
-        <TableCell align='center'>{item.recommendPositions}</TableCell>
-        <TableCell style={{ display: 'flex', justifyContent: 'center' }}>{item.candidate.status === 'ACTIVATE' ? <div className='label-status bg-[#BDF5CA] text-[#1BC55F]'>active</div> : <div className='label-status bg-[#FFE2E5] text-[#F64E60]'>inactive</div>}</TableCell>
-      </TableRow> */}
-
-
-
-
       <TableRow
         hover
         role="checkbox"
@@ -282,8 +271,6 @@ const Row = (props) => {
           </Collapse>
         </TableCell>
       </TableRow>
-
-
 
       <Modal open={openModalInvite} onClose={() => { setOpenModalInvite(false) }}>
         <Box sx={style}>
@@ -414,7 +401,6 @@ function EnhancedTableToolbar(props) {
     formikInvite.values.email = listEmail
     setOpenModalInvite(true)
   }
-
 
   return (
     <React.Fragment>
