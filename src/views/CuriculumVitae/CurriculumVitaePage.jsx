@@ -100,8 +100,6 @@ const CurriculumVitaePage = () => {
     setPage(0);
   };
 
-  const isSelected = (id) => selected.indexOf(id) !== -1;
-
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listCV.length) : 0;
 
@@ -141,47 +139,9 @@ const CurriculumVitaePage = () => {
                 />
 
                 <TableBody>
-                  {listCV.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
-                    const isItemSelected = isSelected(row.id);
-
-                    return (
-                      <React.Fragment>
-                        <TableRow
-                          hover
-                          role="checkbox"
-                          aria-checked={isItemSelected}
-                          tabIndex={-1}
-                          key={row.id}
-                          selected={isItemSelected}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox color="primary" checked={isItemSelected} onClick={(event) => handleClick(event, row.id)} />
-                          </TableCell>
-                          <TableCell>
-                            <IconButton size="small" onClick={() => setOpen(!open)}>{open ? <img src={ShowLessIcon} alt="" width={'15rem'} /> : <img src={ShowMoreIcon} alt="" width={'15rem'} />}</IconButton>
-                          </TableCell>
-                          <TableCell><a href={row.linkCV} target='_blank' rel="noreferrer"><img src={FileIcon} alt="" style={{ width: '2rem' }} /></a></TableCell>
-                          <TableCell align="right">{row.candidate.name}</TableCell>
-                          <TableCell align="center">{row.positionApplied}</TableCell>
-                          <TableCell align="center">{row.recommendPositions}</TableCell>
-                          <TableCell style={{ display: 'flex', justifyContent: 'center' }}>{row.candidate.status === 'ACTIVATE' ? <div className='label-status bg-[#BDF5CA] text-[#1BC55F]'>active</div> : <div className='label-status bg-[#FFE2E5] text-[#F64E60]'>inactive</div>}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
-                            <Collapse in={open} timeout="auto" unmountOnExit>
-                              <Box sx={{ margin: 1 }}>
-                                <Table size="small" aria-label="purchases">
-                                  <TableBody>
-                                    <Row item={row} />
-                                  </TableBody>
-                                </Table>
-                              </Box>
-                            </Collapse>
-                          </TableCell>
-                        </TableRow>
-                      </React.Fragment>
-                    );
-                  })}
+                  {listCV.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
+                    <Row item={row} handleClick={handleClick} selected={selected}/>
+                  ))}
                   {emptyRows > 0 && (
                     <TableRow>
                       <TableCell colSpan={6} />
@@ -211,9 +171,12 @@ export default CurriculumVitaePage
 
 const Row = (props) => {
 
-  const { item } = props;
+  const { item, handleClick, selected } = props;
+  const isSelected = (id) => selected.indexOf(id) !== -1;
+  const isItemSelected = isSelected(item.id);
   const currentUser = useSelector((state) => state.auth.login.currentUser)
 
+  const [open, setOpen] = useState(false);
   const [openModalInvite, setOpenModalInvite] = useState(false);
   const [isInviting, setIsInviting] = useState(false);
 
@@ -264,33 +227,63 @@ const Row = (props) => {
         <TableCell align='center'>{item.recommendPositions}</TableCell>
         <TableCell style={{ display: 'flex', justifyContent: 'center' }}>{item.candidate.status === 'ACTIVATE' ? <div className='label-status bg-[#BDF5CA] text-[#1BC55F]'>active</div> : <div className='label-status bg-[#FFE2E5] text-[#F64E60]'>inactive</div>}</TableCell>
       </TableRow> */}
+
+
+
+
+      <TableRow
+        hover
+        role="checkbox"
+        aria-checked={isItemSelected}
+        tabIndex={-1}
+        key={item.id}
+        selected={isItemSelected}
+      >
+        <TableCell padding="checkbox">
+          <Checkbox color="primary" checked={isItemSelected} onClick={(event) => handleClick(event, item.id)} />
+        </TableCell>
+        <TableCell>
+          <IconButton size="small" onClick={() => setOpen(!open)}>{open ? <img src={ShowLessIcon} alt="" width={'15rem'} /> : <img src={ShowMoreIcon} alt="" width={'15rem'} />}</IconButton>
+        </TableCell>
+        <TableCell><a href={item.linkCV} target='_blank' rel="noreferrer"><img src={FileIcon} alt="" style={{ width: '2rem' }} /></a></TableCell>
+        <TableCell align="right">{item.candidate.name}</TableCell>
+        <TableCell align="center">{item.positionApplied}</TableCell>
+        <TableCell align="center">{item.recommendPositions}</TableCell>
+        <TableCell style={{ display: 'flex', justifyContent: 'center' }}>{item.candidate.status === 'ACTIVATE' ? <div className='label-status bg-[#BDF5CA] text-[#1BC55F]'>active</div> : <div className='label-status bg-[#FFE2E5] text-[#F64E60]'>inactive</div>}</TableCell>
+      </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
-          <Box sx={{ margin: 1 }}>
-            <Typography variant="h6" gutterBottom component="div">Detail</Typography>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '15%' }} align='center'>Phone</TableCell>
-                  <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Email</TableCell>
-                  <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '35%' }} align='center'>Address</TableCell>
-                  <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Note</TableCell>
-                  <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Invite</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow key={item.id}>
-                  <TableCell sx={{ width: '15%' }} align='center'>{item.candidate.phone}</TableCell>
-                  <TableCell>{item.candidate.email}</TableCell>
-                  <TableCell align='center'>{item.candidate.address}</TableCell>
-                  <TableCell align='center'>{item.note}</TableCell>
-                  <TableCell align='center'><img src={SendMailIcon} alt="" title='invite candidate for job' width={'30rem'} className='hover:cursor-pointer' onClick={() => handleInviteCandidate(item)} /></TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </Box>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h6" gutterBottom component="div">Detail</Typography>
+              <Table size="small" aria-label="purchases">
+                <TableBody>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '15%' }} align='center'>Phone</TableCell>
+                      <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Email</TableCell>
+                      <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '35%' }} align='center'>Address</TableCell>
+                      <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Note</TableCell>
+                      <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Invite</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow key={item.id}>
+                      <TableCell sx={{ width: '15%' }} align='center'>{item.candidate.phone}</TableCell>
+                      <TableCell>{item.candidate.email}</TableCell>
+                      <TableCell align='center'>{item.candidate.address}</TableCell>
+                      <TableCell align='center'>{item.note}</TableCell>
+                      <TableCell align='center'><img src={SendMailIcon} alt="" title='invite candidate for job' width={'30rem'} className='hover:cursor-pointer' onClick={() => handleInviteCandidate(item)} /></TableCell>
+                    </TableRow>
+                  </TableBody>
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
         </TableCell>
       </TableRow>
+
+
 
       <Modal open={openModalInvite} onClose={() => { setOpenModalInvite(false) }}>
         <Box sx={style}>
