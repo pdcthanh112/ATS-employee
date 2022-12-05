@@ -45,10 +45,10 @@ const SubMenu = ({ item }) => {
 
   return (
     <React.Fragment>
-      <SidebarLink to={item.path} className="hover:text-[#000]">
+      <SidebarLink to={item.path}  onClick={item.subNav && showSubnav}>
         <div className="inline-flex text-[#FFF]">
           {item.icon}
-          <SidebarLabel  onClick={item.subNav && showSubnav}>{item.title}</SidebarLabel>
+          <SidebarLabel>{item.title}</SidebarLabel>
         </div>
         <div>
           {item.subNav && subnav

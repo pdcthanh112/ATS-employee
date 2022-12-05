@@ -39,12 +39,25 @@ const CandidatePage = () => {
   const [listCandidateData, setListCandidateData] = useState([])
   const [listRecruitmentRequestData, setListRecruitmentRequestData] = useState([])
 
-  const style = {
+  const styleModalCreateCandidate = {
     position: 'absolute',
     top: '22rem',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 600,
+    maxHeight: 600,
+    overflow: 'scroll',
+    bgcolor: 'background.paper',
+    border: '1px solid #0F6B14',
+    boxShadow: 24,
+  };
+  const styleModalCreateJobApply = {
+    position: 'absolute',
+    top: '22rem',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 1200,
+    minHeight: 380,
     maxHeight: 600,
     overflow: 'scroll',
     bgcolor: 'background.paper',
@@ -93,39 +106,37 @@ const CandidatePage = () => {
 
   const formikCreateJobApply = useFormik({
     initialValues: {
-      candidateId: '',
-      cityName: '',
-      educationLevel: '',
-      experience: '',
-      foreignLanguage: '',
-      linkCV: '',
-      recruitmentRequestId: ''
+      employeeId: currentUser.employee.id,
+      listJobApplyByEmployee: [
+        {
+          email: '',
+          linkCV: '',
+          name: '',
+          source: ''
+        }
+      ],
+      requestId: ''
     },
     validationSchema: Yup.object({
-      candidateId: Yup.string().required('Please choose candidate'),
-      cityName: Yup.string().required('Please choose city'),
-      educationLevel: Yup.string().required('Please choose education level'),
-      experience: Yup.string().required('Please choose experience'),
-      foreignLanguage: Yup.array().min(1, 'Please choose at least 1 language'),
       recruitmentRequestId: Yup.string().required('Please choose job request'),
     }),
     onSubmit: async (values) => {
-      formikCreateJobApply.values.foreignLanguage = formikCreateJobApply.values.foreignLanguage.toString();
       setIsApplying(true)
-      if (fileCV == null) {
-        formikCreateJobApply.errors.linkCV = "Please submit CV";
-      } else {
-        const cvRef = ref(storage, `candidate-CV/${fileCV.name}`)
-        await uploadBytes(cvRef, fileCV).then((snapshot) => {
-          getDownloadURL(snapshot.ref).then(url => {
-            formikCreateJobApply.values.linkCV = url
-          })
-        })
-        await applyJob(currentUser.token, values).then((response) => {
-          response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-          setIsRegisting(false)
-        })
-      }
+      console.log(values);
+      // if (fileCV == null) {
+      //   formikCreateJobApply.errors.linkCV = "Please submit CV";
+      // } else {
+      //   const cvRef = ref(storage, `candidate-CV/${fileCV.name}`)
+      //   await uploadBytes(cvRef, fileCV).then((snapshot) => {
+      //     getDownloadURL(snapshot.ref).then(url => {
+      //       formikCreateJobApply.values.linkCV = url
+      //     })
+      //   })
+      //   await applyJob(currentUser.token, values).then((response) => {
+      //     response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
+      //     setIsRegisting(false)
+      //   })
+      // }
       setIsApplying(false)
     }
   })
@@ -214,7 +225,7 @@ const CandidatePage = () => {
       </div>
 
       <Modal open={openModalCreateCandidate} onClose={() => setOpenModalCreateCandidate(false)}>
-        <Box sx={style}>
+        <Box sx={styleModalCreateCandidate}>
           <div className='modal-container'>
             <span className='font-medium text-3xl'>Create candidate</span>
             <form onSubmit={formikCreateCandidate.handleSubmit}>
@@ -266,11 +277,11 @@ const CandidatePage = () => {
       </Modal>
 
       <Modal open={openModalCreateJobApply} onClose={() => setOpenModalCreateJobApply(false)}>
-        <Box sx={style}>
+        <Box sx={styleModalCreateJobApply}>
           <div className='modal-container'>
             <div className='font-medium text-3xl mb-4'>Create job apply</div>
             <form onSubmit={formikCreateJobApply.handleSubmit}>
-              <div className='mb-3'>
+              {/* <div className='mb-3'>
                 <Autocomplete
                   options={listCandidateData}
                   size={'small'}
@@ -294,7 +305,6 @@ const CandidatePage = () => {
                   <div className='text-[#ec5555]'>{formikCreateJobApply.errors.recruitmentRequestId}</div>
                 )}
               </div>
-
 
               <div className='flex w-full mb-3'>
                 <div className='w-[35%] mr-2'>
@@ -366,7 +376,21 @@ const CandidatePage = () => {
                 <button onClick={() => setOpenModalCreateCandidate(false)} className='bg-[#F64E60] text-[#FFF] px-5 py-2 rounded-lg'>Cancel</button>
                 <button type='submit' className='bg-[#20D489] text-[#FFF] px-5 py-2 rounded-lg'>Create</button>
                 {isApplying && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={35} height={35} />}
+              </div> */}
+              <div className='mb-3' >
+                <Autocomplete
+                  options={listRecruitmentRequestData}
+                  size={'small'}
+                  sx={{ marginRight: 2, width: '100%' }}
+                  getOptionLabel={option => option.name}
+                  renderInput={(params) => <TextField {...params} label="Choose job request" />}
+                  onChange={(event, value) => { formikCreateJobApply.setFieldValue('requestId', value.id) }} />
+                {formikCreateJobApply.errors.requestId && formikCreateJobApply.touched.requestId && (
+                  <div className='text-[#ec5555]'>{formikCreateJobApply.errors.requestId}</div>
+                )}
               </div>
+              <TableCreateJobApply formikCreateJobApply={formikCreateJobApply} isApplying={isApplying} />
+
             </form>
           </div>
         </Box>
@@ -389,3 +413,123 @@ const CandidatePage = () => {
 }
 
 export default CandidatePage
+
+class TableCreateJobApply extends React.Component {
+
+  state = {
+    rows: [{}]
+  };
+  handleChange = idx => e => {
+    const { name, value } = e.target;
+    const rows = [...this.state.rows];
+    rows[idx] = {
+      ...rows[idx],
+      [name]: value
+    };
+    this.setState({ ...this.state.rows, rows });
+  };
+
+  handleAddRow = () => {
+    const item = {
+      name: '',
+      email: '',
+      linkCV: '',
+      source: '',
+    };
+    this.setState({
+      rows: [...this.state.rows, item]
+    });
+  };
+
+  handleRemoveSpecificRow = (idx) => () => {
+    const rows = [...this.state.rows]
+    rows.splice(idx, 1)
+    this.setState({ rows })
+  }
+
+  handleCreateNewJobApplyByEmployee = () => {
+    this.props.formikCreateJobApply.listJobApplyByEmployee = this.state.rows
+    // this.props.formikCreateJobApply.listJobApplyByEmployee.onSubmit()
+    console.log(this.props.formikCreateJobApply.values);
+  }
+  render() {
+    return (
+      <div>
+        <div className="container">
+          <div className="row clearfix">
+            <div className="col-md-12 column">
+              <table className="table table-bordered">
+                <thead>
+                  <tr>
+                    <th className="text-center">#</th>
+                    <th className="text-center">Name</th>
+                    <th className="text-center">Email</th>
+                    <th className="text-center">Link CV</th>
+                    <th className="text-center">Source</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.rows.map((item, idx) => (
+                    <tr key={idx}>
+                      <td>{idx + 1}</td>
+                      <td>
+                        <TextField
+                          type="text"
+                          name="name"
+                          size='small'
+                          value={this.state.rows[idx].name}
+                          onChange={this.handleChange(idx)}
+                          className=""
+                        />
+                      </td>
+                      <td>
+                        <TextField
+                          type="text"
+                          name="email"
+                          size='small'
+                          value={this.state.rows[idx].email}
+                          onChange={this.handleChange(idx)}
+                          className=""
+                        />
+                      </td>
+                      <td>
+                        <TextField
+                          type="text"
+                          name="linkCV"
+                          size='small'
+                          value={this.state.rows[idx].linkCV}
+                          onChange={this.handleChange(idx)}
+                          className=""
+                        />
+                      </td>
+                      <td>
+                        <TextField
+                          type="text"
+                          name="source"
+                          size='small'
+                          value={this.state.rows[idx].source}
+                          onChange={this.handleChange(idx)}
+                          className=""
+                        />
+                      </td>
+                      <td>
+                        <button type='button' className="px-2 py-1 rounded text-[#F64E60]" style={{ border: '1px solid red' }} onClick={this.handleRemoveSpecificRow(idx)}>Remove</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <button type='button' onClick={this.handleAddRow} className="px-2 py-1 rounded bg-[#C9F7F5] text-[#1BC5BD]">Add Row</button>
+              <div className='flex justify-end'>
+                <button type='button' className='bg-[#1DAF5A] text-[#FFF] w-28 h-10 rounded-md flex justify-center items-center' onClick={this.handleCreateNewJobApplyByEmployee()}>
+                  {this.props.isApplying ? <ReactLoading type='spin' color='#FFF' width={25} height={25} /> : <span>Create</span>}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
