@@ -20,7 +20,7 @@ export const SidebarItem = [
   },
   {
     title: "Recruitment",
-    path: "/recruitment-request",
+    //path: "/recruitment-request",
     icon: <img src={Recruitment} alt="" width={"30rem"} />,
     iconClosed: <img src={IconDown} alt="" width={"15rem"} />,
     iconOpened: <img src={IconUp} alt="" width={"15rem"} />,
@@ -57,7 +57,7 @@ export const SidebarItem = [
   },
   {
     title: "Interview",
-    path: "/interview-schedule",
+    //path: "/interview-schedule",
     icon: <img src={Interview} alt="" width={"30rem"} />,
     iconClosed: <img src={IconDown} alt="" width={"15rem"} />,
     iconOpened: <img src={IconUp} alt="" width={"15rem"} />,

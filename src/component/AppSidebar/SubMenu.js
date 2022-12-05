@@ -48,9 +48,9 @@ const SubMenu = ({ item }) => {
       <SidebarLink to={item.path} className="hover:text-[#000]">
         <div className="inline-flex text-[#FFF]">
           {item.icon}
-          <SidebarLabel>{item.title}</SidebarLabel>
+          <SidebarLabel  onClick={item.subNav && showSubnav}>{item.title}</SidebarLabel>
         </div>
-        <div onClick={item.subNav && showSubnav}>
+        <div>
           {item.subNav && subnav
             ? item.iconOpened
             : item.subNav

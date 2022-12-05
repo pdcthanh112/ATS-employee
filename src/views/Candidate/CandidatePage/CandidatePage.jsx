@@ -79,8 +79,8 @@ const CandidatePage = () => {
     validationSchema: Yup.object({
       email: Yup.string().required('Please input candidate email').matches(/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'This email is invalid'),
       name: Yup.string().required('Please input candidate name'),
-      address: Yup.string().required('Please input candidate address'),
-      phone: Yup.string().required('Please input candidate phone number').matches(/^[0-9\-\\+]{10}$/, 'This phone number is invalid'),
+      //address: Yup.string().required('Please input candidate address'),
+      //phone: Yup.string().required('Please input candidate phone number').matches(/^[0-9\-\\+]{10}$/, 'This phone number is invalid'),
     }),
     onSubmit: async (values) => {
       setIsRegisting(true)

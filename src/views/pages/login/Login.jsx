@@ -84,7 +84,7 @@ const Login = () => {
             )}
           </div>
           <div className='form-group my-4'>
-            <label className='text-lg'>Mật khẩu</label><br />
+            <label className='text-lg'>Password</label><br />
             <div className='field-input'>
               <i className="fa-solid fa-lock mx-2 my-auto" style={{ color: "#116835", fontSize: '22px' }}></i>
               <input type={isShowPassword ? 'text' : 'password'} className='input-tag focus:outline-none' name='password' placeholder='Nhập mật khẩu' value={formik.values.password} onChange={formik.handleChange} />
@@ -96,12 +96,12 @@ const Login = () => {
               <div className='text-[#ec5555]'>{formik.errors.password}</div>
             )}
           </div>
-          {loginError && <div className='input-error p-2 rounded'>Tên đăng nhập hoặc mật khẩu không chính xác</div>}
+          {loginError && <div className='input-error p-2 rounded'>Incorrect username or password</div>}
           <div className='my-4'>
-            <a href="/#/forget-password" style={{ marginLeft: '16rem' }}>Quên mật khẩu</a>
+            <a href="/#/forget-password" style={{ marginLeft: '16rem' }}>Forget password</a>
           </div>
           <div className='flex'>
-            <button type='submit' className='btn-login'>Đăng nhập</button>
+            <button type='submit' className='btn-login'>Login</button>
             {isLoading && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
           </div>
         </form>

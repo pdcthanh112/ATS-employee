@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './ListRecruitmentPlan.scss'
 import { useSelector } from "react-redux";
 
-import { Box, Modal, TextField } from '@mui/material';
+import { Box, Card, Modal, TextField } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -16,7 +16,7 @@ import EditIcon from '../../../../assets/icon/edit-icon.png'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
 import AddIcon from '../../../../assets/icon/addIcon.png'
 import MinusIcon from '../../../../assets/icon/minusIcon.png'
-import { jobLevelName, positionName, responseStatus, statusName } from '../../../../utils/constants'
+import { jobLevelName, responseStatus, statusName } from '../../../../utils/constants'
 import { useConfirm } from "material-ui-confirm";
 import ReactLoading from 'react-loading'
 
@@ -93,7 +93,7 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
     <React.Fragment>
       <div className='listRecruitmentPlan-container'>
         {listRecruitmentPlan.map((item) => (
-          <div key={item.id} className='recruitmentPlan-item'>
+          <Card key={item.id} className='recruitmentPlan-item'>
             {item.status === statusName.PENDING && <div className='flex justify-between'>
               <span className='process-buton text-[#FFA800] bg-[#FFF4DE]'>Pending</span>
               {currentUser?.employee.jobLevel === jobLevelName.DIRECTOR &&
@@ -136,7 +136,7 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 

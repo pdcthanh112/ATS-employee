@@ -1,6 +1,6 @@
 import React from 'react'
 import './ListRecruitmentRequest.scss'
-
+import {Card} from '@mui/material'
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
 
 const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
@@ -8,7 +8,7 @@ const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
   return (
     <React.Fragment>
       {listRecruitmentRequest.map((item) => (
-        <div key={item.id} className='recruitmentRequest-container'>
+        <Card key={item.id} className='recruitmentRequest-container'>
           <div className='flex justify-between'>
             <div>
               <span className='font-bold text-xl'>{item.industry}</span>
@@ -32,7 +32,7 @@ const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
           <div><ShowMoreComponent title='Description' content={item.description} /></div>
           <div><ShowMoreComponent title='Requirement' content={item.requirement} /></div>
           <div><ShowMoreComponent title='Benefit' content={item.benefit} /></div>
-        </div>
+        </Card>
       ))}
     </React.Fragment>
   )
