@@ -1,6 +1,7 @@
 import React from "react";
 import "./PersonalInformation.scss";
 import { useSelector } from "react-redux";
+import moment from 'moment'
 
 const PersonalInformation = () => {
 
@@ -21,7 +22,7 @@ const PersonalInformation = () => {
       <div className="inline-flex w-full my-2">
         <div className="w-2/5">
           <span className="font-normal text-xl">Ngày sinh: </span>
-          <span className="font-thin text-xl">{currentUser.employee.dob}</span>
+          <span className="font-thin text-xl">{moment(currentUser.employee.dob).format('DD/MM/YYYY')}</span>       
         </div>
         <div className="w-2/5">
           <span className="font-normal text-xl">Phone: </span>

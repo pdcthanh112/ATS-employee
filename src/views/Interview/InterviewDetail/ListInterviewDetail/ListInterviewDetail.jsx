@@ -13,6 +13,7 @@ import { Box, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableCon
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ReactLoading from 'react-loading'
+import moment from 'moment'
 
 const ListInterviewDetail = ({ listInterviewDetail }) => {
 
@@ -101,7 +102,7 @@ const Row = (props) => {
     }),
     onSubmit: async (values) => {
       setIsEditting(true)
-      //formikEditDetail.values.recommendPositions = formikEditDetail.values.recommendPositions.toString();
+      formikEditDetail.values.recommendPositions = formikEditDetail.values.recommendPositions.toString();
       await editInterviewDetail(currentUser.token, values).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Edit successfully') : toast.error('Something error')
       })
@@ -110,13 +111,12 @@ const Row = (props) => {
   })
 
   const handleEditPlanDetail = (item) => {
-    console.log(item);
     formikEditDetail.values.detailId = item.id
     formikEditDetail.values.description = item.description
     formikEditDetail.values.end = item.end
     formikEditDetail.values.interviewID = item.interview.id
     formikEditDetail.values.note = item.note
-    formikEditDetail.values.recommendPositions = item.recommendPositions
+    formikEditDetail.values.recommendPositions = item.recommendPositions.split(',')
     formikEditDetail.values.recordMeeting = item.recordMeeting
     formikEditDetail.values.result = item.result
     setOpenModalEditDetail(true)
@@ -133,7 +133,7 @@ const Row = (props) => {
         <TableCell>{item.interview.candidate.email}</TableCell>
         <TableCell align="center">{item.interview.round}</TableCell>
         <TableCell align='center'>{item.result}</TableCell>
-        <TableCell align='center'>{item.end}</TableCell>
+        <TableCell align='center'>{moment(item.end).format('DD/MM/YYYY')}</TableCell>
         {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <TableCell align='center'><img src={EditIcon} alt="" width={'30rem'} className='mx-auto hover:cursor-pointer' onClick={() => { handleEditPlanDetail(item) }} /></TableCell>}
       </TableRow>
       <TableRow>
@@ -144,7 +144,6 @@ const Row = (props) => {
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '15%' }} align='center'>Phone</TableCell>
                     <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Purpose</TableCell>
                     <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '15%' }} align='center'>Industry</TableCell>
                     <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '15%' }} align='center'>Position</TableCell>
@@ -153,7 +152,6 @@ const Row = (props) => {
                 </TableHead>
                 <TableBody>
                   <TableRow>
-                    <TableCell sx={{ width: '15%' }} align='center'>{item.interview.candidate.phone}</TableCell>
                     <TableCell>{item.interview.purpose}</TableCell>
                     <TableCell align='center'>{item.interview.jobApply.recruitmentRequest.industry}</TableCell>
                     <TableCell align='center'>{item.interview.jobApply.recruitmentRequest.position.name}</TableCell>
@@ -199,7 +197,7 @@ const Row = (props) => {
                 <div className='text-[#ec5555]'>{formikEditDetail.errors.result}</div>
               )}
 
-              {/* <div>
+              <div>
                 <Autocomplete
                   multiple
                   options={categoryData.position}
@@ -211,7 +209,7 @@ const Row = (props) => {
                 {formikEditDetail.errors.recommendPositions && formikEditDetail.touched.recommendPositions && (
                   <div className='text-[#ec5555]'>{formikEditDetail.errors.recommendPositions}</div>
                 )}
-              </div> */}
+              </div>
 
               <div className='mt-4'>
                 <TextField label='Record meeting' variant="outlined" size='small' style={{ width: '100%' }} name='recordMeeting' value={formikEditDetail.values.recordMeeting} onChange={formikEditDetail.handleChange} />
@@ -233,7 +231,7 @@ const Row = (props) => {
                 <div className='text-[#ec5555]'>{formikEditDetail.errors.description}</div>
               )}
 
-              {/* <div className='mt-4'>Note</div>
+              <div className='mt-4'>Note</div>
               <TextareaAutosize
                 name='note'
                 value={formikEditDetail.values.note}
@@ -244,7 +242,7 @@ const Row = (props) => {
               />
               {formikEditDetail.errors.note && formikEditDetail.touched.note && (
                 <div className='text-[#ec5555]'>{formikEditDetail.errors.note}</div>
-              )} */}
+              )}
 
               <div className='flex justify-evenly mt-5'>
                 <button type='button' onClick={() => setOpenModalEditDetail(false)} className='btn-create bg-[#F64E60]'>Cancel</button>

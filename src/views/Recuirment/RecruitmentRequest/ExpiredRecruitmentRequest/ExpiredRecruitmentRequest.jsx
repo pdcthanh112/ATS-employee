@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { Box, Paper, Checkbox, TableHead, TableCell, TableRow, TableBody, Table, TableContainer, TablePagination, TableSortLabel, Toolbar, Typography, IconButton, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
-
+import moment from 'moment'
 import { useConfirm } from "material-ui-confirm";
 import { responseStatus } from '../../../../utils/constants';
 import { ToastContainer, toast } from 'react-toastify';
@@ -110,7 +110,7 @@ const ExpiredRecruitmentRequest = () => {
                         <TableCell align="right">{row.creator.name}</TableCell>
                         <TableCell align="center">{row.planDetail.amount}</TableCell>
                         <TableCell align="left">{row.planDetail.reason}</TableCell>
-                        <TableCell align="right">{row.expiryDate}</TableCell>
+                        <TableCell align="right">{moment(row.expiryDate).format('DD/MM/YYYY')}</TableCell>
                       </TableRow>
                     );
                   })}
