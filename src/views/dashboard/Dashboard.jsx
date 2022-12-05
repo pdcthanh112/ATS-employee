@@ -13,7 +13,7 @@ import { getInterviewByEmployee } from '../../apis/interviewScheduleApi';
 import InterviewIcon from '../../assets/icon/date-time-icon.png'
 import { interviewType } from '../../utils/constants'
 
-import { Avatar } from '@mui/material'
+import { Avatar, Card } from '@mui/material'
 
 const Dashboard = () => {
   const currentUser = useSelector((state) => state.auth.login.currentUser)
@@ -68,7 +68,7 @@ const Dashboard = () => {
       {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
         <div className='w-[90%] mx-auto'>
           <div className='statusChart-container'>
-            <div className='statusChart-item'>
+            <Card className='statusChart-item'>
               <ApexCharts
                 type="donut"
                 width={'80%'}
@@ -80,8 +80,8 @@ const Dashboard = () => {
                   labels: recruitmentPlanData.status
                 }}
               />
-            </div>
-            <div className='statusChart-item'>
+            </Card>
+            <Card className='statusChart-item'>
               <ApexCharts
                 type="donut"
                 width={'80%'}
@@ -93,8 +93,8 @@ const Dashboard = () => {
                   labels: planDetailData.status
                 }}
               />
-            </div>
-            <div className='statusChart-item'>
+            </Card>
+            <Card className='statusChart-item'>
               <ApexCharts
                 type="pie"
                 width={'80%'}
@@ -106,7 +106,7 @@ const Dashboard = () => {
                   labels: recruitmentRequestData.status
                 }}
               />
-            </div>
+            </Card>
           </div>
 
           <div className='flex'>
