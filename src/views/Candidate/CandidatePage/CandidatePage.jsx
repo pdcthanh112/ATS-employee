@@ -113,25 +113,14 @@ const CandidatePage = () => {
       requestId: ''
     },
     validationSchema: Yup.object({
-      recruitmentRequestId: Yup.string().required('Please choose job request'),
+      requestId: Yup.string().required('Please choose job request'),
     }),
     onSubmit: async (values) => {
       setIsApplying(true)
-      console.log('RRRRRRRR', values);
-      // if (fileCV == null) {
-      //   formikCreateJobApply.errors.linkCV = "Please submit CV";
-      // } else {
-      //   const cvRef = ref(storage, `candidate-CV/${fileCV.name}`)
-      //   await uploadBytes(cvRef, fileCV).then((snapshot) => {
-      //     getDownloadURL(snapshot.ref).then(url => {
-      //       formikCreateJobApply.values.linkCV = url
-      //     })
-      //   })
-      //   await applyJob(currentUser.token, values).then((response) => {
-      //     response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-      //     setIsRegisting(false)
-      //   })
-      // }
+      await applyJob(currentUser.token, values).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
+        setIsRegisting(false)
+      })
       setIsApplying(false)
     }
   })
@@ -416,7 +405,7 @@ export default CandidatePage
 class TableCreateJobApply extends React.Component {
 
   state = {
-    rows: [{}]
+    rows: [{ name: '', email: '', linkCV: '', source: '' }]
   };
 
   handleChange = idx => e => {
@@ -427,6 +416,7 @@ class TableCreateJobApply extends React.Component {
       [name]: value
     };
     this.setState({ ...this.state.rows, rows });
+    this.props.formikCreateJobApply.setFieldValue('listJobApplyByEmployee', this.state.rows)
   };
 
   handleAddRow = () => {
@@ -447,11 +437,6 @@ class TableCreateJobApply extends React.Component {
     this.setState({ rows })
   }
 
-  handleCreateNewJobApplyByEmployee = () => {
-    this.props.formikCreateJobApply.listJobApplyByEmployee = { ...this.state.rows }
-    // this.props.formikCreateJobApply.listJobApplyByEmployee.onSubmit()
-    console.log('aa');
-  }
   render() {
     return (
       <div>
@@ -521,7 +506,6 @@ class TableCreateJobApply extends React.Component {
                 </tbody>
               </table>
               <button type='button' onClick={this.handleAddRow} className="px-2 py-1 rounded bg-[#C9F7F5] text-[#1BC5BD]">Add Row</button>
-
             </div>
           </div>
         </div>
