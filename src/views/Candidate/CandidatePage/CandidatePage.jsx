@@ -11,15 +11,11 @@ import * as Yup from 'yup'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { storage } from '../../../configs/firebaseConfig'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-
 import CandidateIcon from '../../../assets/icon/candidateImage.png'
 import SearchIcon from '../../../assets/icon/filter.png'
 import { createCandidate, getAllActivateCandidate, getAllCandidate, getIdAndNameAcitveCandidate } from '../../../apis/candidateApi'
 import ListCandidate from '../ListCandidate/ListCandidate';
 import { DEFAULT_PASSWORD, departmentName, positionName, responseStatus } from '../../../utils/constants'
-import { educationLevelData, experienceData, foreignLanguageData } from '../../../utils/dropdownData';
 import { getIdAndNameActiveRequest } from '../../../apis/recruimentRequestApi';
 import { applyJob } from '../../../apis/jobApplyApi';
 
@@ -35,7 +31,6 @@ const CandidatePage = () => {
   const [openModalCreateJobApply, setOpenModalCreateJobApply] = useState(false)
   const [isApplying, setIsApplying] = useState(false)
   const [isRegisting, setIsRegisting] = useState(false)
-  const [fileCV, setFileCV] = useState(null)
   const [listCandidateData, setListCandidateData] = useState([])
   const [listRecruitmentRequestData, setListRecruitmentRequestData] = useState([])
 
@@ -122,7 +117,7 @@ const CandidatePage = () => {
     }),
     onSubmit: async (values) => {
       setIsApplying(true)
-      console.log(values);
+      console.log('RRRRRRRR', values);
       // if (fileCV == null) {
       //   formikCreateJobApply.errors.linkCV = "Please submit CV";
       // } else {
@@ -155,8 +150,8 @@ const CandidatePage = () => {
   })
 
   const handleCreateJobApply = async () => {
-    await getIdAndNameAcitveCandidate(currentUser.token).then(response => setListCandidateData(response.data))
     await getIdAndNameActiveRequest(currentUser.token).then(response => setListRecruitmentRequestData(response.data))
+    setOpenModalCreateJobApply(true)
   }
 
   return (
@@ -201,7 +196,7 @@ const CandidatePage = () => {
           </form>
 
           {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <>
-            <div className='flex bg-[#1DAF5A] px-3 hover:cursor-pointer rounded-lg' onClick={() => handleCreateJobApply().then(() => setOpenModalCreateJobApply(true))} title='Create a new candidate'>
+            <div className='flex bg-[#1DAF5A] px-3 hover:cursor-pointer rounded-lg' onClick={() => handleCreateJobApply()} title='Create a new candidate'>
               <i className="fa-solid fa-plus text-white" style={{ marginTop: '0.8rem' }}></i>
               <span className='ml-1 mt-2 font-semibold text-white'>Apply for candidate</span>
             </div>
@@ -390,7 +385,11 @@ const CandidatePage = () => {
                 )}
               </div>
               <TableCreateJobApply formikCreateJobApply={formikCreateJobApply} isApplying={isApplying} />
-
+              <div className='flex justify-end'>
+                <button className='bg-[#1DAF5A] text-[#FFF] w-28 h-10 rounded-md flex justify-center items-center'>
+                  {isApplying ? <ReactLoading type='spin' color='#FFF' width={25} height={25} /> : <span>Create</span>}
+                </button>
+              </div>
             </form>
           </div>
         </Box>
@@ -419,6 +418,7 @@ class TableCreateJobApply extends React.Component {
   state = {
     rows: [{}]
   };
+
   handleChange = idx => e => {
     const { name, value } = e.target;
     const rows = [...this.state.rows];
@@ -448,9 +448,9 @@ class TableCreateJobApply extends React.Component {
   }
 
   handleCreateNewJobApplyByEmployee = () => {
-    this.props.formikCreateJobApply.listJobApplyByEmployee = this.state.rows
+    this.props.formikCreateJobApply.listJobApplyByEmployee = { ...this.state.rows }
     // this.props.formikCreateJobApply.listJobApplyByEmployee.onSubmit()
-    console.log(this.props.formikCreateJobApply.values);
+    console.log('aa');
   }
   render() {
     return (
@@ -521,11 +521,7 @@ class TableCreateJobApply extends React.Component {
                 </tbody>
               </table>
               <button type='button' onClick={this.handleAddRow} className="px-2 py-1 rounded bg-[#C9F7F5] text-[#1BC5BD]">Add Row</button>
-              <div className='flex justify-end'>
-                <button type='button' className='bg-[#1DAF5A] text-[#FFF] w-28 h-10 rounded-md flex justify-center items-center' onClick={this.handleCreateNewJobApplyByEmployee()}>
-                  {this.props.isApplying ? <ReactLoading type='spin' color='#FFF' width={25} height={25} /> : <span>Create</span>}
-                </button>
-              </div>
+
             </div>
           </div>
         </div>
