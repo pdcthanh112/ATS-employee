@@ -147,7 +147,7 @@ const RecruitmentPlanPage = () => {
                     )}
                   </div>
                   <div>
-                    <div className='font-semibold text-xl mb-2'>Total salary</div>
+                    <div className='font-semibold text-xl mb-2'>Total budget</div>
                     <NumericFormat thousandSeparator=',' suffix={' VNĐ'} name='totalSalary' placeholder='1,000,000 VNĐ' value={formikEdit.values.totalSalary} onChange={formikEdit.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '100%' }} />
                     {formikEdit.errors.totalSalary && formikEdit.touched.totalSalary && (
                       <div className='text-[#ec5555]'>{formikEdit.errors.totalSalary}</div>

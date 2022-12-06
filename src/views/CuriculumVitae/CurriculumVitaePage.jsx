@@ -19,6 +19,7 @@ import { useConfirm } from "material-ui-confirm";
 import { responseStatus } from '../../utils/constants';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { inviteReapply } from '../../apis/jobApplyApi';
 
 const CurriculumVitaePage = () => {
   const currentUser = useSelector((state) => state.auth.login.currentUser)
@@ -195,7 +196,7 @@ const Row = (props) => {
 
   const formikInvite = useFormik({
     initialValues: {
-      email: '',
+      cvIds: '',
       title: 'Thư mời ứng viên',
       content: 'Chào bạn \n Chúng tôi đang tuyển vị trí ..... \n Qua quá trình xem xét hồ sơ chúng tôi nhận thấy bạn phù hợp với công việc này, vì vậy chúng tôi mời bạn ứng tuyển vào vị trí này'
     },
@@ -204,17 +205,16 @@ const Row = (props) => {
       content: Yup.string().required('Please input content'),
     }),
     onSubmit: async (values) => {
-      console.log("invite", values);
-      // setIsInviting(true)
-      // await createInterview(currentUser.token, values).then((response) => {
-      //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-      // })
-      // setIsInviting(false)
+      setIsInviting(true)
+      await inviteReapply(currentUser.token, values).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Invite successfully') : toast.error('Somethings error')
+      })
+      setIsInviting(false)
     }
   })
 
   const handleInviteCandidate = (item) => {
-    formikInvite.values.email = item.candidate.email
+    formikInvite.values.cvIds = [item.id]
     setOpenModalInvite(true)
   }
 
@@ -379,7 +379,7 @@ function EnhancedTableToolbar(props) {
   };
   const formikInvite = useFormik({
     initialValues: {
-      email: '',
+      cvIds: '',
       title: 'Thư mời ứng viên',
       content: 'Chào bạn \n Chúng tôi đang tuyển vị trí ..... \n Qua quá trình xem xét hồ sơ chúng tôi nhận thấy bạn phù hợp với công việc này, vì vậy chúng tôi mời bạn ứng tuyển vào vị trí này'
     },
@@ -388,12 +388,11 @@ function EnhancedTableToolbar(props) {
       content: Yup.string().required('Please input content'),
     }),
     onSubmit: async (values) => {
-      console.log("invite", values);
-      // setIsInviting(true)
-      // await createInterview(currentUser.token, values).then((response) => {
-      //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-      // })
-      // setIsInviting(false)
+      setIsInviting(true)
+      await inviteReapply(currentUser.token, values).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Invite successfully') : toast.error('Somethings error')
+      })
+      setIsInviting(false)
     }
   })
 
