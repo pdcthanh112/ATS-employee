@@ -13,11 +13,14 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import CandidateIcon from '../../../assets/icon/candidateImage.png'
 import SearchIcon from '../../../assets/icon/filter.png'
-import { createCandidate, getAllActivateCandidate, getAllCandidate, getIdAndNameAcitveCandidate } from '../../../apis/candidateApi'
+import { createCandidate, getAllActivateCandidate, getAllCandidate } from '../../../apis/candidateApi'
+import { getAllSourceCV } from '../../../apis/CVApi'
 import ListCandidate from '../ListCandidate/ListCandidate';
 import { DEFAULT_PASSWORD, departmentName, positionName, responseStatus } from '../../../utils/constants'
 import { getIdAndNameActiveRequest } from '../../../apis/recruimentRequestApi';
 import { applyJob } from '../../../apis/jobApplyApi';
+import { createFilterOptions } from '@mui/material/Autocomplete';
+import { sourceCVData } from '../../../utils/dropdownData'
 
 const CandidatePage = () => {
 
@@ -31,8 +34,8 @@ const CandidatePage = () => {
   const [openModalCreateJobApply, setOpenModalCreateJobApply] = useState(false)
   const [isApplying, setIsApplying] = useState(false)
   const [isRegisting, setIsRegisting] = useState(false)
-  const [listCandidateData, setListCandidateData] = useState([])
   const [listRecruitmentRequestData, setListRecruitmentRequestData] = useState([])
+  const [listSourceCV, setListSourceCV] = useState([])
 
   const styleModalCreateCandidate = {
     position: 'absolute',
@@ -72,6 +75,16 @@ const CandidatePage = () => {
     }
     fetchData();
   }, [pagination.currentPage])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getAllSourceCV(currentUser.token)
+      if (response && response.data) {
+        setListSourceCV(response.data)      
+      }
+    }
+    fetchData();
+  }, [])
 
   const formikCreateCandidate = useFormik({
     initialValues: {
@@ -118,8 +131,13 @@ const CandidatePage = () => {
     onSubmit: async (values) => {
       setIsApplying(true)
       await applyJob(currentUser.token, values).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-        setIsRegisting(false)
+        if (response.status === responseStatus.SUCCESS) {
+          setOpenModalCreateJobApply(false)
+          toast.success('Create successfully')
+        }
+        else {
+          toast.error('Create fail')
+        }
       })
       setIsApplying(false)
     }
@@ -265,102 +283,6 @@ const CandidatePage = () => {
           <div className='modal-container'>
             <div className='font-medium text-3xl mb-4'>Create job apply</div>
             <form onSubmit={formikCreateJobApply.handleSubmit}>
-              {/* <div className='mb-3'>
-                <Autocomplete
-                  options={listCandidateData}
-                  size={'small'}
-                  sx={{ marginRight: 2, width: '100%' }}
-                  getOptionLabel={option => option.name}
-                  renderInput={(params) => <TextField {...params} label="Choose candidate" />}
-                  onChange={(event, value) => { formikCreateJobApply.setFieldValue('candidateId', value.id) }} />
-                {formikCreateJobApply.errors.candidateId && formikCreateJobApply.touched.candidateId && (
-                  <div className='text-[#ec5555]'>{formikCreateJobApply.errors.candidateId}</div>
-                )}
-              </div>
-              <div className='mb-3' >
-                <Autocomplete
-                  options={listRecruitmentRequestData}
-                  size={'small'}
-                  sx={{ marginRight: 2, width: '100%' }}
-                  getOptionLabel={option => option.name}
-                  renderInput={(params) => <TextField {...params} label="Choose job request" />}
-                  onChange={(event, value) => { formikCreateJobApply.setFieldValue('recruitmentRequestId', value.id) }} />
-                {formikCreateJobApply.errors.recruitmentRequestId && formikCreateJobApply.touched.recruitmentRequestId && (
-                  <div className='text-[#ec5555]'>{formikCreateJobApply.errors.recruitmentRequestId}</div>
-                )}
-              </div>
-
-              <div className='flex w-full mb-3'>
-                <div className='w-[35%] mr-2'>
-                  <Autocomplete
-                    options={educationLevelData()}
-                    size={'small'}
-                    sx={{ marginRight: 2, width: '100%' }}
-                    renderInput={(params) => <TextField {...params} label="Education level" />}
-                    onChange={(event, value) => { formikCreateJobApply.setFieldValue('educationLevel', value) }} />
-                  {formikCreateJobApply.errors.educationLevel && formikCreateJobApply.touched.educationLevel && (
-                    <div className='text-[#ec5555]'>{formikCreateJobApply.errors.educationLevel}</div>
-                  )}
-                </div>
-                <div className='w-[63%]'>
-                  <Autocomplete
-                    multiple
-                    options={foreignLanguageData()}
-                    size={'small'}
-                    sx={{ width: '100%' }}
-                    renderInput={(params) => <TextField {...params} label="Foreign language" />}
-                    onChange={(event, value) => { formikCreateJobApply.setFieldValue('foreignLanguage', value) }} />
-                  {formikCreateJobApply.errors.foreignLanguage && formikCreateJobApply.touched.foreignLanguage && (
-                    <div className='text-[#ec5555]'>{formikCreateJobApply.errors.foreignLanguage}</div>
-                  )}
-                </div>
-              </div>
-
-              <div className='my-3 grid grid-cols-2 w-full'>
-                <div className=''>
-                  <Autocomplete
-                    options={categoryData.province}
-                    size={'small'}
-                    sx={{ width: '95%', marginRight: 2 }}
-                    renderInput={(params) => <TextField {...params} label="City" />}
-                    onChange={(event, value) => { formikCreateJobApply.setFieldValue('cityName', value) }} />
-                  {formikCreateJobApply.errors.cityName && formikCreateJobApply.touched.cityName && (
-                    <div className='text-[#ec5555]'>{formikCreateJobApply.errors.cityName}</div>
-                  )}
-                </div>
-
-                <div className=''>
-                  <Autocomplete
-                    options={experienceData()}
-                    size={'small'}
-                    sx={{ width: '100%', marginRight: 2 }}
-                    renderInput={(params) => <TextField {...params} label="Experience" />}
-                    onChange={(event, value) => { formikCreateJobApply.setFieldValue('experience', value) }} />
-                  {formikCreateJobApply.errors.experience && formikCreateJobApply.touched.experience && (
-                    <div className='text-[#ec5555]'>{formikCreateJobApply.errors.experience}</div>
-                  )}
-                </div>
-              </div>
-
-              <div className='my-3'>
-                <div>Curriculum vitae</div>
-                <div className='flex justify-center mt-1'>
-                  <TextField
-                    variant="outlined"
-                    name='fileCV'
-                    type={'file'}
-                    onChange={(e) => { setFileCV(e.target.files[0]) }}
-                  />
-                  {formikCreateJobApply.errors.linkCV && formikCreateJobApply.touched.linkCV && (
-                    <div className='text-[#ec5555]'>{formikCreateJobApply.errors.linkCV}</div>
-                  )}
-                </div>
-              </div>
-              <div className='flex justify-evenly'>
-                <button onClick={() => setOpenModalCreateCandidate(false)} className='bg-[#F64E60] text-[#FFF] px-5 py-2 rounded-lg'>Cancel</button>
-                <button type='submit' className='bg-[#20D489] text-[#FFF] px-5 py-2 rounded-lg'>Create</button>
-                {isApplying && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={35} height={35} />}
-              </div> */}
               <div className='mb-3' >
                 <Autocomplete
                   options={listRecruitmentRequestData}
@@ -373,7 +295,7 @@ const CandidatePage = () => {
                   <div className='text-[#ec5555]'>{formikCreateJobApply.errors.requestId}</div>
                 )}
               </div>
-              <TableCreateJobApply formikCreateJobApply={formikCreateJobApply} isApplying={isApplying} />
+              <TableCreateJobApply formikCreateJobApply={formikCreateJobApply} isApplying={isApplying} listSourceCV={listSourceCV}/>
               <div className='flex justify-end'>
                 <button className='bg-[#1DAF5A] text-[#FFF] w-28 h-10 rounded-md flex justify-center items-center'>
                   {isApplying ? <ReactLoading type='spin' color='#FFF' width={25} height={25} /> : <span>Create</span>}
@@ -403,9 +325,11 @@ const CandidatePage = () => {
 export default CandidatePage
 
 class TableCreateJobApply extends React.Component {
-
+  filter = createFilterOptions();
   state = {
-    rows: [{ name: '', email: '', linkCV: '', source: '' }]
+    rows: [{ name: '', email: '', linkCV: '', source: '' }],
+    value: null,
+    listSourceCV: this.props.listSourceCV
   };
 
   handleChange = idx => e => {
@@ -489,14 +413,74 @@ class TableCreateJobApply extends React.Component {
                         />
                       </td>
                       <td>
-                        <TextField
+                        {/* <TextField
                           type="text"
                           name="source"
                           size='small'
                           value={this.state.rows[idx].source}
                           onChange={this.handleChange(idx)}
                           className=""
+                        /> */}
+                        <Autocomplete
+                          value={this.state.rows[idx].source}
+                          onChange={(event, newValue) => {
+                            // if (typeof newValue === 'string') {
+                            //   setValue({
+                            //     title: newValue,
+                            //   });
+                            // } else if (newValue && newValue.inputValue) {
+                            //   // Create a new value from the user input
+                            //   setValue({
+                            //     title: newValue.inputValue,
+                            //   });
+                            // } else {
+                            //   setValue(newValue);
+                            // }
+                            //console.log('aaa', newValue);
+                            const rows = [...this.state.rows];
+                            rows[idx] = {
+                              ...rows[idx],
+                              'source': newValue.value
+                            };
+                            this.setState({ ...this.state.rows, rows });
+                          }}
+                          filterOptions={(options, params) => {
+                            const filtered = this.filter(options, params);
+
+                            const { inputValue } = params;
+                            // Suggest the creation of a new value
+                            const isExisting = options.some((option) => inputValue === option.title);
+                            if (inputValue !== '' && !isExisting) {
+                              filtered.push({
+                                value: inputValue,
+                                title: `Add "${inputValue}"`,
+                              });                          
+                            }
+
+                            return filtered;
+                          }}
+                          options={this.props.listSourceCV}
+                          getOptionLabel={(option) => {
+                            // Value selected with enter, right from the input
+                            if (typeof option === 'string') {
+                              return option;
+                            }
+                            // Add "xxx" option created dynamically
+                            if (option.inputValue) {
+                              return option.inputValue;
+                            }
+                            // Regular option
+                            return option.title;
+                          }}
+                          renderOption={(props, option) => <li {...props}>{option.title}</li>}
+                          size='small'
+                          sx={{ width: 200 }}
+                          freeSolo
+                          renderInput={(params) => (
+                            <TextField {...params} label="Source" />
+                          )}
                         />
+
                       </td>
                       <td>
                         <button type='button' className="px-2 py-1 rounded text-[#F64E60]" style={{ border: '1px solid red' }} onClick={this.handleRemoveSpecificRow(idx)}>Remove</button>

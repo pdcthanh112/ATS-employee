@@ -47,3 +47,11 @@ export const interviewTypeData = () => ['Online', 'Offline']
 export const interviewRoundData = () => ['1', '2', '3']
 
 export const interviewResultData = () => ['Pass', 'Fail']
+
+export const sourceCVData = () => [
+  {value: 'CKHR', title: 'CKHR'},
+  {value: 'TopCV', title: 'TopCV'},
+  {value: 'Vietnamworks', title: 'Vietnamworks'},
+  {value: 'TopDev', title: 'TopDev'},
+  {value: 'Facebook', title: 'Facebook'},
+]

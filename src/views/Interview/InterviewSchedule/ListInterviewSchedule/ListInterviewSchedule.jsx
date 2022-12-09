@@ -128,7 +128,6 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
       <div className='listInterview-container'>
         {listInterviewSchedule && listInterviewSchedule.map((item) => (
           <div key={item.id} className='listInterview-item'>
-            {console.log(item)}
             <div className='inline-flex w-[100%]'>
               <div className='flex'>
                 <div>

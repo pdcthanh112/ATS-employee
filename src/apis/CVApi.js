@@ -8,3 +8,12 @@ export const getCVStorage = async (token, pageNo, pageSize) => {
     .then((response) => response.data)
     .catch((error) => error);
 };
+
+export const getAllSourceCV = async (token) => {
+  return await axiosConfig
+    .get("cv/getAllSourceCV", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => response.data)
+    .catch((error) => error);
+};

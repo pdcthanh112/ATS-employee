@@ -7,7 +7,9 @@ import RecruitmentRequest from "../../assets/icon/recruitment-requestNavbar.png"
 import Candidates from "../../assets/icon/candidatesNavbar.png";
 import JobApply from "../../assets/icon/jobApply-sidebar.png";
 import Interview from "../../assets/icon/job-interviewNavbar.png";
-import CuriculumVitae from "../../assets/icon/curriculum-vitaeNavbar.png";
+import InterviewSchedule from "../../assets/icon/interviewSchedule-sidebar.png";
+import InterviewDetail from "../../assets/icon/interviewDetail-sidebar.png";
+import CurriculumVitae from "../../assets/icon/curriculum-vitaeNavbar.png";
 import IconUp from "../../assets/icon/caret-arrow-up.png";
 import IconDown from "../../assets/icon/caret-arrow-down.png";
 import Notification from "../../assets/icon/notification-iconNavbar.png"
@@ -66,21 +68,21 @@ export const SidebarItem = [
       {
         title: "Interview schedule",
         path: "/interview-schedule",
-        icon: <img src={Home} alt="" width={"10rem"} />,
+        icon: <img src={InterviewSchedule} alt="" width={"25rem"} />,
         cName: "sub-nav",
       },
       {
-        title: "Interview detai",
+        title: "Interview detail",
         path: "/interview-detail",
-        icon: <img src={Home} alt="" width={"10rem"} />,
+        icon: <img src={InterviewDetail} alt="" width={"25rem"} />,
         cName: "sub-nav",
       },
     ],
   },
   {
-    title: "Curiculum vitae",
-    path: "/curiculum-vitae",
-    icon: <img src={CuriculumVitae} alt="" width={"30rem"} />,
+    title: "Curriculum vitae",
+    path: "/curriculum-vitae",
+    icon: <img src={CurriculumVitae} alt="" width={"30rem"} />,
   },
   {
     title: "Notification",

@@ -107,12 +107,11 @@ const InterviewPage = () => {
       //type: Yup.string().required('Please choose type of interview'),
     }),
     onSubmit: async (values) => {
-      console.log(values);
-      // setIsSubmitting(true)
-      // await createInterview(currentUser.token, values).then((response) => {
-      //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-      // })
-      // setIsSubmitting(false)
+      setIsSubmitting(true)
+      await createInterview(currentUser.token, values).then((response) => {
+        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
+      })
+      setIsSubmitting(false)
     }
   })
 
