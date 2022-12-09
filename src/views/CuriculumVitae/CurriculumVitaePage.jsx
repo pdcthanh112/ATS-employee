@@ -141,7 +141,7 @@ const CurriculumVitaePage = () => {
 
                 <TableBody>
                   {listCV.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
-                    <Row item={row} handleClick={handleClick} selected={selected} />
+                    <Row key={index} item={row} handleClick={handleClick} selected={selected} />
                   ))}
                   {emptyRows > 0 && (
                     <TableRow>

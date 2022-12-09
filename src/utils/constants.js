@@ -22,7 +22,7 @@ export const positionName = {
 export const jobLevelName = {
     EMPLOYEE: 'Employee',
     MANAGER: 'Manager',
-    DIRECTOR: 'Chief',
+    DIRECTOR: 'Director',
     INTERNSHIP: 'Internship'
 }
 
