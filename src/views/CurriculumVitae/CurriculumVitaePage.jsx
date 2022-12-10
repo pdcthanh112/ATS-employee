@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './CurriculumVitaePage.scss'
 import { useSelector } from 'react-redux'
-import { Box, Modal, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Stack, Pagination, TextField, TextareaAutosize, Autocomplete, TablePagination, Checkbox, Toolbar, Tooltip } from '@mui/material';
+import { Box, Modal, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, TextField, TextareaAutosize, Autocomplete, TablePagination, Checkbox, Toolbar, Tooltip } from '@mui/material';
 import { getCVStorage } from '../../apis/CVApi'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -16,7 +16,7 @@ import MarkunreadIcon from '@mui/icons-material/Markunread';
 import FilterListIcon from '@mui/icons-material/FilterList';
 
 import { useConfirm } from "material-ui-confirm";
-import { responseStatus } from '../../utils/constants';
+import { departmentName, responseStatus } from '../../utils/constants';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { inviteReapply } from '../../apis/jobApplyApi';
@@ -58,7 +58,6 @@ const CurriculumVitaePage = () => {
     }
   })
 
-  const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -228,9 +227,11 @@ const Row = (props) => {
         key={item.id}
         selected={isItemSelected}
       >
-        <TableCell padding="checkbox">
-          <Checkbox color="primary" checked={isItemSelected} onClick={(event) => handleClick(event, item.id)} />
-        </TableCell>
+        {currentUser.employee.department.id === departmentName.HR_DEPARTMENT &&
+          <TableCell padding="checkbox">
+            <Checkbox color="primary" checked={isItemSelected} onClick={(event) => handleClick(event, item.id)} />
+          </TableCell>
+        }
         <TableCell>
           <IconButton size="small" onClick={() => setOpen(!open)}>{open ? <img src={ShowLessIcon} alt="" width={'15rem'} /> : <img src={ShowMoreIcon} alt="" width={'15rem'} />}</IconButton>
         </TableCell>
@@ -334,19 +335,22 @@ const Row = (props) => {
 function EnhancedTableHead(props) {
 
   const { onSelectAllClick, numSelected, rowCount } = props;
-
+  const currentUser = useSelector((state) => state.auth.login.currentUser)
+  
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'select all desserts', }}
-          />
-        </TableCell>
+        {currentUser.employee.department.id === departmentName.HR_DEPARTMENT &&
+          <TableCell padding="checkbox">
+            <Checkbox
+              color="primary"
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
+              onChange={onSelectAllClick}
+              inputProps={{ 'aria-label': 'select all desserts', }}
+            />
+          </TableCell>
+        }
         <TableCell align={'center'} width='5%'>Show</TableCell>
         <TableCell align={'center'} width='5%'>CV</TableCell>
         <TableCell align={'center'} width='15%'>Candidate</TableCell>

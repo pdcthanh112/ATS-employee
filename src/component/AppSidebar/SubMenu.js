@@ -45,7 +45,7 @@ const SubMenu = ({ item }) => {
 
   return (
     <React.Fragment>
-      <SidebarLink to={item.path}  onClick={item.subNav && showSubnav}>
+      <SidebarLink to={item.path} onClick={item.subNav && showSubnav}>
         <div className="inline-flex text-[#FFF]">
           {item.icon}
           <SidebarLabel>{item.title}</SidebarLabel>
@@ -55,7 +55,8 @@ const SubMenu = ({ item }) => {
             ? item.iconOpened
             : item.subNav
             ? item.iconClosed
-            : null}
+            : null
+            }
         </div>
       </SidebarLink>
       {subnav &&
