@@ -48,10 +48,10 @@ export const interviewRoundData = () => ['1', '2', '3']
 
 export const interviewResultData = () => ['Pass', 'Fail']
 
-export const sourceCVData = () => [
-  {value: 'CKHR', title: 'CKHR'},
-  {value: 'TopCV', title: 'TopCV'},
-  {value: 'Vietnamworks', title: 'Vietnamworks'},
-  {value: 'TopDev', title: 'TopDev'},
-  {value: 'Facebook', title: 'Facebook'},
+export const durationData = () => [
+  {value: '10', title: '10 minutes'},
+  {value: '20', title: '20 minutes'},
+  {value: '30', title: '30 minutes'},
+  {value: '45', title: '45 minutes'},
+  {value: '60', title: '60 minutes'},
 ]
