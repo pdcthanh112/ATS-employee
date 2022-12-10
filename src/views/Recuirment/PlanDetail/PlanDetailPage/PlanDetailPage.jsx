@@ -9,7 +9,7 @@ import * as Yup from 'yup'
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useQuery } from 'react-query';
 import PlanDetailIcon from '../../../../assets/icon/plan-detailImage.png'
 import CreateIcon from '../../../../assets/icon/plus.png'
 
@@ -25,10 +25,8 @@ const PlanDetailPage = () => {
   const currentUser = useSelector((state) => state.auth.login.currentUser)
   const categoryData = useSelector((state) => state.categoryData.data);
 
-  const [listPlanDetail, setListPlanDetail] = useState([])
-  const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
+  const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
   const [listApprovedRecruitmentPlan, setListApprovedRecruitmentPlan] = useState([])
 
   const style = {
@@ -44,22 +42,20 @@ const PlanDetailPage = () => {
     boxShadow: 24,
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      const response = currentUser.employee.department.id === departmentName.HR_DEPARTMENT ? await getAllPlanDetail(currentUser.token, pagination.currentPage - 1, 2) : await getPlanDetailByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 2)
-      if (response) {
-        setListPlanDetail(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })
-        setIsLoading(false)
-      }
-    }
-    fetchData();
-  }, [pagination.currentPage])
+
+  const { data: listPlanDetail, isLoading } = useQuery(['listPlanDetail', pagination], async () => currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
+    await getAllPlanDetail(pagination.currentPage - 1, 2).then((response) => {
+      setPagination({ ...pagination, totalPage: response.data.totalPage })
+      return response.data.responseList
+    })
+    : await getPlanDetailByDepartment(currentUser.employee.department.id, pagination.currentPage - 1, 2).then((response) => {
+      setPagination({ ...pagination, totalPage: response.data.totalPage })
+      return response.data.responseList
+    }))
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getPlanApprovedByDepartment(currentUser.token, currentUser.employee.department.id);
+      const response = await getPlanApprovedByDepartment(currentUser.employee.department.id);
       if (response) {
         setListApprovedRecruitmentPlan(response.data)
       }
@@ -92,7 +88,7 @@ const PlanDetailPage = () => {
       salary: Yup.string().required('Please input salary'),
     }),
     onSubmit: async (values) => {
-      await createPlanDetail(values, currentUser.token).then(response => {         
+      await createPlanDetail(values, currentUser.token).then(response => {
         response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
       })
     }
@@ -102,11 +98,11 @@ const PlanDetailPage = () => {
     <React.Fragment>
       <div className='planDetail-container'>
         <div className='flex justify-between px-12 py-4'>
-        <div className='flex'>
-          <span className='font-medium text-3xl mr-3'>Recruitment plan details</span>
-          <img src={PlanDetailIcon} alt='' width={'30rem'} />
-        </div>
-        <div className='font-medium text-2xl'>{currentUser.employee.department.name}</div>
+          <div className='flex'>
+            <span className='font-medium text-3xl mr-3'>Recruitment plan details</span>
+            <img src={PlanDetailIcon} alt='' width={'30rem'} />
+          </div>
+          <div className='font-medium text-2xl'>{currentUser.employee.department.name}</div>
         </div>
 
         {currentUser?.employee.jobLevel === jobLevelName.MANAGER || currentUser?.employee.jobLevel === jobLevelName.DIRECTOR ? <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>

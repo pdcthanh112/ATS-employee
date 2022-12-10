@@ -16,7 +16,6 @@ const NotificationPage = () => {
     const fetchData = async () => {
       setIsLoading(true)
       const response = await getNotificationByEmployee(currentUser.token, currentUser.employee.id, pagination.currentPage - 1, 10);
-      console.log(response);
       if (response) {
         setListNotification(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })       

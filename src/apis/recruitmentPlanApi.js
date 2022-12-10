@@ -1,51 +1,35 @@
 import axiosConfig from "../configs/axiosConfig";
 
-export const getAllRecruimentPlan = async (token, pageNo, pageSize) => {
+export const getAllRecruimentPlan = async (pageNo, pageSize) => {
   return await axiosConfig
-    .get(
-      `recruitmentPlan/getAllRecruitmentPlans?pageNo=${pageNo}&pageSize=${pageSize}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    .get(`recruitmentPlan/getAllRecruitmentPlans?pageNo=${pageNo}&pageSize=${pageSize}`)
     .then((response) => response.data)
     .catch((error) => error);
 };
 
-export const getAllApproveRecruimentPlan = async (token, pageNo, pageSize) => {
+export const getAllApproveRecruimentPlan = async (pageNo, pageSize) => {
   return await axiosConfig
     .get(
-      `recruitmentPlan/getAllApprovedRecruitmentPlans?pageNo=${pageNo}&pageSize=${pageSize}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+      `recruitmentPlan/getAllApprovedRecruitmentPlans?pageNo=${pageNo}&pageSize=${pageSize}`,)
     .then((response) => response.data)
     .catch((error) => error);
 };
 
 export const getRecruimentPlanByDepartment = async (
-  token,
   departmentId,
   pageNo,
   pageSize
 ) => {
   return await axiosConfig
     .get(
-      `recruitmentPlan/getByDepartment?departmentId=${departmentId}&pageNo=${pageNo}&pageSize=${pageSize}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+      `recruitmentPlan/getByDepartment?departmentId=${departmentId}&pageNo=${pageNo}&pageSize=${pageSize}`)
     .then((response) => response.data)
     .catch((error) => error);
 };
 
-export const getPlanApprovedByDepartment = async (token, depId) => {
+export const getPlanApprovedByDepartment = async (depId) => {
   return await axiosConfig
-    .get(`recruitmentPlan/getPlanApprovedByDepartment?departmentId=${depId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(`recruitmentPlan/getPlanApprovedByDepartment?departmentId=${depId}`)
     .then((response) => response.data)
     .catch((error) => error);
 };
@@ -70,7 +54,7 @@ export const createRecruitmentPlan = async (token, planData) => {
     .catch((error) => error);
 };
 
-export const editRecruitmentPlan = async (token, planId, planData) => {
+export const editRecruitmentPlan = async (planId, planData) => {
   return await axiosConfig
     .put(
       `recruitmentPlan/update/{id}?id=${planId}`,
@@ -80,41 +64,32 @@ export const editRecruitmentPlan = async (token, planId, planData) => {
         periodFrom: planData.periodFrom,
         periodTo: planData.periodTo,
         totalSalary: planData.totalSalary,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
       }
     )
     .then((response) => response.data)
     .catch((error) => error);
 };
 
-export const approveRecruitmentPlan = async (token, empId, planId) => {
+export const approveRecruitmentPlan = async (empId, planId) => {
   return await axiosConfig
     .put(
       "recruitmentPlan/approved",
       {
         employeeId: empId,
         id: planId,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
       }
     )
     .then((response) => response.data)
     .catch((error) => error);
 };
 
-export const rejectRecruitmentPlan = async (token, empId, planId) => {
+export const rejectRecruitmentPlan = async (empId, planId) => {
   return await axiosConfig
     .put(
       "recruitmentPlan/canceled",
       {
         employeeId: empId,
         id: planId,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
       }
     )
     .then((response) => response.data)

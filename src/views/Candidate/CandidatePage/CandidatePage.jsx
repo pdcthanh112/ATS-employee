@@ -20,7 +20,6 @@ import { DEFAULT_PASSWORD, departmentName, positionName, responseStatus } from '
 import { getIdAndNameActiveRequest } from '../../../apis/recruimentRequestApi';
 import { applyJob } from '../../../apis/jobApplyApi';
 import { createFilterOptions } from '@mui/material/Autocomplete';
-import { sourceCVData } from '../../../utils/dropdownData'
 
 const CandidatePage = () => {
 
@@ -413,30 +412,9 @@ class TableCreateJobApply extends React.Component {
                         />
                       </td>
                       <td>
-                        {/* <TextField
-                          type="text"
-                          name="source"
-                          size='small'
-                          value={this.state.rows[idx].source}
-                          onChange={this.handleChange(idx)}
-                          className=""
-                        /> */}
                         <Autocomplete
                           value={this.state.rows[idx].source}
                           onChange={(event, newValue) => {
-                            // if (typeof newValue === 'string') {
-                            //   setValue({
-                            //     title: newValue,
-                            //   });
-                            // } else if (newValue && newValue.inputValue) {
-                            //   // Create a new value from the user input
-                            //   setValue({
-                            //     title: newValue.inputValue,
-                            //   });
-                            // } else {
-                            //   setValue(newValue);
-                            // }
-                            //console.log('aaa', newValue);
                             const rows = [...this.state.rows];
                             rows[idx] = {
                               ...rows[idx],

@@ -44,17 +44,13 @@ const EditInformation = () => {
     onSubmit: async (values) => {
       setIsEditting(true)
       if (fileImage != null) {
-        console.log('check1');
         const imageRef = ref(storage, `candidate-avatar/${fileImage.name + uuid()}`)
         await uploadBytes(imageRef, fileImage).then((snapshot) => {
           getDownloadURL(snapshot.ref).then(url => {
             formik.values.image = url
-            console.log('1', url);
-            console.log('2', formik.values.image);
           })
         })
       }      
-      console.log('check2');
       await editProfileEmployee(currentUser.employee.id, currentUser.token, values, dispatch, navigate).then((response) => {
         if (response.data) {
           toast.success('Edit profile successfully')

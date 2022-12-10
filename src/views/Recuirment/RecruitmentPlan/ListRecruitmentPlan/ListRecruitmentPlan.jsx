@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { NumericFormat } from 'react-number-format';
-import { approveRecruitmentPlan, editRecruitmentPlan, rejectRecruitmentPlan } from '../../../../apis/recruitmentPlanApi'
+import { editRecruitmentPlan } from '../../../../apis/recruitmentPlanApi'
 import ApproveIcon from '../../../../assets/icon/check.png'
 import RejectIcon from '../../../../assets/icon/close.png'
 import EditIcon from '../../../../assets/icon/edit-icon.png'
@@ -19,6 +19,7 @@ import MinusIcon from '../../../../assets/icon/minusIcon.png'
 import { jobLevelName, responseStatus, statusName } from '../../../../utils/constants'
 import { useConfirm } from "material-ui-confirm";
 import ReactLoading from 'react-loading'
+import { useHandleApproveRecruitmentPlan, useHandleRejectRecruitmentPlan } from '../hooks/recruitmentPlanHook';
 
 const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
 
@@ -26,6 +27,9 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
   const confirm = useConfirm();
   const [openModalEdit, setOpenModalEdit] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
+
+  const { mutate: handleApproveRecruitmentPlan } = useHandleApproveRecruitmentPlan();
+  const { mutate: handleRejectRecruitmentPlan } = useHandleRejectRecruitmentPlan();
 
   const style = {
     position: 'absolute',
@@ -56,25 +60,27 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
     }),
     onSubmit: async (values) => {
       setIsUpdating(true)
-      await editRecruitmentPlan(currentUser.token, formikEdit.values.planId, values).then(response => {
+      await editRecruitmentPlan(formikEdit.values.planId, values).then(response => {
         response.status === responseStatus.SUCCESS ? toast.success('Update successfully') : toast.error('Something error')
       })
       setIsUpdating(false)
     }
   })
 
-  const handleApproveRecruitmentPlan = async (planId) => {
-    confirm({ description: "Are you sure to approve this plan?" }).then(() => {
-      approveRecruitmentPlan(currentUser.token, currentUser?.employee.id, planId).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
+  const approveRecruitmentPlan = async (planId) => {
+    await confirm({ description: "Are you sure to approve this plan?" }).then(() => {
+      handleApproveRecruitmentPlan({ empId: currentUser.employee.id, planId: planId }, {
+        onSuccess: () => toast.success('Confirm successfully'),
+        onError: () => toast.error('Somethings error')
       })
     })
   }
 
-  const handleRejectRecruitmentPlan = async (planId) => {
+  const rejectRecruitmentPlan = async (planId) => {
     confirm({ description: "Are you sure to reject this plan?" }).then(() => {
-      rejectRecruitmentPlan(currentUser.token, currentUser?.employee.id, planId).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
+      handleRejectRecruitmentPlan({ empId: currentUser.employee.id, planId: planId }, {
+        onSuccess: () => toast.success('Confirm successfully'),
+        onError: () => toast.error('Somethings error')
       })
     })
   }
@@ -92,22 +98,23 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
   return (
     <React.Fragment>
       <div className='listRecruitmentPlan-container'>
-        {listRecruitmentPlan.map((item) => (
+        {listRecruitmentPlan?.map((item) => (
           <Card key={item.id} className='recruitmentPlan-item'>
             {item.status === statusName.PENDING && <div className='flex justify-between'>
               <span className='process-buton text-[#FFA800] bg-[#FFF4DE]'>Pending</span>
               {currentUser?.employee.jobLevel === jobLevelName.DIRECTOR &&
                 <div className='flex w-full justify-between'>
                   <div className='flex'>
-                    <span className='hover:cursor-pointer' onClick={() => { handleApproveRecruitmentPlan(item.id) }}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
-                    <span className='hover:cursor-pointer' onClick={() => { handleRejectRecruitmentPlan(item.id) }}><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
+                    <span className='hover:cursor-pointer' onClick={() => { rejectRecruitmentPlan(item.id) }}><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
+                    <span className='hover:cursor-pointer' onClick={() => { approveRecruitmentPlan(item.id) }}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 0.5rem' }} /></span>
                   </div>
                 </div>
               }
               {currentUser.employee.jobLevel === jobLevelName.MANAGER && <div className='hover:cursor-pointer' onClick={() => handleEditPlan(item)}><img src={EditIcon} alt="" title='Edit this plan' width={'30rem'} className='mr-1' /></div>}
             </div>}
-            {item.status === statusName.APPROVED && <span className='process-buton text-[#1BC5BD] bg-[#C9F7F5] hover:cursor-pointer'>APPROVE</span>}
-            {item.status === statusName.REJECTED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] hover:cursor-pointer'>Reject</span>}
+            {item.status === statusName.APPROVED && <span className='process-buton text-[#1BC5BD] bg-[#C9F7F5] w-20 h-8 flex justify-center items-center'>APPROVE</span>}
+            {item.status === statusName.REJECTED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] w-20 h-8 flex justify-center items-center'>Reject</span>}
+            {item.status === statusName.CANCELED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] w-20 h-8 flex justify-center items-center'>Reject</span>}
 
             <div>
               <div className='font-semibold text-lg mt-3'>Name</div>
@@ -127,7 +134,7 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
               </div>
               <div className='grid grid-cols-2 mt-3'>
                 <div>
-                  <div className='font-semibold text-xl mb-1'>amount</div>
+                  <div className='font-semibold text-xl mb-1'>Amount</div>
                   <div className='item-value w-[60%] justify-center ml-6'>{item.amount}</div>
                 </div>
                 <div>

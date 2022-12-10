@@ -3,7 +3,7 @@ import './ListPlanDetail.scss'
 
 import { useSelector } from 'react-redux'
 
-import { Box, Modal, TextField, Autocomplete, TextareaAutosize } from '@mui/material';
+import { Box, Modal, TextField, Autocomplete, TextareaAutosize, Card } from '@mui/material';
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
 import ApproveIcon from '../../../../assets/icon/check.png'
@@ -17,7 +17,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getPlanApprovedByDepartment } from '../../../../apis/recruitmentPlanApi';
 import { useConfirm } from "material-ui-confirm";
-import { approvePlanDetail, cancelPlanDetail, editPlanDetail } from '../../../../apis/planDetailApi';
+import { editPlanDetail } from '../../../../apis/planDetailApi';
+import { useHandleApprovePlanDetail, useHandleRejectPlanDetail } from '../hooks/planDetailHook';
 
 
 const ListPlanDetail = ({ listPlanDetail }) => {
@@ -28,10 +29,12 @@ const ListPlanDetail = ({ listPlanDetail }) => {
   const [listApprovedRecruitmentPlan, setListApprovedRecruitmentPlan] = useState([])
   const [openModalEdit, setOpenModalEdit] = useState(false)
 
+  const { mutate: handleApprovePlanDetail } = useHandleApprovePlanDetail();
+  const { mutate: handleRejectPlanDetail } = useHandleRejectPlanDetail();
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getPlanApprovedByDepartment(currentUser.token, currentUser.employee.department.id);
+      const response = await getPlanApprovedByDepartment(currentUser.employee.department.id);
       if (response) {
         setListApprovedRecruitmentPlan(response.data)
       }
@@ -79,24 +82,25 @@ const ListPlanDetail = ({ listPlanDetail }) => {
       salary: Yup.string().required('Please input salary').min(1, 'Invalid value')
     }),
     onSubmit: async (values) => {
-      console.log('value', values);
       await editPlanDetail(currentUser.token, formikEdit.values.planDetailId, values).then(response => {
         response.status === responseStatus.SUCCESS ? toast.success('Update successfully') : toast.error('Something error')
       })
     }
   })
 
-  const handleApprovePlanDetail = async (planId) => {
+  const approvePlanDetail = async (planId) => {
     await confirm({ description: "Are you sure to confirm this plan?" }).then(() => {
-      approvePlanDetail(currentUser.token, currentUser?.employee.id, planId).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
+      handleApprovePlanDetail({ empId: currentUser.employee.id, planId: planId }, {
+        onSuccess: () => toast.success('Confirm successfully'),
+        onError: () => toast.error('Somethings error')
       })
     })
   }
-  const handleRejectPlanDetail = async (planId) => {
+  const rejectPlanDetail = async (planId) => {
     await confirm({ description: "Are you sure to reject this plan?" }).then(() => {
-      cancelPlanDetail(currentUser.token, currentUser?.employee.id, planId).then((response) => {
-        response.status === 200 ? toast.success('Confirm successfully') : toast.error('Something error')
+      handleRejectPlanDetail({ empId: currentUser.employee.id, planId: planId }, {
+        onSuccess: () => toast.success('Confirm successfully'),
+        onError: () => toast.error('Somethings error')
       })
     })
   }
@@ -119,22 +123,23 @@ const ListPlanDetail = ({ listPlanDetail }) => {
   return (
     <React.Fragment>
       <div className='listPlanDetail-container'>
-        {listPlanDetail.map((item) => (
-          <div key={item.id} className='planDetail-item'>
+        {listPlanDetail?.map((item) => (
+          <Card key={item.id} className='planDetail-item'>
             {item.status === statusName.PENDING ? <div className='flex'>
               <span className='process-buton text-[#FFA800] bg-[#FFF4DE]'>Pending</span>
               {currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) || currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) ? <React.Fragment>
                 <div className='flex w-full justify-between'>
                   <div className='flex'>
-                    <span className='hover:cursor-pointer' onClick={() => { handleApprovePlanDetail(item.id) }}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 1rem' }} /></span>
-                    <span className='hover:cursor-pointer' onClick={() => { handleRejectPlanDetail(item.id) }}><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
+                    <span className='hover:cursor-pointer' onClick={() => { rejectPlanDetail(item.id) }}><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
+                    <span className='hover:cursor-pointer' onClick={() => { approvePlanDetail(item.id) }}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 0.5rem' }} /></span>
                   </div>
                   <div className='hover:cursor-pointer' onClick={() => handleEditPlan(item)}><img src={EditIcon} alt="" title='Edit this plan' width={'30rem'} className='mr-2' /></div>
                 </div>
               </React.Fragment> : <></>}
             </div> : <div>
-              {item.status === statusName.APPROVED && <span className='process-buton text-[#1BC5BD] bg-[#C9F7F5] hover:cursor-pointer'>APPROVE</span>}
-              {item.status === statusName.CANCELED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] hover:cursor-pointer'>Reject</span>}
+              {item.status === statusName.APPROVED && <span className='process-buton text-[#1BC5BD] bg-[#C9F7F5] w-20 h-8 flex justify-center items-center'>APPROVE</span>}
+              {item.status === statusName.CANCELED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] w-20 h-8 flex justify-center items-center'>Canceled</span>}
+              {item.status === statusName.REJECTED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] w-20 h-8 flex justify-center items-center'>Reject</span>}
             </div>}
             <div className='flex justify-center mt-3 font-medium text-2xl'>{item.name}</div>
             <div>
@@ -170,7 +175,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
               <div><ShowMoreComponent title='Requirment' content={item.requirement} /></div>
               <div><ShowMoreComponent title='Note' content={item.note} /></div>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import './RecruitmentPlanPage.scss'
 
 import ReactLoading from 'react-loading'
@@ -15,21 +15,19 @@ import PlanIcon from '../../../../assets/icon/recruitment-planImage.png'
 import CreateIcon from '../../../../assets/icon/plus.png'
 import AddIcon from '../../../../assets/icon/addIcon.png'
 import MinusIcon from '../../../../assets/icon/minusIcon.png'
-
+import { useQuery } from 'react-query';
 import { Box, Modal, Pagination, Stack } from '@mui/material';
 import { createRecruitmentPlan, getAllRecruimentPlan, getRecruimentPlanByDepartment } from '../../../../apis/recruitmentPlanApi'
 import ListRecruitmentPlan from '../ListRecruitmentPlan/ListRecruitmentPlan'
 
-import { departmentName, jobLevelName, responseStatus } from '../../../../utils/constants'
+import { departmentName, jobLevelName } from '../../../../utils/constants'
 
 const RecruitmentPlanPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
 
-  const [listRecruitmentPlan, setListRecruitmentPlan] = useState([])
-  const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
+  const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
 
   const style = {
     position: 'absolute',
@@ -42,18 +40,16 @@ const RecruitmentPlanPage = () => {
     boxShadow: 24,
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      const response = currentUser.employee.department.id === departmentName.HR_DEPARTMENT ? await getAllRecruimentPlan(currentUser.token, pagination.currentPage - 1, 4) : await getRecruimentPlanByDepartment(currentUser.token, currentUser.employee.department.id, pagination.currentPage - 1, 4);
-      if (response) {
-        setListRecruitmentPlan(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })
-        setIsLoading(false)
-      }
-    }
-    fetchData();
-  }, [pagination.currentPage])
+
+  const { data: listRecruitmentPlan, isLoading } = useQuery(['listRecruitmentPlan', pagination], async () => currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
+    await getAllRecruimentPlan(pagination.currentPage - 1, 4).then((response) => {
+      setPagination({ ...pagination, totalPage: response.data.totalPage })
+      return response.data.responseList
+    })
+    : await getRecruimentPlanByDepartment(currentUser.employee.department.id, pagination.currentPage - 1, 4).then((response) => {
+      setPagination({ ...pagination, totalPage: response.data.totalPage })
+      return response.data.responseList
+    }))
 
   const formikEdit = useFormik({
     initialValues: {
@@ -72,10 +68,10 @@ const RecruitmentPlanPage = () => {
       totalSalary: Yup.string().required('Please input total salary').min(1, 'Invalid value')
     }),
     onSubmit: (values) => {
-      setIsLoading(true)
-      createRecruitmentPlan(currentUser.token, values).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-      }).then(setIsLoading(false))
+      // setIsLoading(true)
+      // createRecruitmentPlan(currentUser.token, values).then((response) => {
+      //   response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
+      // }).then(setIsLoading(false))
     }
   })
 
@@ -97,7 +93,7 @@ const RecruitmentPlanPage = () => {
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListRecruitmentPlan listRecruitmentPlan={listRecruitmentPlan} />}
 
-        <div className='pagination-container'>
+        <div className='flex justify-center'>
           <Stack spacing={2}>
             <Pagination count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} />
           </Stack>
