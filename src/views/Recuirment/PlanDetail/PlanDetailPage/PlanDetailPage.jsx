@@ -15,10 +15,11 @@ import CreateIcon from '../../../../assets/icon/plus.png'
 
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize } from '@mui/material';
 import { NumericFormat } from 'react-number-format';
-import { getAllPlanDetail, createPlanDetail, getPlanDetailByDepartment } from '../../../../apis/planDetailApi'
+import { getAllPlanDetail, getPlanDetailByDepartment } from '../../../../apis/planDetailApi'
 import ListPlanDetail from '../ListPlanDetail/ListPlanDetail'
-import { departmentName, jobLevelName, responseStatus } from '../../../../utils/constants'
+import { departmentName, jobLevelName } from '../../../../utils/constants'
 import { getPlanApprovedByDepartment } from '../../../../apis/recruitmentPlanApi'
+import { useCreatePlanDetail } from '../hooks/planDetailHook'
 
 const PlanDetailPage = () => {
 
@@ -28,6 +29,9 @@ const PlanDetailPage = () => {
   const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [listApprovedRecruitmentPlan, setListApprovedRecruitmentPlan] = useState([])
+  const [isCreating, setIsCreating] = useState(false)
+
+  const { mutate: createPlanDetail } = useCreatePlanDetail();
 
   const style = {
     position: 'absolute',
@@ -41,7 +45,6 @@ const PlanDetailPage = () => {
     border: '1px solid #0F6B14',
     boxShadow: 24,
   };
-
 
   const { data: listPlanDetail, isLoading } = useQuery(['listPlanDetail', pagination], async () => currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
     await getAllPlanDetail(pagination.currentPage - 1, 2).then((response) => {
@@ -87,10 +90,20 @@ const PlanDetailPage = () => {
       recruitmentPlanId: Yup.string().required('Please choose recruitment plan'),
       salary: Yup.string().required('Please input salary'),
     }),
-    onSubmit: async (values) => {
-      await createPlanDetail(values, currentUser.token).then(response => {
-        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
-      })
+    onSubmit: (values) => {
+      setIsCreating(true)
+      try {
+        createPlanDetail(values, {
+          onSuccess: () => {
+            toast.success('Create successfully')
+            setOpenModalCreate(false)
+          },
+          onError: () => toast.error('Create fail'),
+        })
+      } catch (error) {
+        toast.error('Something error')
+      }
+      setIsCreating(false)
     }
   })
 
@@ -99,7 +112,7 @@ const PlanDetailPage = () => {
       <div className='planDetail-container'>
         <div className='flex justify-between px-12 py-4'>
           <div className='flex'>
-            <span className='font-medium text-3xl mr-3'>Recruitment plan details</span>
+            <span className='font-medium text-3xl mr-3'>Plan details</span>
             <img src={PlanDetailIcon} alt='' width={'30rem'} />
           </div>
           <div className='font-medium text-2xl'>{currentUser.employee.department.name}</div>
@@ -222,6 +235,7 @@ const PlanDetailPage = () => {
                 <div className='mt-3 flex justify-around'>
                   <button onClick={() => { setOpenModalCreate(false) }} className='btn-create bg-[#F64E60]'>Cancel</button>
                   <button type='submit' className='btn-create bg-[#20D489]'>Save</button>
+                  {isCreating && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
                 </div>
               </div>
             </form>

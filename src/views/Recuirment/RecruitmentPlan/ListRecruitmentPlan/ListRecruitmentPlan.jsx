@@ -5,21 +5,20 @@ import { useSelector } from "react-redux";
 import { Box, Card, Modal, TextField } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import moment from 'moment'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { NumericFormat } from 'react-number-format';
-import { editRecruitmentPlan } from '../../../../apis/recruitmentPlanApi'
 import ApproveIcon from '../../../../assets/icon/check.png'
 import RejectIcon from '../../../../assets/icon/close.png'
 import EditIcon from '../../../../assets/icon/edit-icon.png'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
 import AddIcon from '../../../../assets/icon/addIcon.png'
 import MinusIcon from '../../../../assets/icon/minusIcon.png'
-import { jobLevelName, responseStatus, statusName } from '../../../../utils/constants'
+import { jobLevelName, statusName } from '../../../../utils/constants'
 import { useConfirm } from "material-ui-confirm";
 import ReactLoading from 'react-loading'
-import { useHandleApproveRecruitmentPlan, useHandleRejectRecruitmentPlan } from '../hooks/recruitmentPlanHook';
+import { useEditRecruitmentPlan, useHandleApproveRecruitmentPlan, useHandleRejectRecruitmentPlan } from '../hooks/recruitmentPlanHook';
 
 const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
 
@@ -28,6 +27,7 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
   const [openModalEdit, setOpenModalEdit] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
 
+  const { mutate: editRecruitmentPlan } = useEditRecruitmentPlan();
   const { mutate: handleApproveRecruitmentPlan } = useHandleApproveRecruitmentPlan();
   const { mutate: handleRejectRecruitmentPlan } = useHandleRejectRecruitmentPlan();
 
@@ -58,11 +58,19 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
       periodTo: Yup.string().required('Please input end date'),
       totalSalary: Yup.string().required('Please input total salary'),
     }),
-    onSubmit: async (values) => {
+    onSubmit: (values) => {
       setIsUpdating(true)
-      await editRecruitmentPlan(formikEdit.values.planId, values).then(response => {
-        response.status === responseStatus.SUCCESS ? toast.success('Update successfully') : toast.error('Something error')
+      try {
+        editRecruitmentPlan(values, {
+        onSuccess: () => {
+          toast.success('Edit successfully')
+          setOpenModalEdit(false)
+        },
+        onError: () => toast.error('Edit fail'),
       })
+    } catch (error) {
+      toast.error('Something error')
+    }
       setIsUpdating(false)
     }
   })
@@ -125,11 +133,11 @@ const ListRecruitmentPlan = ({ listRecruitmentPlan }) => {
               <div className='grid grid-cols-2 px-1'>
                 <div>
                   <div className='font-medium text-base'>from</div>
-                  <div className='item-value w-[80%] justify-between'>{item.periodFrom}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
+                  <div className='item-value w-[80%] justify-between'>{moment(item.periodFrom).format('DD/MM/YYYY')}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
                 </div>
                 <div>
                   <div className='font-medium text-base'>to</div>
-                  <div className='item-value w-[80%] justify-between'>{item.periodTo}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
+                  <div className='item-value w-[80%] justify-between'>{moment(item.periodTo).format('DD/MM/YYYY')}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
                 </div>
               </div>
               <div className='grid grid-cols-2 mt-3'>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './ListPlanDetail.scss'
 
 import { useSelector } from 'react-redux'
-
+import moment from 'moment';
 import { Box, Modal, TextField, Autocomplete, TextareaAutosize, Card } from '@mui/material';
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
@@ -11,14 +11,14 @@ import RejectIcon from '../../../../assets/icon/close.png'
 import EditIcon from '../../../../assets/icon/edit-icon.png'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import ReactLoading from 'react-loading'
 import { NumericFormat } from 'react-number-format';
-import { positionName, responseStatus, statusName } from '../../../../utils/constants'
+import { jobLevelName, statusName } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getPlanApprovedByDepartment } from '../../../../apis/recruitmentPlanApi';
 import { useConfirm } from "material-ui-confirm";
-import { editPlanDetail } from '../../../../apis/planDetailApi';
-import { useHandleApprovePlanDetail, useHandleRejectPlanDetail } from '../hooks/planDetailHook';
+import { useEditPlanDetail, useHandleApprovePlanDetail, useHandleRejectPlanDetail } from '../hooks/planDetailHook';
 
 
 const ListPlanDetail = ({ listPlanDetail }) => {
@@ -28,7 +28,9 @@ const ListPlanDetail = ({ listPlanDetail }) => {
   const confirm = useConfirm();
   const [listApprovedRecruitmentPlan, setListApprovedRecruitmentPlan] = useState([])
   const [openModalEdit, setOpenModalEdit] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false)
 
+  const { mutate: editPlanDetail } = useEditPlanDetail();
   const { mutate: handleApprovePlanDetail } = useHandleApprovePlanDetail();
   const { mutate: handleRejectPlanDetail } = useHandleRejectPlanDetail();
 
@@ -49,7 +51,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
     transform: 'translate(-50%, -50%)',
     width: 600,
     maxHeight: 600,
-    overflow: 'scroll',
+    overflowY: 'scroll',
     bgcolor: 'background.paper',
     border: '1px solid #0F6B14',
     boxShadow: 24,
@@ -81,10 +83,26 @@ const ListPlanDetail = ({ listPlanDetail }) => {
       requirement: Yup.string().required('Please choose recruitment plan'),
       salary: Yup.string().required('Please input salary').min(1, 'Invalid value')
     }),
-    onSubmit: async (values) => {
-      await editPlanDetail(currentUser.token, formikEdit.values.planDetailId, values).then(response => {
-        response.status === responseStatus.SUCCESS ? toast.success('Update successfully') : toast.error('Something error')
-      })
+    onSubmit: (values) => {
+      setIsUpdating(true)
+      try {
+        editPlanDetail(values, {
+          onSuccess: () => {
+            toast.success('Edit successfully')
+            setOpenModalEdit(false)
+          },
+          onError: (error) => {
+            if(error) {
+              if(error.message.includes('amount')) formikEdit.errors.amount = error.message
+              if(error.message.includes('salary')) formikEdit.errors.salary = error.message
+            }
+            toast.error('Edit fail')
+          },
+        })
+      } catch (error) {
+        toast.error('Something error')
+      }
+      setIsUpdating(false)
     }
   })
 
@@ -112,7 +130,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
     formikEdit.values.note = data.note
     formikEdit.values.periodFrom = data.periodFrom
     formikEdit.values.periodTo = data.periodTo
-    formikEdit.values.positionName = data.positionName
+    formikEdit.values.positionName = data.position.name
     formikEdit.values.reason = data.reason
     formikEdit.values.salary = data.salary
     formikEdit.values.description = data.description
@@ -127,15 +145,13 @@ const ListPlanDetail = ({ listPlanDetail }) => {
           <Card key={item.id} className='planDetail-item'>
             {item.status === statusName.PENDING ? <div className='flex'>
               <span className='process-buton text-[#FFA800] bg-[#FFF4DE]'>Pending</span>
-              {currentUser?.employee.position.name.toUpperCase().includes(positionName.DIRECTOR) || currentUser?.employee.position.name.toUpperCase().includes(positionName.MANAGER) ? <React.Fragment>
-                <div className='flex w-full justify-between'>
-                  <div className='flex'>
-                    <span className='hover:cursor-pointer' onClick={() => { rejectPlanDetail(item.id) }}><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
-                    <span className='hover:cursor-pointer' onClick={() => { approvePlanDetail(item.id) }}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 0.5rem' }} /></span>
-                  </div>
-                  <div className='hover:cursor-pointer' onClick={() => handleEditPlan(item)}><img src={EditIcon} alt="" title='Edit this plan' width={'30rem'} className='mr-2' /></div>
-                </div>
-              </React.Fragment> : <></>}
+              <div className='flex w-full justify-between'>
+                {currentUser.employee.jobLevel === jobLevelName.DIRECTOR || currentUser.employee.jobLevel === jobLevelName.MANAGER ? <div className='flex'>
+                  <span className='hover:cursor-pointer' onClick={() => { rejectPlanDetail(item.id) }}><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
+                  <span className='hover:cursor-pointer' onClick={() => { approvePlanDetail(item.id) }}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 0.5rem' }} /></span>
+                </div> : <></>}
+                <div className='hover:cursor-pointer' onClick={() => handleEditPlan(item)}><img src={EditIcon} alt="" title='Edit this plan' width={'30rem'} className='mr-2' /></div>
+              </div>
             </div> : <div>
               {item.status === statusName.APPROVED && <span className='process-buton text-[#1BC5BD] bg-[#C9F7F5] w-20 h-8 flex justify-center items-center'>APPROVE</span>}
               {item.status === statusName.CANCELED && <span className='process-buton text-[#F64E60] bg-[#FFE2E5] w-20 h-8 flex justify-center items-center'>Canceled</span>}
@@ -147,11 +163,11 @@ const ListPlanDetail = ({ listPlanDetail }) => {
               <div className='grid grid-cols-2 px-1'>
                 <div>
                   <div className='font-medium text-base'>from</div>
-                  <div className='item-value w-[80%] justify-between'>{item.periodFrom}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
+                  <div className='item-value w-[80%] justify-between'>{moment(item.periodFrom).format('DD/MM/YYYY')}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
                 </div>
                 <div>
                   <div className='font-medium text-base'>to</div>
-                  <div className='item-value w-[80%] justify-between'>{item.periodTo}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
+                  <div className='item-value w-[80%] justify-between'>{moment(item.periodTo).format('DD/MM/YYYY')}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
                 </div>
               </div>
               <div className='grid grid-cols-3 mt-3'>
@@ -179,7 +195,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
         ))}
       </div>
 
-      <Modal open={openModalEdit} onClose={() => setOpenModalEdit(false)}>
+      <Modal open={openModalEdit} onClose={() => {setOpenModalEdit(false); formikEdit.handleReset()}}>
         <Box sx={style}>
           <div className='modal-container'>
             <span className='font-medium text-3xl mr-3'>Edit plan detail</span>
@@ -214,8 +230,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
                       )}
                     </div>
                   </div>
-                  <Autocomplete
-                    disabled
+                  {/* <Autocomplete    
                     options={listApprovedRecruitmentPlan}
                     size={'small'}
                     sx={{ width: '100%', marginTop: '1rem' }}
@@ -224,7 +239,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
                     onChange={(event, value) => { formikEdit.setFieldValue('recruitmentPlanId', value.id) }} />
                   {formikEdit.errors.recruitmentPlanId && formikEdit.touched.recruitmentPlanId && (
                     <div className='text-[#ec5555]'>{formikEdit.errors.recruitmentPlanId}</div>
-                  )}
+                  )} */}
                   <div className='flex'>
                     <div className='w-[24%]'>
                       <TextField label="Amount" variant="outlined" size='small' sx={{ margin: '1rem 1rem 0 0' }} name='amount' value={formikEdit.values.amount} onChange={formikEdit.handleChange} />
@@ -240,7 +255,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
                     </div>
                     <div className='w-[34%]' >
                       <Autocomplete
-                        defaultValue={formikEdit.values.positionName}
+                        value={formikEdit.values.positionName}
                         options={categoryData.jobTitle}
                         size={'small'}
                         sx={{ marginTop: '1rem' }}
@@ -291,6 +306,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
                 <div className='mt-3 flex justify-around'>
                   <button onClick={() => { setOpenModalEdit(false) }} className='btn-create bg-[#F64E60]'>Cancel</button>
                   <button type='submit' className='btn-create bg-[#20D489]'>Save</button>
+                  {isUpdating && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={33} height={33} />}
                 </div>
 
               </div>

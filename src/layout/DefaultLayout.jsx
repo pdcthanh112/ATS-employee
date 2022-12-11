@@ -10,7 +10,7 @@ function DefaultLayout() {
       <AppHeader />
       <div className="inline-flex">
         <AppSidebar />
-        <div style={{ width: '82%' }}>
+        <div style={{ width: '82%', paddingBottom: '2rem' }}>
           <AppContent />
         </div>
       </div>

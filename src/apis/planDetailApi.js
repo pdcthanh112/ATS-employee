@@ -34,30 +34,26 @@ export const getPlanDetailApprovedByDepartment = async (token, depId) => {
     .catch((error) => error);
 };
 
-export const createPlanDetail = async (planData, token) => {
+export const createPlanDetail = async (planData) => {
   return await axiosConfig
-    .post(
-      "planDetail/create",
-      {
-        amount: planData.amount,
-        creatorId: planData.creatorId,
-        description: planData.description,
-        name: planData.name,
-        note: planData.note,
-        periodFrom: planData.periodFrom,
-        periodTo: planData.periodTo,
-        positionName: planData.positionName,
-        reason: planData.reason,
-        recruitmentPlanId: planData.recruitmentPlanId,
-        requirement: planData.requirement,
-        salary: planData.salary,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    .post("planDetail/create", {
+      amount: planData.amount,
+      creatorId: planData.creatorId,
+      description: planData.description,
+      name: planData.name,
+      note: planData.note,
+      periodFrom: planData.periodFrom,
+      periodTo: planData.periodTo,
+      positionName: planData.positionName,
+      reason: planData.reason,
+      recruitmentPlanId: planData.recruitmentPlanId,
+      requirement: planData.requirement,
+      salary: planData.salary,
+    })
     .then((response) => response.data)
-    .catch((error) => error);
+    .catch((error) => {
+      throw error.response.data;
+    });
 };
 
 export const approvePlanDetail = async (empId, planId) => {
@@ -77,26 +73,22 @@ export const cancelPlanDetail = async (empId, planId) => {
   });
 };
 
-export const editPlanDetail = async (token, id, planData) => {
+export const editPlanDetail = async (planData) => {
   return await axiosConfig
-    .put(
-      `planDetail/update?id=${id}`,
-      {
-        amount: planData.amount,
-        description: planData.description,
-        name: planData.name,
-        note: planData.note,
-        periodFrom: planData.periodFrom,
-        periodTo: planData.periodTo,
-        positionName: planData.positionName,
-        reason: planData.reason,
-        requirement: planData.requirement,
-        salary: planData.salary,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    .put(`planDetail/update?id=${planData.planDetailId}`, {
+      amount: planData.amount,
+      description: planData.description,
+      name: planData.name,
+      note: planData.note,
+      periodFrom: planData.periodFrom,
+      periodTo: planData.periodTo,
+      positionName: planData.positionName,
+      reason: planData.reason,
+      requirement: planData.requirement,
+      salary: planData.salary,
+    })
     .then((response) => response.data)
-    .catch((error) => error);
+    .catch((error) => {
+      throw error.response.data;
+    });
 };
