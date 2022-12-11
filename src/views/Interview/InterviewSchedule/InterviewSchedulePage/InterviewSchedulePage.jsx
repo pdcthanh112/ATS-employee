@@ -8,31 +8,33 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import ReactLoading from 'react-loading';
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize, Switch, FormControlLabel } from '@mui/material';
-
+import { useQuery } from 'react-query';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { createInterview, getAcceptableInterviewByEmployee, getAllInterview, searchInterviewSchedule } from '../../../../apis/interviewScheduleApi';
+import { getAllInterview, getInterviewByEmployee, searchInterviewSchedule } from '../../../../apis/interviewScheduleApi';
 import InterviewIcon from '../../../../assets/icon/calendar.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
 import AddIcon from '../../../../assets/icon/plus.png'
 import DepartmentInterviewIcon from '../../../../assets/icon/department-interview.png'
 import ListInterviewSchedule from '../ListInterviewSchedule/ListInterviewSchedule';
-import { departmentName, interviewType, jobLevelName, responseStatus } from '../../../../utils/constants';
-import { getAllDepartment } from '../../../../apis/departmentApi';
+import { departmentName, interviewType, jobLevelName } from '../../../../utils/constants';
+import { getIdAndNameActiveDepartment } from '../../../../apis/departmentApi';
 import { getListRecruimentRequestByDepartment, getRecruimentRequestById } from '../../../../apis/recruimentRequestApi';
 import { getCandidateAppliedByRecruitmentRequest } from '../../../../apis/candidateApi';
 import { getEmployeeByRecruitmentRequest } from '../../../../apis/employeeApi';
-import { interviewRoundData, interviewStatusData, interviewTypeData } from '../../../../utils/dropdownData';
+import { durationData, interviewRoundData, interviewStatusData, interviewTypeData } from '../../../../utils/dropdownData';
+import { useCreateInterviewSchedule, useSearchInterviewSchedule } from '../hooks/interviewScheduleHook'
 
 const InterviewPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
 
-  const [listInterviewSchedule, setListInterviewSchedule] = useState([])
-  const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
+  const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
   const [isSubmiting, setIsSubmitting] = useState(false)
+
+  const { mutate: createInterviewSchedule } = useCreateInterviewSchedule();
+  const { mutate: searchInterviewSchedule } = useSearchInterviewSchedule();
 
   const [tabPage, setTabPage] = useState(0);
   const FormTitles = ["Choose recruitment request", "Choose paticipants", "Fill information"];
@@ -44,25 +46,22 @@ const InterviewPage = () => {
     transform: 'translate(-50%, -50%)',
     width: 500,
     maxHeight: 600,
-    overflow: 'scroll',
+    overflowY: 'scroll',
     bgcolor: 'background.paper',
     border: '1px solid #0F6B14',
     boxShadow: 24,
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      const response = currentUser.employee.department.id === departmentName.HR_DEPARTMENT ? await getAllInterview(currentUser.token, pagination.currentPage - 1, 4) : await getAcceptableInterviewByEmployee(currentUser.token, currentUser.employee.id, pagination.currentPage - 1, 4);
-      if (response) {
-        setListInterviewSchedule(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })
-      }
-      setIsLoading(false)
-    }
-    fetchData();
-  }, [pagination.currentPage])
-
+  const { data: listInterviewSchedule, isLoading } = useQuery(['listInterviewSchedule', pagination], async () => currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
+    await getAllInterview(pagination.currentPage - 1, 4).then((response) => {
+      setPagination({ ...pagination, totalPage: response.data.totalPage })
+      return response.data.responseList
+    })
+    : 
+    await getInterviewByEmployee(currentUser.employee.id, pagination.currentPage - 1, 4).then((response) => {
+      setPagination({ ...pagination, totalPage: response.data.totalPage })
+      return response.data.responseList
+    }))
 
   const PageDisplay = () => {
     if (tabPage === 0) {
@@ -74,21 +73,19 @@ const InterviewPage = () => {
     }
   };
 
-
   const formikCreate = useFormik({
     initialValues: {
       address: '',
       candidateId: [],
       date: '',
       description: '',
-      duration: 0,
+      duration: '',
       employeeId: [],
-      jobName: '',
       linkMeeting: '',
       purpose: '',
-      recruitmentRequestId: 0,
+      recruitmentRequestId: '',
       room: '',
-      round: '',
+      round: 1,
       subject: '',
       time: '',
       type: ''
@@ -98,6 +95,7 @@ const InterviewPage = () => {
       candidateId: Yup.array().min(1, 'Please choose at least 1 candidate'),
       date: Yup.string().required('Please input date'),
       description: Yup.string().required('Please input description'),
+      duration: Yup.string().required('Please choose duration'),
       employeeId: Yup.array().min(1, 'Please choose at least 1 employee interview'),
       //linkMeeting: Yup.string().required('Please input link meeting'),
       purpose: Yup.string().required('Please input purpose'),
@@ -106,13 +104,21 @@ const InterviewPage = () => {
       round: Yup.string().required('Please choose round'),
       subject: Yup.string().required('Please input subject'),
       time: Yup.string().required('Please input time'),
-      //type: Yup.string().required('Please choose type of interview'),
+      // //type: Yup.string().required('Please choose type of interview'),
     }),
-    onSubmit: async (values) => {
+    onSubmit: (values) => {
       setIsSubmitting(true)
-      await createInterview(currentUser.token, values).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-      })
+      try {
+        createInterviewSchedule(values, {
+          onSuccess: () => {
+            toast.success('Create successfully')
+            setOpenModalCreate(false)
+          },
+          onError: () => toast.error('Create fail'),
+        })
+      } catch (error) {
+        toast.error('Something error')
+      }
       setIsSubmitting(false)
     }
   })
@@ -126,13 +132,11 @@ const InterviewPage = () => {
       status: ''
     },
     onSubmit: async (values) => {
-      setIsLoading(true)
-      await searchInterviewSchedule(currentUser.token, values).then((response) => {
-        if (response && response.data) {
-          setListInterviewSchedule(response.data)
-        }
-      })
-      setIsLoading(false)
+      // await searchInterviewSchedule(values).then((response) => {
+      //   if (response && response.data) {
+      //     listInterviewSchedule = response.data
+      //   }
+      // })
     }
   })
 
@@ -144,7 +148,7 @@ const InterviewPage = () => {
           <img src={InterviewIcon} alt='' width={'30rem'} />
         </div>
 
-        {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='create-schedule' onClick={() => setOpenModalCreate(true)} title='Create a new interview'>
+        {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='create-schedule hover:cursor-pointer' onClick={() => setOpenModalCreate(true)} title='Create a new interview'>
           <span className='mr-1'>Create an interview</span>
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' /></span>
         </div>}
@@ -158,11 +162,11 @@ const InterviewPage = () => {
 
         <div className='filter-container'>
           <div className='inputName'>
-            <input type={'text'} className='form-control' placeholder='Candidate name...' name='name' value={formikSearch.values.name} onChange={formikSearch.handleChange} />
+            <input type={'text'} className='form-control bg-[#f8f9fa]' placeholder='Candidate name...' name='name' value={formikSearch.values.name} onChange={formikSearch.handleChange} />
           </div>
 
           <div className='mr-5'>
-            <input type={'date'} className='form-control' name='date' value={formikSearch.values.date} onChange={formikSearch.handleChange} />
+            <input type={'date'} className='form-control bg-[#f8f9fa]' name='date' value={formikSearch.values.date} onChange={formikSearch.handleChange} />
           </div>
 
           <Autocomplete
@@ -194,7 +198,7 @@ const InterviewPage = () => {
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListInterviewSchedule listInterviewSchedule={listInterviewSchedule} />}
 
-        <div className='pagination-container'>
+        <div className='flex justify-center'>
           <Stack spacing={2}>
             <Pagination count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} />
           </Stack>
@@ -284,9 +288,9 @@ const ChooseRecruitmentRequestTab = ({ formikCreate }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getAllDepartment(currentUser.token, 0, 20);
+      const response = await getIdAndNameActiveDepartment();
       if (response) {
-        setListDepartment(response.data.responseList)
+        setListDepartment(response.data)
       }
     }
     fetchData();
@@ -506,6 +510,18 @@ const FillInformationTab = ({ formikCreate }) => {
           )}
         </div>
       </div>
+
+      <Autocomplete
+        options={durationData()}
+        size={'small'}
+        sx={{ width: '90%', marginTop: '1rem' }}
+        getOptionLabel={option => option.title}
+        renderInput={(params) => <TextField {...params} label="Duration" />}
+        onChange={(event, value) => { formikCreate.setFieldValue('duration', value.value) }}
+      />
+      {formikCreate.errors.duration && formikCreate.touched.duration && (
+        <div className='text-[#ec5555]'>{formikCreate.errors.duration}</div>
+      )}
 
       <div className='mt-4'>Purpose</div>
       <TextareaAutosize

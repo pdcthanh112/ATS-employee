@@ -17,7 +17,7 @@ import { educationLevelData, experienceData, foreignLanguageData, jobLevelData, 
 import { departmentName, responseStatus } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { getAllDepartment } from '../../../../apis/departmentApi'
+import { getIdAndNameActiveDepartment } from '../../../../apis/departmentApi'
 import { getPlanDetailApprovedByDepartment, getPlanDetailById } from '../../../../apis/planDetailApi'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
@@ -182,6 +182,7 @@ const RecruitmentRequestPage = () => {
               renderInput={(params) => <TextField {...params} label="Industry" />}
               onChange={(event, value) => { formikSearch.setFieldValue('industry', value) }}
             />
+
             <Autocomplete
               options={categoryData.jobTitle}
               size={'small'}
@@ -298,9 +299,9 @@ const ChoosePlanTab = ({ formikCreate }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getAllDepartment(currentUser.token, 0, 20);
+      const response = await getIdAndNameActiveDepartment();
       if (response) {
-        setListDepartment(response.data.responseList)
+        setListDepartment(response.data)
       }
     }
     fetchData();

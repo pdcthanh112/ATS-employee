@@ -15,7 +15,7 @@ const NotificationPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getNotificationByEmployee(currentUser.token, currentUser.employee.id, pagination.currentPage - 1, 10);
+      const response = await getNotificationByEmployee(currentUser.employee.id, pagination.currentPage - 1, 8);
       if (response) {
         setListNotification(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })       

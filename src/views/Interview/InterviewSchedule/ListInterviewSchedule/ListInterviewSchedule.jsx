@@ -8,19 +8,20 @@ import RejectIcon from '../../../../assets/icon/close.png'
 import DeleteIcon from '.././../../../assets/icon/trash.png'
 import CheckDoneIcon from '.././../../../assets/icon/check-done.png'
 import AddResultIcon from '.././../../../assets/icon/addInterviewResult.png'
-
+import moment from 'moment'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import ReactLoading from 'react-loading'
 import { departmentName, interviewStatus, interviewType, responseStatus } from '../../../../utils/constants'
-import { cancelInterview, closeInterview, confirmInterview, rejectInterview } from '../../../../apis/interviewScheduleApi'
-import { Autocomplete, Box, Modal, TextareaAutosize, TextField } from '@mui/material';
+import { cancelInterview, closeInterview } from '../../../../apis/interviewScheduleApi'
+import { Autocomplete, Box, Card, Modal, TextareaAutosize, TextField } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { interviewResultData } from '../../../../utils/dropdownData';
 import { createInterviewDetail } from '../../../../apis/interviewDetailApi';
 import { useConfirm } from "material-ui-confirm";
+import { useHandleApproveInterviewSchedule, useHandleCancelInterviewSchedule, useHandleRejectInterviewSchedule } from '../hooks/interviewScheduleHook'
 
 const ListInterviewSchedule = ({ listInterviewSchedule }) => {
 
@@ -30,8 +31,12 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
 
   const [openModalReason, setOpenModalReason] = useState(false)
   const [openModalInterviewDetail, setOpenModalInterviewDetail] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
+  // const [isDeleting, setIsDeleting] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
+
+  const { mutate: handleApproveInterviewSchedule } = useHandleApproveInterviewSchedule();
+  const { mutate: handleRejectInterviewSchedule } = useHandleRejectInterviewSchedule();
+  const { mutate: handleCancelInterviewSchedule } = useHandleCancelInterviewSchedule();
 
   const style = {
     position: 'absolute',
@@ -54,12 +59,15 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
     validationSchema: Yup.object({
       reason: Yup.string().required('Please input reason'),
     }),
-    onSubmit: async (values) => {
-      setIsDeleting(true)
-      await cancelInterview(currentUser.token, values).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Cancel successfully') : toast.error('Cancel fail')
-        setIsDeleting(false)
-        setOpenModalReason(false)
+    onSubmit: (values) => {
+      handleCancelInterviewSchedule(values, {
+        onSuccess: () => {
+          setOpenModalReason(false)
+          toast.success('Cancel successfully')
+        },
+        onError: () => {
+          toast.error('Cancel fail')
+        }
       })
     }
   })
@@ -87,18 +95,20 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
     }
   })
 
-  const confirmInterviewByEmp = async (interviewId) => {
+  const approveInterviewByEmp = async (interviewId) => {
     await confirm({ description: "Are you sure to aprrove this interview?" }).then(() => {
-      confirmInterview(currentUser.token, currentUser.employee.id, interviewId).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
+      handleApproveInterviewSchedule({ idEmployee: currentUser.employee.id, idInterview: interviewId }, {
+        onSuccess: () => toast.success('Confirm successfully'),
+        onError: () => toast.error('Somethings error')
       })
     })
   }
 
   const rejectInterviewByEmp = async (interviewId) => {
     await confirm({ description: "Are you sure to reject this interview?" }).then(() => {
-      rejectInterview(currentUser.token, currentUser.employee.id, interviewId).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Reject successfully') : toast.error('Something error')
+      handleRejectInterviewSchedule({ idEmployee: currentUser.employee.id, idInterview: interviewId }, {
+        onSuccess: () => toast.success('Confirm successfully'),
+        onError: () => toast.error('Somethings error')
       })
     })
   }
@@ -126,12 +136,12 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
   return (
     <React.Fragment >
       <div className='listInterview-container'>
-        {listInterviewSchedule && listInterviewSchedule.map((item) => (
-          <div key={item.id} className='listInterview-item'>
+        {listInterviewSchedule?.map((item) => (
+          <Card key={item.id} className='listInterview-item'>
             <div className='inline-flex w-[100%]'>
               <div className='flex'>
                 <div>
-                  <div className='font-semibold text-lg w-24'>{item.date}</div>
+                  <div className='font-semibold text-lg w-24'>{moment(item.date).format('DD/MM/YYYY')}</div>
                   <div className='flex justify-end font-bold text-xl'>{item.time}</div>
                 </div>
                 <div className='ml-4'><img src={InterviewIcon} alt="" width={'50rem'} /></div>
@@ -142,17 +152,17 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
                   <div className='flex'>
                     {currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
                       <span onClick={() => { handleCancelInterview(item.id) }}><img src={DeleteIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Cancel this interview' /></span>
-                      : <React.Fragment>
-                        {item.employeeConfirm == null && <React.Fragment>
-                          <span onClick={() => { confirmInterviewByEmp(item.id) }}><img src={ApproveIcon} alt="" width={'40rem'} className='mr-2 hover:cursor-pointer' title='Approve this interview' /></span>
+                      : <>
+                        {item.employeeConfirm == null && <>
+                          <span onClick={() => { approveInterviewByEmp(item.id) }}><img src={ApproveIcon} alt="" width={'40rem'} className='mr-2 hover:cursor-pointer' title='Approve this interview' /></span>
                           <span onClick={() => { rejectInterviewByEmp(item.id) }}><img src={RejectIcon} alt="" width={'20rem'} className='mt-2 hover:cursor-pointer' title='Reject this interview' /></span>
-                        </React.Fragment>}
-                      </React.Fragment>}
+                        </>}
+                      </>}
                   </div>
                 </div>}
               {item.status === interviewStatus.DONE && <div className='flex justify-between w-[65%]'>
                 <div className='bg-[#E9FCE9] text-[#00FF00] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>DONE</div>
-                {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='hover:cursor-pointer bg-[#1daf5a] flex rounded-lg px-3 h-9' onClick={() => handleCreateInterviewDetail(item.id)}><img src={AddResultIcon} alt='' style={{width: '1.4rem', height: '1.4rem', margin: 'auto 0.2rem auto 0', padding: 0}}/><div className='text-[#FFF] my-auto'>Add result</div></div>}
+                {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='hover:cursor-pointer bg-[#1daf5a] flex rounded-lg px-3 h-9' onClick={() => handleCreateInterviewDetail(item.id)}><img src={AddResultIcon} alt='' style={{ width: '1.4rem', height: '1.4rem', margin: 'auto 0.2rem auto 0', padding: 0 }} /><div className='text-[#FFF] my-auto'>Add result</div></div>}
               </div>}
               {item.status === interviewStatus.APPROVED && <div className='flex justify-between '>
                 <div className='bg-[#C9F7F5] text-[#1BC5BD] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>APPROVED</div>
@@ -186,11 +196,11 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
               <div className='font-semibold text-lg'>Description</div>
               <div className='field-item'>{item.description}</div>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
 
-      <Modal open={openModalReason} onClose={() => setOpenModalReason(false)}>
+      <Modal open={openModalReason} onClose={() => { setOpenModalReason(false); formikCancel.handleReset() }}>
         <Box sx={style}>
           <div className='px-2 py-3'>
             <form onSubmit={formikCancel.handleSubmit}>
@@ -210,7 +220,7 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
               <div className='flex justify-evenly mt-5'>
                 <button type='button' onClick={() => setOpenModalReason(false)} className='btn-create bg-[#C1C1C1]'>Cancel</button>
                 <button className='btn-create bg-[#F64E60]' onClick={formikCancel.handleSubmit}>Delete</button>
-                {isDeleting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
+                {/* {isDeleting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={35} height={35}/>} */}
               </div>
             </form>
           </div>

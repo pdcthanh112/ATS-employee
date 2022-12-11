@@ -44,10 +44,27 @@ const SubMenu = ({ item }) => {
   const [subnav, setSubnav] = useState(false);
   const showSubnav = () => setSubnav(!subnav);
   const currentUser = store.getState().auth.login.currentUser;
-  
+
   return (
     <React.Fragment>
-      {currentUser.employee.department.id === departmentName.HR_DEPARTMENT || currentUser.roleName === 'ADMIN' ? (
+      {currentUser.employee.department.id === departmentName.HR_DEPARTMENT || currentUser.roleName === "ADMIN" || !item.onlyHR? (
+        <SidebarLink to={item.path} onClick={item.subNav && showSubnav}>
+          <div className="inline-flex text-[#FFF]">
+            {item.icon}
+            <SidebarLabel>{item.title}</SidebarLabel>
+          </div>
+          <div>
+            {item.subNav && subnav
+              ? item.iconOpened
+              : item.subNav
+              ? item.iconClosed
+              : null}
+          </div>
+        </SidebarLink>
+      ) : (
+        <></>
+      )}
+      {/* {currentUser.employee.department.id === departmentName.HR_DEPARTMENT || currentUser.roleName === 'ADMIN' ? (
         <SidebarLink to={item.path} onClick={item.subNav && showSubnav}>
           <div className="inline-flex text-[#FFF]">
             {item.icon}
@@ -81,7 +98,7 @@ const SubMenu = ({ item }) => {
             </>
           )}
         </>
-      )}
+      )} */}
       {subnav &&
         item.subNav.map((item, index) => (
           <DropdownLink to={item.path} key={index}>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './DepartmentInterview.scss'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { cancelInterview, confirmByManager, getAcceptableInterviewByDepartment, getStatusAndName } from '../../../apis/interviewScheduleApi'
+import { cancelInterview, confirmByManager, getInterviewByDepartment, getStatusAndName } from '../../../apis/interviewScheduleApi'
 import InterviewIcon from '../../../assets/icon/date-time-icon.png'
 import CheckedIcon from '../../../assets/icon/checked.png'
 
@@ -44,7 +44,7 @@ const DepartmentInterview = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getAcceptableInterviewByDepartment(currentUser.token, departmentId, pagination.currentPage - 1, 4);
+      const response = await getInterviewByDepartment(departmentId, pagination.currentPage - 1, 4);
       if (response) {
         setListInterview(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })

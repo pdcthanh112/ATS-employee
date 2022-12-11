@@ -230,7 +230,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
                       )}
                     </div>
                   </div>
-                  {/* <Autocomplete    
+                  <Autocomplete    
                     options={listApprovedRecruitmentPlan}
                     size={'small'}
                     sx={{ width: '100%', marginTop: '1rem' }}
@@ -239,7 +239,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
                     onChange={(event, value) => { formikEdit.setFieldValue('recruitmentPlanId', value.id) }} />
                   {formikEdit.errors.recruitmentPlanId && formikEdit.touched.recruitmentPlanId && (
                     <div className='text-[#ec5555]'>{formikEdit.errors.recruitmentPlanId}</div>
-                  )} */}
+                  )}
                   <div className='flex'>
                     <div className='w-[24%]'>
                       <TextField label="Amount" variant="outlined" size='small' sx={{ margin: '1rem 1rem 0 0' }} name='amount' value={formikEdit.values.amount} onChange={formikEdit.handleChange} />
