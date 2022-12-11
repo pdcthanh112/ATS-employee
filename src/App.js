@@ -1,13 +1,7 @@
 import React, { Suspense } from "react";
 import { useSelector } from "react-redux";
 import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
-
-
-const loading = (
-  <div className="pt-3 text-center">
-    <div className="sk-spinner sk-spinner-pulse"></div>
-  </div>
-);
+import ReactLoading from 'react-loading'
 
 const DefaultLayout = React.lazy(() => import("./layout/DefaultLayout"));
 const Login = React.lazy(() => import("./views/pages/login/Login"));
@@ -20,7 +14,7 @@ const App = () => {
   
   return (
     <HashRouter>
-      <Suspense fallback={loading}>
+      <Suspense fallback={<ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' />}>
         <Routes>
           <Route exact path="*" element={currentUser?.employee ? <DefaultLayout/> : <Navigate to="/login" />}/>
           <Route exact path="/login" name="Login Page" element={<Login />} />

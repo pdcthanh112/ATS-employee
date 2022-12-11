@@ -70,7 +70,7 @@ const ListCandidate = ({ listCandidate }) => {
               <th style={{ width: '20%' }}>Email</th>
               <th style={{ width: '8%' }}>CV</th>
               <th style={{ width: '12%' }}>Status</th>
-              <th style={{ width: '7%' }}>Action</th>
+              {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <th style={{ width: '7%' }}>Action</th>}
             </tr>
           </thead>
           <tbody>
@@ -83,9 +83,7 @@ const ListCandidate = ({ listCandidate }) => {
                 <td className='text-center'>
                   {item.status === 'ACTIVATE' ? <span className='status-active'>Active</span> : <span className='status-disable'>Disable</span>}
                 </td>
-                <td>
-                  {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <img src={DeleteIcon} alt='' title='Disable' width={'30rem'} className='m-auto hover:cursor-pointer' onClick={() => handleDisableCandidate(item.id)} />}
-                </td>
+                {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <td><img src={DeleteIcon} alt='' title='Disable' width={'30rem'} className='m-auto hover:cursor-pointer' onClick={() => handleDisableCandidate(item.id)} /></td>}
               </tr>
             ))}
           </tbody>
@@ -120,7 +118,7 @@ const ListCandidate = ({ listCandidate }) => {
         </Box>
       </Modal>
 
-     
+
 
       <ToastContainer
         position="top-right"

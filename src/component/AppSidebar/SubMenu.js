@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { store } from "../../redux/store";
+import { departmentName } from "../../utils/constants";
 
 const SidebarLink = styled(Link)`
   display: flex;
@@ -40,36 +42,55 @@ const DropdownLink = styled(Link)`
 
 const SubMenu = ({ item }) => {
   const [subnav, setSubnav] = useState(false);
-
   const showSubnav = () => setSubnav(!subnav);
-
+  const currentUser = store.getState().auth.login.currentUser;
+  
   return (
     <React.Fragment>
-      <SidebarLink to={item.path} onClick={item.subNav && showSubnav}>
-        <div className="inline-flex text-[#FFF]">
-          {item.icon}
-          <SidebarLabel>{item.title}</SidebarLabel>
-        </div>
-        <div>
-          {item.subNav && subnav
-            ? item.iconOpened
-            : item.subNav
-            ? item.iconClosed
-            : null
-            }
-        </div>
-      </SidebarLink>
+      {currentUser.employee.department.id === departmentName.HR_DEPARTMENT || currentUser.roleName === 'ADMIN' ? (
+        <SidebarLink to={item.path} onClick={item.subNav && showSubnav}>
+          <div className="inline-flex text-[#FFF]">
+            {item.icon}
+            <SidebarLabel>{item.title}</SidebarLabel>
+          </div>
+          <div>
+            {item.subNav && subnav
+              ? item.iconOpened
+              : item.subNav
+              ? item.iconClosed
+              : null}
+          </div>
+        </SidebarLink>
+      ) : (
+        <>
+          {!item.onlyHR && (
+            <>
+              <SidebarLink to={item.path} onClick={item.subNav && showSubnav}>
+                <div className="inline-flex text-[#FFF]">
+                  {item.icon}
+                  <SidebarLabel>{item.title}</SidebarLabel>
+                </div>
+                <div>
+                  {item.subNav && subnav
+                    ? item.iconOpened
+                    : item.subNav
+                    ? item.iconClosed
+                    : null}
+                </div>
+              </SidebarLink>
+            </>
+          )}
+        </>
+      )}
       {subnav &&
-        item.subNav.map((item, index) => {
-          return (
-            <DropdownLink to={item.path} key={index}>
-              <div className="inline-flex text-[#FFF]">
-                {item.icon}
-                <SidebarLabel>{item.title}</SidebarLabel>
-              </div>
-            </DropdownLink>
-          );
-        })}
+        item.subNav.map((item, index) => (
+          <DropdownLink to={item.path} key={index}>
+            <div className="inline-flex text-[#FFF]">
+              {item.icon}
+              <SidebarLabel>{item.title}</SidebarLabel>
+            </div>
+          </DropdownLink>
+        ))}
     </React.Fragment>
   );
 };

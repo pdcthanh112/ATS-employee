@@ -19,6 +19,7 @@ export const SidebarItem = [
     title: "Dashboard",
     path: "/#/dashboard",
     icon: <img src={Home} alt="" width={"30rem"} />,
+    onlyHR: false,
   },
   {
     title: "Recruitment",
@@ -26,22 +27,26 @@ export const SidebarItem = [
     icon: <img src={Recruitment} alt="" width={"30rem"} />,
     iconClosed: <img src={IconDown} alt="" width={"15rem"} />,
     iconOpened: <img src={IconUp} alt="" width={"15rem"} />,
+    onlyHR: false,
     
     subNav: [
       {
         title: "Recruitment plan",
         path: "/recruitment-plan",
-        icon: <img src={RecruitmentPlan} alt="" width={"25rem"} />,       
+        icon: <img src={RecruitmentPlan} alt="" width={"25rem"} />,    
+        onlyHR: false,   
       },
       {
         title: "Plan detail",
         path: "/plan-detail",
-        icon: <img src={PlanDetail} alt="" width={"25rem"} />,       
+        icon: <img src={PlanDetail} alt="" width={"25rem"} />,      
+        onlyHR: false, 
       },
       {
         title: "Job request",
         path: "/recruitment-request",
-        icon: <img src={RecruitmentRequest} alt="" width={"25rem"} />,       
+        icon: <img src={RecruitmentRequest} alt="" width={"25rem"} />,    
+        onlyHR: true,   
       },
     ],
   },
@@ -51,11 +56,13 @@ export const SidebarItem = [
     icon: <img src={Candidates} alt="" width={"30rem"} />,
     iconClosed: <img src={IconDown} alt="" width={"15rem"} />,
     iconOpened: <img src={IconUp} alt="" width={"15rem"} />,   
+    onlyHR: true,
   },
   {
     title: "Job apply",
     path: "/job-apply",
     icon: <img src={JobApply} alt="" width={"30rem"} />,   
+    onlyHR: true,
   },
   {
     title: "Interview",
@@ -63,17 +70,20 @@ export const SidebarItem = [
     icon: <img src={Interview} alt="" width={"30rem"} />,
     iconClosed: <img src={IconDown} alt="" width={"15rem"} />,
     iconOpened: <img src={IconUp} alt="" width={"15rem"} />,
+    onlyHR: false,
        
     subNav: [
       {
         title: "Interview schedule",
         path: "/interview-schedule",
         icon: <img src={InterviewSchedule} alt="" width={"25rem"} />,      
+        onlyHR: false,
       },
       {
         title: "Interview detail",
         path: "/interview-detail",
-        icon: <img src={InterviewDetail} alt="" width={"25rem"} />,      
+        icon: <img src={InterviewDetail} alt="" width={"25rem"} />,    
+        onlyHR: false,  
       },
     ],
   },
@@ -81,10 +91,12 @@ export const SidebarItem = [
     title: "Curriculum vitae",
     path: "/curriculum-vitae",
     icon: <img src={CurriculumVitae} alt="" width={"30rem"} />,
+    onlyHR: true,
   },
   {
     title: "Notification",
     path: "/notification",
     icon: <img src={Notification} alt="" width={"30rem"} />,   
+    onlyHR: false,
   },
 ];
