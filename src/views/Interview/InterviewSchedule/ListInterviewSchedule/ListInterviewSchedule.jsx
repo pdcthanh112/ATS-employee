@@ -153,10 +153,10 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
                     {currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
                       <span onClick={() => { handleCancelInterview(item.id) }}><img src={DeleteIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Cancel this interview' /></span>
                       : <>
-                        {item.employeeConfirm == null && <>
+                        {item.employeeConfirm == null ? <>
                           <span onClick={() => { approveInterviewByEmp(item.id) }}><img src={ApproveIcon} alt="" width={'40rem'} className='mr-2 hover:cursor-pointer' title='Approve this interview' /></span>
                           <span onClick={() => { rejectInterviewByEmp(item.id) }}><img src={RejectIcon} alt="" width={'20rem'} className='mt-2 hover:cursor-pointer' title='Reject this interview' /></span>
-                        </>}
+                        </> : <div className='text-xs text-[#1DAF5A]'>You are confirmed: {item.employeeConfirm}</div>}
                       </>}
                   </div>
                 </div>}

@@ -13,17 +13,17 @@ export const useCreateInterviewSchedule = () => {
   );
 };
 
-export const useSearchInterviewSchedule = () => {
-  const queryClient = useQueryClient();
-  return useMutation("searchInterviewSchedule",
-    async (data) => searchInterviewSchedule(data),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("listInterviewSchedule");
-      },
-    }
-  );
-};
+// export const useSearchInterviewSchedule = () => {
+//   const queryClient = useQueryClient();
+//   return useMutation("searchInterviewSchedule",
+//     async (data) => searchInterviewSchedule(data),
+//     {
+//       onSettled: () => {
+//         queryClient.invalidateQueries("searchInterviewSchedule");
+//       },
+//     }
+//   );
+// };
 
 export const useHandleApproveInterviewSchedule = () => { 
   const queryClient = useQueryClient();

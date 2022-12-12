@@ -96,3 +96,10 @@ export const rejectRecruitmentPlan = async (empId, planId) => {
     .then((response) => response.data)
     .catch((error) => error);
 };
+
+export const getRemainingSalary = async (planId) => {
+  return await axiosConfig
+    .get(`recruitmentPlan/getTotalSalaryFund?id=${planId}`)
+    .then((response) => response.data)
+    .catch((error) => error);
+};

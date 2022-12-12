@@ -157,12 +157,10 @@ const RecruitmentRequestPage = () => {
   return (
     <React.Fragment>
       <div className='recruitmentrequest-container'>
-        <div className='flex justify-between mx-10 my-4'>
-          <div className='flex'>
-            <span className='font-medium text-3xl mr-3'>Job Request</span>
-            <img src={RequestIcon} alt='' width={'30rem'} />
-          </div>
-          <div className='font-medium text-2xl'>{currentUser.employee.department.name}</div>
+
+        <div className='flex mx-12 my-2'>
+          <span className='font-medium text-3xl mr-3'>Job Request</span>
+          <img src={RequestIcon} alt='' width={'30rem'} />
         </div>
 
         {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='flex justify-between w-[80%] mx-auto'>
@@ -194,7 +192,7 @@ const RecruitmentRequestPage = () => {
             <Autocomplete
               options={typeOfWorkData()}
               size={'small'}
-              sx={{ width: 235, height: 10, marginRight: 2 }}
+              sx={{ width: 180, height: 10, marginRight: 2 }}
               renderInput={(params) => <TextField {...params} label="Type of work" />}
               onChange={(event, value) => { formikSearch.setFieldValue('typeOfWork', value) }}
             />
@@ -202,7 +200,7 @@ const RecruitmentRequestPage = () => {
             <Autocomplete
               options={jobLevelData()}
               size={'small'}
-              sx={{ width: 145, marginRight: 2 }}
+              sx={{ width: 180, marginRight: 2 }}
               renderInput={(params) => <TextField {...params} label="Level" />}
               onInputChange={(event, value) => { formikSearch.setFieldValue('jobLevel', value) }}
             />
@@ -210,7 +208,7 @@ const RecruitmentRequestPage = () => {
             <Autocomplete
               options={categoryData.province}
               size={'small'}
-              sx={{ width: 150, marginRight: 2 }}
+              sx={{ width: 230, marginRight: 2 }}
               renderInput={(params) => <TextField {...params} label="City" />}
               onInputChange={(event, value) => { formikSearch.setFieldValue('city', value) }}
             />

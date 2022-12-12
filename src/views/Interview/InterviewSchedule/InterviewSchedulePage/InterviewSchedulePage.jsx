@@ -34,7 +34,7 @@ const InterviewPage = () => {
   const [isSubmiting, setIsSubmitting] = useState(false)
 
   const { mutate: createInterviewSchedule } = useCreateInterviewSchedule();
-  const { mutate: searchInterviewSchedule } = useSearchInterviewSchedule();
+  //const { mutate: searchInterviewSchedule } = useSearchInterviewSchedule();
 
   const [tabPage, setTabPage] = useState(0);
   const FormTitles = ["Choose recruitment request", "Choose paticipants", "Fill information"];
@@ -52,7 +52,7 @@ const InterviewPage = () => {
     boxShadow: 24,
   };
 
-  const { data: listInterviewSchedule, isLoading } = useQuery(['listInterviewSchedule', pagination], async () => currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
+  let { data: listInterviewSchedule, isLoading } = useQuery(['listInterviewSchedule', pagination], async () => currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
     await getAllInterview(pagination.currentPage - 1, 4).then((response) => {
       setPagination({ ...pagination, totalPage: response.data.totalPage })
       return response.data.responseList
@@ -131,12 +131,8 @@ const InterviewPage = () => {
       type: '',
       status: ''
     },
-    onSubmit: async (values) => {
-      // await searchInterviewSchedule(values).then((response) => {
-      //   if (response && response.data) {
-      //     listInterviewSchedule = response.data
-      //   }
-      // })
+    onSubmit: (values) => {
+      // listInterviewSchedule = useQuery('searchInterviewSchedule', () => searchInterviewSchedule(values).then(res => console.log(res)))
     }
   })
 

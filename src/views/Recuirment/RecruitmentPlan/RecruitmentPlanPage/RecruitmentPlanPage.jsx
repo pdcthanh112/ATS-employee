@@ -74,29 +74,30 @@ const RecruitmentPlanPage = () => {
     onSubmit: (values) => {
       setIsCreating(true)
       try {
-          createRecruitmentPlan(values, {
+        createRecruitmentPlan(values, {
           onSuccess: () => {
             toast.success('Create successfully')
+            formikCreate.handleReset();
             setOpenModalCreate(false)
           },
           onError: () => toast.error('Create fail'),
+          onSettled: () => {
+            setIsCreating(false)
+          }
         })
       } catch (error) {
         toast.error('Something error')
       }
-      setIsCreating(false)
     }
   })
 
   return (
     <React.Fragment>
       <div className='recruitmentPlan-container'>
-        <div className='flex justify-between px-12 py-4'>
-          <div className='flex'>
-            <span className='font-medium text-3xl mr-3'>Recruitment Plan</span>
-            <img src={PlanIcon} alt='' width={'30rem'} />
-          </div>
-          <div className='font-medium text-2xl mr-10'>{currentUser.employee.department.name}</div>
+
+        <div className='flex px-12 py-2'>
+          <span className='font-medium text-3xl mr-3'>Recruitment Plan</span>
+          <img src={PlanIcon} alt='' width={'30rem'} />
         </div>
 
         {currentUser?.employee.jobLevel === jobLevelName.MANAGER || currentUser?.employee.jobLevel === jobLevelName.DIRECTOR ? <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
