@@ -4,8 +4,7 @@ import { useSelector } from 'react-redux';
 import ShowMoreIcon from '../../../../assets/icon/viewMore.png'
 import ShowLessIcon from '../../../../assets/icon/viewLess.png'
 import EditIcon from '../../../../assets/icon/edit-icon.png'
-import { departmentName, responseStatus } from '../../../../utils/constants'
-import { editInterviewDetail } from '../../../../apis/interviewDetailApi'
+import { departmentName } from '../../../../utils/constants'
 import { interviewResultData } from '../../../../utils/dropdownData'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -14,12 +13,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ReactLoading from 'react-loading'
 import moment from 'moment'
+import { useEditInterviewDetail } from '../hooks/interviewDetailHook';
 
 const ListInterviewDetail = ({ listInterviewDetail }) => {
-
   return (
     <React.Fragment>
-      <div className='listInterviewDetail-container'>
+      <div className='w-[95%] mx-auto'>
         <TableContainer component={Paper}>
           <Table aria-label="collapsible table">
             <TableHead>
@@ -28,15 +27,15 @@ const ListInterviewDetail = ({ listInterviewDetail }) => {
                 <TableCell sx={{ fontSize: '1.2rem', fontWeight: '500', width: '5%' }}>#</TableCell>
                 <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '20%' }}>Candidate</TableCell>
                 <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '25%' }} align='center'>Email</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '8%' }} align='center'>Round</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '5%' }} align='center'>Round</TableCell>
                 <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Result</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '15%' }} align='center'>Date</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Date</TableCell>
                 <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Edit</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {listInterviewDetail.map((item, id) => (
-                <Row key={id} ordinalNumbers={id} item={item} />
+              {listInterviewDetail?.map((item, id) => (
+                <Row key={id} ordinalNumbers={id + 1} item={item} />
               ))}
             </TableBody>
           </Table>
@@ -62,7 +61,6 @@ const ListInterviewDetail = ({ listInterviewDetail }) => {
 
 export default ListInterviewDetail
 
-
 const Row = (props) => {
 
   const { ordinalNumbers, item } = props;
@@ -72,6 +70,8 @@ const Row = (props) => {
   const [open, setOpen] = useState(false);
   const [openModalEditDetail, setOpenModalEditDetail] = useState(false)
   const [isEditting, setIsEditting] = useState(false)
+
+  const { mutate: editInterviewDetail } = useEditInterviewDetail();
 
   const style = {
     position: 'absolute',
@@ -90,7 +90,7 @@ const Row = (props) => {
     initialValues: {
       detailId: '',
       description: '',
-      end: new Date().toJSON().slice(0, 10),
+      end: '',
       interviewID: '',
       note: '',
       recommendPositions: '',
@@ -100,17 +100,32 @@ const Row = (props) => {
     validationSchema: Yup.object({
       result: Yup.string().required('Please choose result'),
     }),
-    onSubmit: async (values) => {
+    onSubmit: (values) => {
       setIsEditting(true)
-      formikEditDetail.values.recommendPositions = formikEditDetail.values.recommendPositions.toString();
-      await editInterviewDetail(currentUser.token, values).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Edit successfully') : toast.error('Something error')
-      })
-      setIsEditting(false)
+      try {
+        editInterviewDetail(values, {
+          onSuccess: () => {
+            toast.success('Edit successfully')
+            formikEditDetail.handleReset();
+            setOpenModalEditDetail(false)
+          },
+          onError: (error) => {
+            toast.error('Edit fail')
+            console.log('EEEEEEEEEEE',error);
+          },
+          onSettled: () => {
+            setIsEditting(false)
+          }
+        })
+      } catch (error) {
+        toast.error('Something error')
+        console.log('loiiiii');
+      }
     }
   })
 
   const handleEditPlanDetail = (item) => {
+    console.log(item);
     formikEditDetail.values.detailId = item.id
     formikEditDetail.values.description = item.description
     formikEditDetail.values.end = item.end
@@ -125,10 +140,10 @@ const Row = (props) => {
   return (
     <React.Fragment>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-      <TableCell>
+        <TableCell>
           <IconButton size="small" onClick={() => setOpen(!open)}>{open ? <img src={ShowLessIcon} alt="" width={'15rem'} /> : <img src={ShowMoreIcon} alt="" width={'15rem'} />}</IconButton>
         </TableCell>
-        <TableCell>{ordinalNumbers + 1}</TableCell>
+        <TableCell>{ordinalNumbers}</TableCell>
         <TableCell>{item.interview.candidate.name}</TableCell>
         <TableCell>{item.interview.candidate.email}</TableCell>
         <TableCell align="center">{item.interview.round}</TableCell>
@@ -163,7 +178,7 @@ const Row = (props) => {
                 <TableHead>
                   <TableRow>
                     <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '10%' }} align='center'>Type</TableCell>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '40%' }} align='center'>Address</TableCell>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '40%' }} align='center'>Recommend position</TableCell>
                     <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '30%' }} align='center'>Record meeting</TableCell>
                     <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600' }} align='center'>Detail description</TableCell>
                   </TableRow>
@@ -171,7 +186,7 @@ const Row = (props) => {
                 <TableBody>
                   <TableRow>
                     <TableCell align='center'>{item.interview.type}</TableCell>
-                    <TableCell>{item.interview.type === 'ONLINE' ? item.interview.linkMeeting : item.interview.address}</TableCell>
+                    <TableCell>{item.recommendPositions}</TableCell>
                     <TableCell align='center'>{item.recordMeeting}</TableCell>
                     <TableCell align='right'>{item.interview.interviewDetail.description}</TableCell>
                   </TableRow>
@@ -247,7 +262,7 @@ const Row = (props) => {
               <div className='flex justify-evenly mt-5'>
                 <button type='button' onClick={() => setOpenModalEditDetail(false)} className='btn-create bg-[#F64E60]'>Cancel</button>
                 <button className='btn-create bg-[#20D489]' onClick={formikEditDetail.handleSubmit}>Save</button>
-                {isEditting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={37} />}
+                {isEditting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={32} height={32} />}
               </div>
             </form>
           </div>

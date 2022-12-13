@@ -1,22 +1,15 @@
 import axiosConfig from "../configs/axiosConfig";
 
-export const getAllCandidate = async (token, pageNo, pageSize) => {
+export const getAllCandidate = async (pageNo, pageSize) => {
   return await axiosConfig
-    .get(`candidate/getAllCandidates?pageNo=${pageNo}&pageSize=${pageSize}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(`candidate/getAllCandidates?pageNo=${pageNo}&pageSize=${pageSize}`)
     .then((response) => response.data)
     .catch((error) => error);
 };
 
-export const getAllActivateCandidate = async (token, pageNo, pageSize) => {
+export const getAllActivateCandidate = async (pageNo, pageSize) => {
   return await axiosConfig
-    .get(
-      `candidate/getAllActivateCandidates?pageNo=${pageNo}&pageSize=${pageSize}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    .get(`candidate/getAllActivateCandidates?pageNo=${pageNo}&pageSize=${pageSize}`)
     .then((response) => response.data)
     .catch((error) => error);
 };

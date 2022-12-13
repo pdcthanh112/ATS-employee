@@ -13,7 +13,7 @@ import { Pagination, Stack } from '@mui/material'
 const JobApplyPage = () => {
 
   const [listRecruitmentRequest, setListRecruitmentRequest] = useState([])
-  const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
+  const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {

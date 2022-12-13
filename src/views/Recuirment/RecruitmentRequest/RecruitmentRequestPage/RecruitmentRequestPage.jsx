@@ -6,11 +6,12 @@ import ReactLoading from 'react-loading'
 import { useSelector } from 'react-redux'
 import RequestIcon from '../../../../assets/icon/recruitment-requestImage.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
+import ExpiredRequest from '../../../../assets/icon/expired-request.png'
 import AddIcon from '../../../../assets/icon/plus.png'
 import { NumericFormat } from 'react-number-format';
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize, FormControlLabel, Checkbox, InputAdornment } from '@mui/material';
+import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize, FormControlLabel, Checkbox } from '@mui/material';
 import { createRecruitmentRequest, getAllRecruimentRequest } from '../../../../apis/recruimentRequestApi'
 import ListRecruitmentRequest from '../ListRecruitmentRequest/ListRecruitmentRequest'
 import { educationLevelData, experienceData, foreignLanguageData, jobLevelData, typeOfWorkData } from '../../../../utils/dropdownData'
@@ -163,12 +164,15 @@ const RecruitmentRequestPage = () => {
           <img src={RequestIcon} alt='' width={'30rem'} />
         </div>
 
-        {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='flex justify-between w-[80%] mx-auto'>
+        {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='flex justify-between w-[85%] mx-auto mb-4'>
           <div className='create-request hover:cursor-pointer' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
             <span className='mr-1'>Create job request</span>
             <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={AddIcon} alt='' /></span>
           </div>
-          <Link to={'/expired-recruitment-request'} target={'_blank'}>View expired job request</Link>
+          <Link to={'/expired-recruitment-request'} target={'_blank'} className='flex bg-[#20D489] px-4 rounded items-center hover:text-[#FFF]'>
+            <img src={ExpiredRequest} alt="" style={{ width: '2rem', height: '2rem' }} />
+            <span className='mt-1 ml-2 text-[#FFF]'>View expired job request</span>
+          </Link>
         </div>}
 
         <form onSubmit={formikSearch.handleSubmit}>
@@ -289,8 +293,6 @@ export default RecruitmentRequestPage
 
 const ChoosePlanTab = ({ formikCreate }) => {
 
-  const currentUser = useSelector((state) => state.auth.login.currentUser)
-
   const [listDepartment, setListDepartment] = useState([])
   const [listPlanDetail, setListPlanDetail] = useState([])
   const [currentDepartment, setCurrentDepartment] = useState()
@@ -308,7 +310,7 @@ const ChoosePlanTab = ({ formikCreate }) => {
   useEffect(() => {
     if (currentDepartment) {
       const fetchData = async () => {
-        const response = await getPlanDetailApprovedByDepartment(currentUser.token, currentDepartment);
+        const response = await getPlanDetailApprovedByDepartment(currentDepartment);
         if (response.data && response.data.length > 0) {
           setListPlanDetail(response.data)
         } else {
@@ -352,7 +354,6 @@ const ChoosePlanTab = ({ formikCreate }) => {
 
 const FillInformationTab = ({ formikCreate }) => {
 
-  const currentUser = useSelector((state) => state.auth.login.currentUser)
   const categoryData = useSelector((state) => state.categoryData.data);
 
   const [isLoading, setIsLoading] = useState(true)
@@ -362,7 +363,7 @@ const FillInformationTab = ({ formikCreate }) => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getPlanDetailById(currentUser.token, formikCreate.values.planDetailId);
+      const response = await getPlanDetailById(formikCreate.values.planDetailId);
       if (response) {
         setPlanDetailData(response.data)
         setIsLoading(false)

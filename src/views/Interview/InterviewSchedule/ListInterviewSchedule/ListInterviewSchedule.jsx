@@ -14,7 +14,9 @@ import * as Yup from 'yup'
 import ReactLoading from 'react-loading'
 import { departmentName, interviewStatus, interviewType, responseStatus } from '../../../../utils/constants'
 import { cancelInterview, closeInterview } from '../../../../apis/interviewScheduleApi'
-import { Autocomplete, Box, Card, Modal, TextareaAutosize, TextField } from '@mui/material';
+import { Autocomplete, Box, Card, Collapse, IconButton, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField, Typography } from '@mui/material';
+import ShowMoreIcon from '../../../../assets/icon/viewMore.png'
+import ShowLessIcon from '../../../../assets/icon/viewLess.png'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -23,16 +25,87 @@ import { createInterviewDetail } from '../../../../apis/interviewDetailApi';
 import { useConfirm } from "material-ui-confirm";
 import { useHandleApproveInterviewSchedule, useHandleCancelInterviewSchedule, useHandleRejectInterviewSchedule } from '../hooks/interviewScheduleHook'
 
-const ListInterviewSchedule = ({ listInterviewSchedule }) => {
+const ListInterviewSchedule = ({ listInterviewSchedule, currPage }) => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser);
   const categoryData = useSelector((state) => state.categoryData.data);
   const confirm = useConfirm();
 
+
+  const style = {
+    position: 'absolute',
+    top: '45%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 600,
+    maxHeight: 600,
+    overflow: 'scroll',
+    bgcolor: 'background.paper',
+    border: '1px solid #0F6B14',
+    boxShadow: 24,
+  };
+
+
+  return (
+    <React.Fragment >
+      <div className='w-[95%] mx-auto my-2'>
+        <TableContainer component={Paper}>
+          <Table aria-label="collapsible table">
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ width: '15%' }} />
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '500', width: '3%' }}>#</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '20%' }}>Candidate</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Position</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '8%' }} align='center'>Type</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '20%' }} align='center'>Place</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Date</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '7%' }} align='center'>Time</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Status</TableCell>
+                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '5%' }} align='center'>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {listInterviewSchedule?.map((item, id) => (
+                <Row key={id} ordinalNumbers={(currPage - 1) * 10 + id + 1} item={item} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+
+    </React.Fragment >
+  )
+}
+
+export default ListInterviewSchedule
+
+
+const Row = (props) => {
+  const { ordinalNumbers, item } = props;
+  const currentUser = useSelector((state) => state.auth.login.currentUser)
+  const categoryData = useSelector((state) => state.categoryData.data);
+
+  const confirm = useConfirm();
+  const [open, setOpen] = useState(false);
   const [openModalReason, setOpenModalReason] = useState(false)
   const [openModalInterviewDetail, setOpenModalInterviewDetail] = useState(false)
-  // const [isDeleting, setIsDeleting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
+
 
   const { mutate: handleApproveInterviewSchedule } = useHandleApproveInterviewSchedule();
   const { mutate: handleRejectInterviewSchedule } = useHandleRejectInterviewSchedule();
@@ -50,27 +123,6 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
     border: '1px solid #0F6B14',
     boxShadow: 24,
   };
-
-  const formikCancel = useFormik({
-    initialValues: {
-      interviewId: '',
-      reason: '',
-    },
-    validationSchema: Yup.object({
-      reason: Yup.string().required('Please input reason'),
-    }),
-    onSubmit: (values) => {
-      handleCancelInterviewSchedule(values, {
-        onSuccess: () => {
-          setOpenModalReason(false)
-          toast.success('Cancel successfully')
-        },
-        onError: () => {
-          toast.error('Cancel fail')
-        }
-      })
-    }
-  })
 
   const formikCreateDetail = useFormik({
     initialValues: {
@@ -92,6 +144,35 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
         response.status === responseStatus.SUCCESS ? toast.success('Save successfully') : toast.error('Something error')
         setIsCreating(false)
       })
+    }
+  })
+
+  const formikCancel = useFormik({
+    initialValues: {
+      interviewId: '',
+      reason: '',
+    },
+    validationSchema: Yup.object({
+      reason: Yup.string().required('Please input reason'),
+    }),
+    onSubmit: (values) => {
+      setIsDeleting(true)
+      try {
+        handleCancelInterviewSchedule(values, {
+          onSuccess: () => {
+            setOpenModalReason(false)
+            toast.success('Cancel successfully')
+          },
+          onError: () => {
+            toast.error('Cancel fail')
+          },
+          onSettled: () => {
+            setIsDeleting(false)
+          }
+        })
+      } catch (error) {
+        toast.error('Something error')
+      }
     }
   })
 
@@ -133,99 +214,97 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
     formikCreateDetail.values.interviewID = id;
   }
 
+
+  const showStatusLabel = (status) => {
+    if (status === 'APPROVED') {
+      return <span className='bg-[#C9F7F5] text-[#1BC5BD] text-[0.7rem] w-[4rem] h-[1.8rem] flex justify-center items-center rounded-md'>Approved</span>
+    } else if (status === 'REJECTED') {
+      return <span className='bg-[#FFE2E5] text-[#F64E60] text-[0.7rem] w-[4rem] h-[1.8rem] flex justify-center items-center rounded-md'>Rejected</span>
+    } else if (status === 'CANCELED') {
+      return <span className='bg-[#FFE2E5] text-[#F64E60] text-[0.7rem] w-[4rem] h-[1.8rem] flex justify-center items-center rounded-md'>Canceled</span>
+    } else if (status === 'DONE') {
+      return <span className='bg-[#d6fcc5] text-[#20D489] text-[0.7rem] w-[4rem] h-[1.8rem] flex justify-center items-center rounded-md'>Done</span>
+    } else {
+      return <span className='bg-[#FFF4DE] text-[#FFA800] text-[0.7rem] w-[4rem] h-[1.8rem] flex justify-center items-center rounded-md'>Pending</span>
+    }
+  }
+
   return (
-    <React.Fragment >
-      <div className='listInterview-container'>
-        {listInterviewSchedule?.map((item) => (
-          <Card key={item.id} className='listInterview-item'>
-            <div className='inline-flex w-[100%]'>
-              <div className='flex'>
-                <div>
-                  <div className='font-semibold text-lg w-24'>{moment(item.date).format('DD/MM/YYYY')}</div>
-                  <div className='flex justify-end font-bold text-xl'>{item.time}</div>
-                </div>
-                <div className='ml-4'><img src={InterviewIcon} alt="" width={'50rem'} /></div>
-              </div>
-              {item.status === interviewStatus.PENDING &&
-                <div className='flex justify-between w-[60%] ml-4'>
-                  <div className='bg-[#FFF4DE] text-[#FFA800] text-sm font-semibold px-3 py-2 rounded-lg h-9'>PENDING</div>
-                  <div className='flex'>
-                    {currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
-                      <span onClick={() => { handleCancelInterview(item.id) }}><img src={DeleteIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Cancel this interview' /></span>
-                      : <>
-                        {item.employeeConfirm == null ? <>
-                          <span onClick={() => { approveInterviewByEmp(item.id) }}><img src={ApproveIcon} alt="" width={'40rem'} className='mr-2 hover:cursor-pointer' title='Approve this interview' /></span>
-                          <span onClick={() => { rejectInterviewByEmp(item.id) }}><img src={RejectIcon} alt="" width={'20rem'} className='mt-2 hover:cursor-pointer' title='Reject this interview' /></span>
-                        </> : <div className='text-xs text-[#1DAF5A]'>You are confirmed: {item.employeeConfirm}</div>}
-                      </>}
-                  </div>
-                </div>}
-              {item.status === interviewStatus.DONE && <div className='flex justify-between w-[65%]'>
-                <div className='bg-[#E9FCE9] text-[#00FF00] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>DONE</div>
-                {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='hover:cursor-pointer bg-[#1daf5a] flex rounded-lg px-3 h-9' onClick={() => handleCreateInterviewDetail(item.id)}><img src={AddResultIcon} alt='' style={{ width: '1.4rem', height: '1.4rem', margin: 'auto 0.2rem auto 0', padding: 0 }} /><div className='text-[#FFF] my-auto'>Add result</div></div>}
-              </div>}
-              {item.status === interviewStatus.APPROVED && <div className='flex justify-between '>
-                <div className='bg-[#C9F7F5] text-[#1BC5BD] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>APPROVED</div>
-                {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div onClick={() => handleCloseInterview(item.id)}><img src={CheckDoneIcon} alt="" width={'30rem'} className='hover:cursor-pointer ml-2' title='Close this interview' /></div>}
-              </div>}
-              {item.status === interviewStatus.CANCELED && <div className='bg-[#FFE2E5] text-[#F64E60] text-sm font-semibold px-3 py-2 rounded-lg h-9 ml-4'>CANCELED</div>}
-            </div>
+    <React.Fragment>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableCell>
+          <IconButton size="small" onClick={() => setOpen(!open)}>{open ? <img src={ShowLessIcon} alt="" width={'15rem'} /> : <img src={ShowMoreIcon} alt="" width={'15rem'} />}</IconButton>
+        </TableCell>
+        <TableCell>{ordinalNumbers}</TableCell>
+        <TableCell>{item.candidateName}</TableCell>
+        <TableCell align='center'>{item.jobApply.recruitmentRequest.position.name}</TableCell>
+        <TableCell align='center'>{item.type}</TableCell>
+        <TableCell>{item.type === 'ONLINE' ? <div>Link meeting: {item.linkMeeting}</div> :
+          <>
+            <div className='concac' title={item.address}>- Address: {item.address}</div>
+            <div>- Room: {item.room}</div>
+          </>}
+        </TableCell>
+        <TableCell align='center'>{moment(item.date).format('DD/MM/YYYY')}</TableCell>
+        <TableCell align='center'>{item.time}</TableCell>
+        <TableCell align='center'>{showStatusLabel(item.status)}</TableCell>
+        <TableCell align='center'>
+          {item.status === interviewStatus.PENDING && <>
+            {currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
+              <div className='flex justify-center' onClick={() => { handleCancelInterview(item.id) }}><img src={DeleteIcon} alt="" width={'25rem'} className='hover:cursor-pointer' title='Cancel this interview' /></div>
+              : <>
+                {item.employeeConfirm == null ? <div className='flex justify-center'>
+                  <span onClick={() => { rejectInterviewByEmp(item.id) }}><img src={RejectIcon} alt="" width={'16rem'} className='mt-2 hover:cursor-pointer' title='Reject this interview' /></span>
+                  <span onClick={() => { approveInterviewByEmp(item.id) }}><img src={ApproveIcon} alt="" width={'30rem'} className='ml-2 hover:cursor-pointer' title='Approve this interview' /></span>
+                </div> : <div className='text-xs text-[#1DAF5A]'>You are confirmed: {item.employeeConfirm}</div>}
+              </>}
+          </>}
 
-            <div className='font-semibold text-lg grid justify-end mb-3'>
-              <div>Round: {item.round}</div>
-              <div>
-                {item.type === interviewType.ONLINE ? <span className='bg-[#20D489] text-sm px-4 py-2 rounded-xl'>ONLINE</span> : <span>Room: {item?.room}</span>}
-              </div>
-            </div>
-            <div className='flex justify-between mt-2'>
-              <div className='field-item w-[60%]'>{item.candidateName}</div>
-              <div className='field-item w-[30%]'>{item.jobApply.recruitmentRequest.position.name}</div>
-            </div>
-            {item.type === interviewType.ONLINE ? <div className='mt-2'>
-              <div className='font-semibold text-lg'>Google meet</div>
-              <div className='field-item'>{item?.linkMeeting}</div>
-            </div> : <div className='mt-2'>
-              <div className='font-semibold text-lg'>Address</div>
-              <div className='field-item'>{item?.address}</div>
-            </div>}
-            <div className='mt-2'>
-              <div className='font-semibold text-lg'>Purpose</div>
-              <div className='field-item'>{item.purpose}</div>
-            </div>
-            <div className='mt-2'>
-              <div className='font-semibold text-lg'>Description</div>
-              <div className='field-item'>{item.description}</div>
-            </div>
-          </Card>
-        ))}
-      </div>
+          {item.status === interviewStatus.APPROVED && currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='flex justify-center' onClick={() => handleCloseInterview(item.id)}><img src={CheckDoneIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Close this interview' /></div>}
 
-      <Modal open={openModalReason} onClose={() => { setOpenModalReason(false); formikCancel.handleReset() }}>
-        <Box sx={style}>
-          <div className='px-2 py-3'>
-            <form onSubmit={formikCancel.handleSubmit}>
-              <div>Please input reason</div>
-              <TextareaAutosize
-                name='reason'
-                value={formikCancel.values.reason}
-                minRows={3}
-                maxRows={5}
-                style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-                onChange={formikCancel.handleChange}
-              />
-              {formikCancel.errors.reason && formikCancel.touched.reason && (
-                <div className='text-[#ec5555]'>{formikCancel.errors.reason}</div>
-              )}
-
-              <div className='flex justify-evenly mt-5'>
-                <button type='button' onClick={() => setOpenModalReason(false)} className='btn-create bg-[#C1C1C1]'>Cancel</button>
-                <button className='btn-create bg-[#F64E60]' onClick={formikCancel.handleSubmit}>Delete</button>
-                {/* {isDeleting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={35} height={35}/>} */}
-              </div>
-            </form>
-          </div>
-        </Box>
-      </Modal>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h6" gutterBottom component="div">Detail</Typography>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600' }} align='center'>Purpose</TableCell>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600' }} align='center'>Interview description</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>{item.purpose}</TableCell>
+                    <TableCell>{item.description}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+              {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && item.status === interviewStatus.DONE &&
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '10%' }} align='left'>Add interview result</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell align='right'>
+                        <div className='hover:cursor-pointer bg-[#1daf5a] flex rounded-lg px-3 h-9 w-[20%]' onClick={() => handleCreateInterviewDetail(item.id)}>
+                          <img src={AddResultIcon} alt='' style={{ width: '1.4rem', height: '1.4rem', margin: 'auto 0.2rem auto 0', padding: 0 }} />
+                          <div className='text-[#FFF] my-auto'>Add result</div>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>}
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
 
       <Modal open={openModalInterviewDetail} onClose={() => setOpenModalInterviewDetail(false)}>
         <Box sx={style}>
@@ -295,21 +374,32 @@ const ListInterviewSchedule = ({ listInterviewSchedule }) => {
         </Box>
       </Modal>
 
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+      <Modal open={openModalReason} onClose={() => { setOpenModalReason(false); formikCancel.handleReset() }}>
+        <Box sx={style}>
+          <div className='px-2 py-3'>
+            <form onSubmit={formikCancel.handleSubmit}>
+              <div>Please input reason</div>
+              <TextareaAutosize
+                name='reason'
+                value={formikCancel.values.reason}
+                minRows={3}
+                maxRows={5}
+                style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+                onChange={formikCancel.handleChange}
+              />
+              {formikCancel.errors.reason && formikCancel.touched.reason && (
+                <div className='text-[#ec5555]'>{formikCancel.errors.reason}</div>
+              )}
 
-    </React.Fragment >
-  )
+              <div className='flex justify-evenly mt-5'>
+                <button type='button' onClick={() => setOpenModalReason(false)} className='btn-create bg-[#C1C1C1]'>Cancel</button>
+                <button className='btn-create bg-[#F64E60]' onClick={formikCancel.handleSubmit}>Delete</button>
+                {isDeleting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={35} height={35} />}
+              </div>
+            </form>
+          </div>
+        </Box>
+      </Modal>
+    </React.Fragment>
+  );
 }
-
-export default ListInterviewSchedule

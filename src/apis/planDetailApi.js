@@ -7,11 +7,9 @@ export const getAllPlanDetail = async (pageNo, pageSize) => {
     .catch((error) => error);
 };
 
-export const getPlanDetailById = async (token, id) => {
+export const getPlanDetailById = async (id) => {
   return await axiosConfig
-    .get(`planDetail/getById/{id}?id=${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(`planDetail/getById/{id}?id=${id}`)
     .then((response) => response.data)
     .catch((error) => error);
 };
@@ -25,11 +23,9 @@ export const getPlanDetailByDepartment = async (depId, pageNo, pageSize) => {
     .catch((error) => error);
 };
 
-export const getPlanDetailApprovedByDepartment = async (token, depId) => {
+export const getPlanDetailApprovedByDepartment = async (depId) => {
   return await axiosConfig
-    .get(`planDetail/getApprovedByDepartment?departmentId=${depId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(`planDetail/getApprovedByDepartment?departmentId=${depId}`)
     .then((response) => response.data)
     .catch((error) => error);
 };

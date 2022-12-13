@@ -1,7 +1,6 @@
 .table-candidate {
   padding: 1rem 2rem;
-  background-color: #FFF;
-
+  background-color: #fff;
 }
 
 .modal-container {
@@ -25,18 +24,11 @@
   }
 }
 
-.status-active {
-  background-color: #CCFFCC;
-  color: #00CA0E;
-  padding: 0.4rem 0.8rem;
+.status-label {
+  width: 5rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 0.5rem;
 }
-
-.status-disable {
-  background-color: #FFB1B1;
-  color: #FF0000;
-  padding: 0.4rem 0.8rem;
-  border-radius: 0.5rem;
-}
-
-

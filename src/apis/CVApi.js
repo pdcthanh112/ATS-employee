@@ -1,19 +1,15 @@
 import axiosConfig from "../configs/axiosConfig";
 
-export const getCVStorage = async (token, pageNo, pageSize) => {
+export const getCVStorage = async () => {
   return await axiosConfig
-    .get(`cv/getCvStorage?pageNo=${pageNo}&pageSize=${pageSize}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get('cv/getCvStorage')
     .then((response) => response.data)
     .catch((error) => error);
 };
 
-export const getAllSourceCV = async (token) => {
+export const getAllSourceCV = async () => {
   return await axiosConfig
-    .get("cv/getAllSourceCV", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get("cv/getAllSourceCV")
     .then((response) => response.data)
     .catch((error) => error);
 };

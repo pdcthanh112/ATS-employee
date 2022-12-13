@@ -16,3 +16,10 @@
     }
   }
 }
+
+.concac {
+  width: 20rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

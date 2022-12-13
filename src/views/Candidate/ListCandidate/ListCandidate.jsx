@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './ListCandidate.scss'
 
 import { useSelector } from 'react-redux';
-import { Box, Modal, Pagination, Stack, Avatar } from '@mui/material';
+import { Box, Modal, Pagination, Stack } from '@mui/material';
 import { disableCandidate, getCVByCandidate } from '../../../apis/candidateApi';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -16,7 +16,7 @@ import { departmentName, responseStatus } from '../../../utils/constants';
 import { useConfirm } from "material-ui-confirm";
 
 const ListCandidate = ({ listCandidate }) => {
-
+  console.log(listCandidate);
   const currentUser = useSelector((state) => state.auth.login.currentUser);
   const confirm = useConfirm();
   const [openCVModal, setOpenCVModal] = useState(false);
@@ -67,23 +67,25 @@ const ListCandidate = ({ listCandidate }) => {
             <tr className='text-center'>
               <th style={{ width: '28%' }}>Candidate</th>
               <th style={{ width: '18%' }}>Phone</th>
-              <th style={{ width: '20%' }}>Email</th>
-              <th style={{ width: '8%' }}>CV</th>
+              <th style={{ width: '30%' }}>Email</th>
+              <th style={{ width: '10%' }}>CV</th>
               <th style={{ width: '12%' }}>Status</th>
               {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <th style={{ width: '7%' }}>Action</th>}
             </tr>
           </thead>
           <tbody>
-            {listCandidate.map((item, id) => (
+            {listCandidate?.map((item, id) => (
               <tr key={id} style={{ height: '4rem', paddingBottom: '5rem' }}>
                 <td className=''>{item.name}</td>
                 <td className='text-center'>{item.phone}</td>
                 <td className=''>{item.email}</td>
                 <td><img src={folderIcon} alt='' title='CV' width={'30rem'} className='m-auto hover:cursor-pointer' onClick={() => getCandidateCV(item.id)} /></td>
                 <td className='text-center'>
-                  {item.status === 'ACTIVATE' ? <span className='status-active'>Active</span> : <span className='status-disable'>Disable</span>}
+                  <div className='flex justify-center'>
+                    {item.status === 'ACTIVATE' ? <div className='status-label bg-[#CCFFCC] text-[#00CA0E]'>Active</div> : <div className='status-label bg-[#FFB1B1] text-[#FF0000]'>Disable</div>}
+                  </div>
                 </td>
-                {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <td><img src={DeleteIcon} alt='' title='Disable' width={'30rem'} className='m-auto hover:cursor-pointer' onClick={() => handleDisableCandidate(item.id)} /></td>}
+                {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <td><img src={DeleteIcon} alt='' title='Disable' width={'25rem'} className='m-auto hover:cursor-pointer' onClick={() => handleDisableCandidate(item.id)} /></td>}
               </tr>
             ))}
           </tbody>

@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import { closeRecruimentRequest, getExpiryDateRecruitmentRequest } from '../../../../apis/recruimentRequestApi'
-import ReactLoading from 'react-loading'
-import { useSelector } from 'react-redux'
-import { Box, Paper, Checkbox, TableHead, TableCell, TableRow, TableBody, Table, TableContainer, TablePagination, TableSortLabel, Toolbar, Typography, IconButton, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import moment from 'moment'
+import { Box, Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Toolbar, Tooltip, Typography } from '@mui/material';
 import { useConfirm } from "material-ui-confirm";
-import { responseStatus } from '../../../../utils/constants';
-import { ToastContainer, toast } from 'react-toastify';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import ReactLoading from 'react-loading';
+import { useSelector } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { closeRecruimentRequest, getExpiryDateRecruitmentRequest } from '../../../../apis/recruimentRequestApi';
+import { responseStatus } from '../../../../utils/constants';
 
 const ExpiredRecruitmentRequest = () => {
 
@@ -78,7 +78,7 @@ const ExpiredRecruitmentRequest = () => {
   return (
     <React.Fragment>
       {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '95%', margin: '2rem auto' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
             <EnhancedTableToolbar numSelected={selected.length} listSelected={selected} />
             <TableContainer>

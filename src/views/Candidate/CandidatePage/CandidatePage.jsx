@@ -7,16 +7,16 @@ import { Box, Modal, Pagination, Stack, TextField, Autocomplete } from '@mui/mat
 
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-
+import { useQuery } from 'react-query';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import CandidateIcon from '../../../assets/icon/candidateImage.png'
 import SearchIcon from '../../../assets/icon/filter.png'
-import { createCandidate, getAllActivateCandidate, getAllCandidate } from '../../../apis/candidateApi'
+import { createCandidate, getAllCandidate } from '../../../apis/candidateApi'
 import { getAllSourceCV } from '../../../apis/CVApi'
 import ListCandidate from '../ListCandidate/ListCandidate';
-import { DEFAULT_PASSWORD, departmentName, positionName, responseStatus } from '../../../utils/constants'
+import { DEFAULT_PASSWORD, departmentName, responseStatus } from '../../../utils/constants'
 import { getIdAndNameActiveRequest } from '../../../apis/recruimentRequestApi';
 import { applyJob } from '../../../apis/jobApplyApi';
 import { createFilterOptions } from '@mui/material/Autocomplete';
@@ -26,8 +26,6 @@ const CandidatePage = () => {
   const currentUser = useSelector((state) => state.auth.login.currentUser);
   const categoryData = useSelector((state) => state.categoryData.data);
 
-  const [isLoading, setIsLoading] = useState(true)
-  const [listCandidate, setListCandidate] = useState([])
   const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
   const [openModalCreateCandidate, setOpenModalCreateCandidate] = useState(false)
   const [openModalCreateJobApply, setOpenModalCreateJobApply] = useState(false)
@@ -62,24 +60,17 @@ const CandidatePage = () => {
     boxShadow: 24,
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      const response = currentUser.employee.position.name === positionName.POSITION_HR ? await getAllCandidate(currentUser.token, pagination.currentPage - 1, 10) : await getAllActivateCandidate(currentUser.token, pagination.currentPage - 1, 10);
-      if (response) {
-        setListCandidate(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })
-        setIsLoading(false)
-      }
-    }
-    fetchData();
-  }, [pagination.currentPage])
+
+  const { data: listCandidate, isLoading } = useQuery('listCandidate', async () => await getAllCandidate(pagination.currentPage - 1, 10).then((response) => {
+    setPagination({ ...pagination, totalPage: response.data.totalPage })
+    return response.data.responseList
+  }))
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getAllSourceCV(currentUser.token)
+      const response = await getAllSourceCV()
       if (response && response.data) {
-        setListSourceCV(response.data)      
+        setListSourceCV(response.data)
       }
     }
     fetchData();
@@ -214,7 +205,7 @@ const CandidatePage = () => {
           </>}
         </div>
 
-        <div className='w-[90%] mx-auto my-3 py-3 rounded-lg bg-[#FFF]'>
+        <div className='w-[95%] mx-auto my-3 py-3 rounded-lg bg-[#FFF]'>
           {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListCandidate listCandidate={listCandidate} />}
 
           <div className='flex justify-center'>
@@ -294,7 +285,7 @@ const CandidatePage = () => {
                   <div className='text-[#ec5555]'>{formikCreateJobApply.errors.requestId}</div>
                 )}
               </div>
-              <TableCreateJobApply formikCreateJobApply={formikCreateJobApply} isApplying={isApplying} listSourceCV={listSourceCV}/>
+              <TableCreateJobApply formikCreateJobApply={formikCreateJobApply} isApplying={isApplying} listSourceCV={listSourceCV} />
               <div className='flex justify-end'>
                 <button className='bg-[#1DAF5A] text-[#FFF] w-28 h-10 rounded-md flex justify-center items-center'>
                   {isApplying ? <ReactLoading type='spin' color='#FFF' width={25} height={25} /> : <span>Create</span>}
@@ -432,7 +423,7 @@ class TableCreateJobApply extends React.Component {
                               filtered.push({
                                 value: inputValue,
                                 title: `Add "${inputValue}"`,
-                              });                          
+                              });
                             }
 
                             return filtered;
@@ -455,7 +446,7 @@ class TableCreateJobApply extends React.Component {
                           sx={{ width: 200 }}
                           freeSolo
                           renderInput={(params) => (
-                            <TextField {...params} label="Source" />
+                            <TextField {...params} label="Select source" />
                           )}
                         />
 

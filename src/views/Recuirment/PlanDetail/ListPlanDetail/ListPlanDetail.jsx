@@ -89,6 +89,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
         editPlanDetail(values, {
           onSuccess: () => {
             toast.success('Edit successfully')
+            formikEdit.handleReset();
             setOpenModalEdit(false)
           },
           onError: (error) => {
@@ -98,11 +99,13 @@ const ListPlanDetail = ({ listPlanDetail }) => {
             }
             toast.error('Edit fail')
           },
+          onSettled: () => {
+            setIsUpdating(false)
+          }
         })
       } catch (error) {
         toast.error('Something error')
       }
-      setIsUpdating(false)
     }
   })
 

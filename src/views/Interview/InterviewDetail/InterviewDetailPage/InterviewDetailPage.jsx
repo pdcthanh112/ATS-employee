@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import './InterviewDetailPage.scss'
-
+import { useQuery } from 'react-query';
 import ListInterviewDetail from '../ListInterviewDetail/ListInterviewDetail'
 import { useSelector } from 'react-redux';
 import { getAllInterviewDetail, getInterviewDetailByDepartment } from '../../../../apis/interviewDetailApi';
@@ -16,27 +16,23 @@ const InterviewDetailPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
 
-  const [listInterviewDetail, setListInterviewDetail] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
   const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      const response = currentUser.employee.department.id === departmentName.HR_DEPARTMENT ? await getAllInterviewDetail(currentUser.token, pagination.currentPage - 1, 4) : await getInterviewDetailByDepartment(currentUser.token, currentUser.employee.department.name, pagination.currentPage - 1, 5);
-      if (response) {
-        setListInterviewDetail(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })      
-      }
-      setIsLoading(false)
-    }
-    fetchData();
-  }, [pagination.currentPage])
-
+  const { data: listInterviewDetail, isLoading } = useQuery(['listInterviewDetail', pagination], async () => currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
+    await getAllInterviewDetail(pagination.currentPage - 1, 10).then((response) => {
+      setPagination({ ...pagination, totalPage: response.data.totalPage })
+      return response.data.responseList
+    })
+    :
+    await getInterviewDetailByDepartment(currentUser.employee.id, pagination.currentPage - 1, 10).then((response) => {
+      setPagination({ ...pagination, totalPage: response.data.totalPage })
+      return response.data.responseList
+    }))
+    
   return (
     <React.Fragment>
       <div className='interview-container'>
-        <div className='flex px-8 pt-8'>
+        <div className='flex px-8 py-2'>
           <span className='font-medium text-3xl mr-3'>Interview detail</span>
           <img src={InterviewDetailIcon} alt='' width={'40rem'} />
         </div>      
@@ -70,7 +66,7 @@ const InterviewDetailPage = () => {
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListInterviewDetail listInterviewDetail={listInterviewDetail} />}
 
-        <div className='flex justify-center bg-[#FFF] w-[90%] mx-auto'>
+        <div className='flex justify-center'>
           <Stack spacing={2}>
             <Pagination count={pagination.totalPage} onChange={(event, page) => { setPagination({ ...pagination, currentPage: page }) }} />
           </Stack>

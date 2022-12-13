@@ -52,13 +52,13 @@ const InterviewPage = () => {
     boxShadow: 24,
   };
 
-  let { data: listInterviewSchedule, isLoading } = useQuery(['listInterviewSchedule', pagination], async () => currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
-    await getAllInterview(pagination.currentPage - 1, 4).then((response) => {
+  const { data: listInterviewSchedule, isLoading } = useQuery(['listInterviewSchedule', pagination], async () => currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
+    await getAllInterview(pagination.currentPage - 1, 10).then((response) => {
       setPagination({ ...pagination, totalPage: response.data.totalPage })
       return response.data.responseList
     })
     :
-    await getInterviewByEmployee(currentUser.employee.id, pagination.currentPage - 1, 4).then((response) => {
+    await getInterviewByEmployee(currentUser.employee.id, pagination.currentPage - 1, 10).then((response) => {
       setPagination({ ...pagination, totalPage: response.data.totalPage })
       return response.data.responseList
     }))
@@ -138,7 +138,7 @@ const InterviewPage = () => {
 
   return (
     <React.Fragment>
-      <div className='interview-container'>
+      <div className='interviewSchedule-container'>
         <div className='flex px-8 pt-8'>
           <span className='font-medium text-3xl mr-3'>Interview schedule</span>
           <img src={InterviewIcon} alt='' width={'30rem'} />
@@ -196,7 +196,7 @@ const InterviewPage = () => {
           <img src={SearchIcon} alt="" width={'50rem'} title='Search' className='hover:cursor-pointer' onClick={formikSearch.handleSubmit} />
         </div>
 
-        {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListInterviewSchedule listInterviewSchedule={listInterviewSchedule} />}
+        {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListInterviewSchedule listInterviewSchedule={listInterviewSchedule} currPage={pagination.currentPage}/>}
 
         <div className='flex justify-center'>
           <Stack spacing={2}>
