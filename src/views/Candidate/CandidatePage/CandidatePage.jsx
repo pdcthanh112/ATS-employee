@@ -61,7 +61,7 @@ const CandidatePage = () => {
   };
 
 
-  const { data: listCandidate, isLoading } = useQuery('listCandidate', async () => await getAllCandidate(pagination.currentPage - 1, 10).then((response) => {
+  const { data: listCandidate, isLoading } = useQuery(['listCandidate', pagination], async () => await getAllCandidate(pagination.currentPage - 1, 10).then((response) => {
     setPagination({ ...pagination, totalPage: response.data.totalPage })
     return response.data.responseList
   }))

@@ -3,6 +3,7 @@ import './RecruitmentRequestPage.scss'
 
 import { Link } from 'react-router-dom'
 import ReactLoading from 'react-loading'
+import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux'
 import RequestIcon from '../../../../assets/icon/recruitment-requestImage.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
@@ -12,10 +13,10 @@ import { NumericFormat } from 'react-number-format';
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize, FormControlLabel, Checkbox } from '@mui/material';
-import { createRecruitmentRequest, getAllRecruimentRequest } from '../../../../apis/recruimentRequestApi'
+import { getAllRecruimentRequest } from '../../../../apis/recruimentRequestApi'
 import ListRecruitmentRequest from '../ListRecruitmentRequest/ListRecruitmentRequest'
 import { educationLevelData, experienceData, foreignLanguageData, jobLevelData, typeOfWorkData } from '../../../../utils/dropdownData'
-import { departmentName, responseStatus } from '../../../../utils/constants'
+import { departmentName } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getIdAndNameActiveDepartment } from '../../../../apis/departmentApi'
@@ -23,21 +24,20 @@ import { getPlanDetailApprovedByDepartment, getPlanDetailById } from '../../../.
 import CalendarIcon from './../../../../assets/icon/calendar.png'
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
 import { createFilterOptions } from '@mui/material/Autocomplete';
+import { useCreateRecruitmentRequest } from '../hooks/recruitmentRequestHook';
 
 const filter = createFilterOptions();
-
 
 const RecruitmentRequestPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
   const categoryData = useSelector((state) => state.categoryData.data);
 
-  const [listRecruitmentRequest, setListRecruitmentRequest] = useState([])
   const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
 
+  const { mutate: createRecruitmentRequest } = useCreateRecruitmentRequest();
 
   const [tabPage, setTabPage] = useState(0);
   const FormTitles = ["Choose plan", "Fill information"];
@@ -55,28 +55,10 @@ const RecruitmentRequestPage = () => {
     boxShadow: 24,
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      const response = await getAllRecruimentRequest(pagination.currentPage - 1, 2);
-      if (response) {
-        setListRecruitmentRequest(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })
-        setIsLoading(false)
-      }
-    }
-    fetchData();
-  }, [pagination.currentPage])
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const response = await getApprovedByDepartment(currentUser.employee.department.id, currentUser.token);
-  //     if (response) {
-  //       setListApprovedPlanDetail(response.data)
-  //     }
-  //   }
-  //   fetchData();
-  // }, [])
+  const { data: listRecruitmentRequest, isLoading } = useQuery(['listRecruitmentRequest', pagination], async () => await getAllRecruimentRequest(pagination.currentPage - 1, 2).then((response) => {
+    setPagination({ ...pagination, totalPage: response.data.totalPage })
+    return response.data.responseList
+  }));
 
   const PageDisplay = () => {
     if (tabPage === 0) {
@@ -130,13 +112,26 @@ const RecruitmentRequestPage = () => {
     }),
     onSubmit: async (values) => {
       setIsCreating(true)
-      await createRecruitmentRequest(values, currentUser.token).then(response => {
-        if (response.message.includes(' expiry date')) {
-          formikCreate.errors.expiryDate = "Invalid expiry date"
-        }
-        setIsCreating(false)
-        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Something error')
-      })
+      try {
+        createRecruitmentRequest(values, {
+          onSuccess: () => {
+            toast.success('Create successfully')
+            formikCreate.handleReset();
+            setOpenModalCreate(false)
+          },
+          onError: (error) => {
+            if (error) {
+              if (error.message.includes('expiry date')) formikCreate.errors.expiryDate = error.message
+            }
+            toast.error('Create fail')
+          },
+          onSettled: () => {
+            setIsCreating(false)
+          }
+        })
+      } catch (error) {
+        toast.error('Something error')
+      }
     }
   })
   const formikSearch = useFormik({
