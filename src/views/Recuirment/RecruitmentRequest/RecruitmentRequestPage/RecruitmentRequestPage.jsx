@@ -32,7 +32,7 @@ const RecruitmentRequestPage = () => {
   const categoryData = useSelector((state) => state.categoryData.data);
 
   const [listRecruitmentRequest, setListRecruitmentRequest] = useState([])
-  const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
+  const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)

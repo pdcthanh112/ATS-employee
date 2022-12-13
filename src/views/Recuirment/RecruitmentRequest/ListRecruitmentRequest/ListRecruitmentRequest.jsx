@@ -2,6 +2,7 @@ import React from 'react'
 import './ListRecruitmentRequest.scss'
 import {Card} from '@mui/material'
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
+import moment from 'moment'
 
 const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
 
@@ -24,8 +25,8 @@ const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
             <span><strong className='font-semibold ml-1'>Type of work:</strong> {item.typeOfWork}</span>
           </div>
           <div className='request-infor flex justify-evenly text-[0.8rem] mt-3'>
-            <span><strong className='font-semibold ml-1'>Create date:</strong> {item.date}</span>
-            <span><strong className='font-semibold ml-1'>Expired date:</strong> {item.expiryDate}</span>
+            <span><strong className='font-semibold ml-1'>Create date:</strong> {moment(item.date).format('DD/MM/YYYY')}</span>
+            <span><strong className='font-semibold ml-1'>Expired date:</strong> {moment(item.expiryDate).format('DD/MM/YYYY')}</span>
             <span><strong className='font-semibold ml-1'>Salary:</strong> {item.salaryDetail}</span>
             {/* <span><strong className='font-semibold ml-1'>Status:</strong> {item.status}</span> */}
           </div>

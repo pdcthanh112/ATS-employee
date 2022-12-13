@@ -88,7 +88,7 @@ const DepartmentInterview = () => {
 
   return (
     <React.Fragment>
-      <div className='mx-5 mt-3 px-3 py-2 bg-[#FFF] font-medium text-2xl'>List interview of department</div>
+      <div className='mx-5 mt-3 px-3 py-2 font-medium text-2xl'>List interview of department</div>
       {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
         <div className='listInterview-container'>
           {listInterview && listInterview.map((item) => (

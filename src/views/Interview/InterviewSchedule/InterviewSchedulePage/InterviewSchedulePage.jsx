@@ -57,7 +57,7 @@ const InterviewPage = () => {
       setPagination({ ...pagination, totalPage: response.data.totalPage })
       return response.data.responseList
     })
-    : 
+    :
     await getInterviewByEmployee(currentUser.employee.id, pagination.currentPage - 1, 4).then((response) => {
       setPagination({ ...pagination, totalPage: response.data.totalPage })
       return response.data.responseList
@@ -150,9 +150,13 @@ const InterviewPage = () => {
         </div>}
 
         {currentUser.employee.jobLevel === jobLevelName.MANAGER || currentUser.employee.jobLevel === jobLevelName.DIRECTOR ?
-          <div className='flex justify-end mr-20'>
-            <img src={DepartmentInterviewIcon} alt="" width={'30rem'} />
-            <Link to={`/department-interview/${currentUser.employee.department.id}`} target="_blank" className='text-[#1DAF5A] text-lg ml-2'>View department interview</Link>
+          <div className='flex justify-end mr-20 '>
+            <Link to={`/department-interview/${currentUser.employee.department.id}`} target="_blank" className='text-[#FFF] text-lg ml-2 hover:text-[#FFF]'>
+              <div className='bg-[#1DAF5A] flex px-3 py-2 rounded-md hover:cursor-pointer'>
+                <img src={DepartmentInterviewIcon} alt="" width={'30rem'} />
+                <span>View department interview</span>
+              </div>
+            </Link>
           </div> : <></>
         }
 
