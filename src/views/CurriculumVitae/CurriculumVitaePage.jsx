@@ -15,7 +15,6 @@ import SearchIcon from '../../assets/icon/filter.png'
 import MarkunreadIcon from '@mui/icons-material/Markunread';
 import FilterListIcon from '@mui/icons-material/FilterList';
 
-import { useConfirm } from "material-ui-confirm";
 import { departmentName, responseStatus } from '../../utils/constants';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -195,9 +194,10 @@ const Row = (props) => {
 
   const formikInvite = useFormik({
     initialValues: {
+      email: '',
       cvIds: '',
       title: 'Invitation letter for candidates',
-      content: 'Chào bạn \n Chúng tôi đang tuyển vị trí ..... \n Qua quá trình xem xét hồ sơ chúng tôi nhận thấy bạn phù hợp với công việc này, vì vậy chúng tôi mời bạn ứng tuyển vào vị trí này'
+      content: 'Dear ...... \n\nWe are recruiting for a new position ....... \n\nThrough our review of the resumes you have previously applied for, we have found that you are a good fit for this job. We therefore cordially invite you to reapply for this position. \n\nWe hope to see you again. \nCKHR team,'
     },
     validationSchema: Yup.object({
       title: Yup.string().required('Please input title'),
@@ -205,7 +205,7 @@ const Row = (props) => {
     }),
     onSubmit: async (values) => {
       setIsInviting(true)
-      await inviteReapply(currentUser.token, values).then((response) => {
+      await inviteReapply(values).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Invite successfully') : toast.error('Somethings error')
       })
       setIsInviting(false)
@@ -213,6 +213,8 @@ const Row = (props) => {
   })
 
   const handleInviteCandidate = (item) => {
+    console.log(item);
+    formikInvite.values.email = item.candidate.email
     formikInvite.values.cvIds = [item.id]
     setOpenModalInvite(true)
   }
@@ -388,7 +390,7 @@ function EnhancedTableToolbar(props) {
     initialValues: {
       cvIds: '',
       title: 'Invitation letter for candidates',
-      content: 'Chào bạn \n Chúng tôi đang tuyển vị trí ..... \n Qua quá trình xem xét hồ sơ chúng tôi nhận thấy bạn phù hợp với công việc này, vì vậy chúng tôi mời bạn ứng tuyển vào vị trí này'
+      content: 'Dear ...... \n\nWe are recruiting for a new position ....... \n\nThrough our review of the resumes you have previously applied for, we have found that you are a good fit for this job. We therefore cordially invite you to reapply for this position. \n\nWe hope to see you again. \nCKHR team,'
     },
     validationSchema: Yup.object({
       title: Yup.string().required('Please input title'),

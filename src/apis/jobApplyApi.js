@@ -88,19 +88,15 @@ export const applyJob = async (token, data) => {
     .catch((error) => error);
 };
 
-export const inviteReapply = async (token, data) => {
+export const inviteReapply = async (data) => {
   return await axiosConfig
-    .post(
-      "/notification/inviteReapply",
-      {
-        content: data.content,
-        cvIds: data.cvIds,
-        title: data.title,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    .post("/notification/inviteReapply", {
+      content: data.content,
+      cvIds: data.cvIds,
+      title: data.title,
+    })
     .then((response) => response.data)
-    .catch((error) => error);
+    .catch((error) => {
+      throw error.data.message
+    });
 };
