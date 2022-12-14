@@ -356,7 +356,7 @@ const ChoosePaticipantsTab = ({ formikCreate }) => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getCandidateAppliedByRecruitmentRequest(currentUser.token, formikCreate.values.recruitmentRequestId);
+      const response = await getCandidateAppliedByRecruitmentRequest(formikCreate.values.recruitmentRequestId);
       if (response) {
         setListCandidate(response.data)
         setIsLoading(false)
@@ -368,7 +368,7 @@ const ChoosePaticipantsTab = ({ formikCreate }) => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getEmployeeByRecruitmentRequest(currentUser.token, formikCreate.values.recruitmentRequestId);
+      const response = await getEmployeeByRecruitmentRequest(formikCreate.values.recruitmentRequestId);
       if (response) {
         setListEmployee(response.data)
         setIsLoading(false)

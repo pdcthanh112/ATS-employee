@@ -41,14 +41,14 @@ const Dashboard = () => {
         }
       })
 
-      await getEmployeeByDepartment(currentUser.token, currentUser.employee.department.id, 0, 5).then((response) => {
+      await getEmployeeByDepartment(currentUser.employee.department.id, 0, 5).then((response) => {
         if (response && response.data) {
           setListColleagues(response.data.responseList)
           setIsLoading(false)
         }
       })
 
-      getInterviewByEmployee(currentUser.token, currentUser.employee.department.id, 0, 3).then((response) => {
+      getInterviewByEmployee(currentUser.employee.department.id, 0, 3).then((response) => {
         if (response && response.data) {
           setListInterview(response.data.responseList)
           setIsLoading(false)

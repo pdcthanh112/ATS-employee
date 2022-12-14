@@ -71,11 +71,9 @@ export const createCandidate = async (data) => {
     .catch((error) => error.response.data);
 };
 
-export const getCandidateAppliedByRecruitmentRequest = async (token, id) => {
+export const getCandidateAppliedByRecruitmentRequest = async (id) => {
   return await axiosConfig
-    .get(`candidate/getCandidateAppliedByRecruitment?recruitmentId=${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(`candidate/getCandidateAppliedByRecruitment?recruitmentId=${id}`)
     .then((response) => response.data)
     .catch((error) => error);
 };

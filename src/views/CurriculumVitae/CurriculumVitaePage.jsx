@@ -236,7 +236,7 @@ const Row = (props) => {
           <IconButton size="small" onClick={() => setOpen(!open)}>{open ? <img src={ShowLessIcon} alt="" width={'15rem'} /> : <img src={ShowMoreIcon} alt="" width={'15rem'} />}</IconButton>
         </TableCell>
         <TableCell><a href={item.linkCV} target='_blank' rel="noreferrer"><img src={FileIcon} alt="" style={{ width: '2rem' }} /></a></TableCell>
-        <TableCell align="right">{item.candidate.name}</TableCell>
+        <TableCell align="left">{item.candidate.name}</TableCell>
         <TableCell align="center">{item.positionApplied}</TableCell>
         <TableCell align="center">{item.recommendPositions}</TableCell>
         <TableCell style={{ display: 'flex', justifyContent: 'center' }}>{item.candidate.status === 'ACTIVATE' ? <div className='label-status bg-[#BDF5CA] text-[#1BC55F]'>active</div> : <div className='label-status bg-[#FFE2E5] text-[#F64E60]'>inactive</div>}</TableCell>
@@ -263,7 +263,11 @@ const Row = (props) => {
                       <TableCell>{item.candidate.email}</TableCell>
                       <TableCell align='center'>{item.candidate.address}</TableCell>
                       <TableCell align='center'>{item.note}</TableCell>
-                      <TableCell align='center'><img src={SendMailIcon} alt="" title='invite candidate for job' width={'30rem'} className='hover:cursor-pointer' onClick={() => handleInviteCandidate(item)} /></TableCell>
+                      <TableCell align='center'>
+                        <div className='flex justify-center'>
+                          <img src={SendMailIcon} alt="" title='invite candidate for job' width={'30rem'} className='hover:cursor-pointer' onClick={() => handleInviteCandidate(item)} />
+                        </div>
+                      </TableCell>
                     </TableRow>
                   </TableBody>
                 </TableBody>
@@ -336,7 +340,7 @@ function EnhancedTableHead(props) {
 
   const { onSelectAllClick, numSelected, rowCount } = props;
   const currentUser = useSelector((state) => state.auth.login.currentUser)
-  
+
   return (
     <TableHead>
       <TableRow>
@@ -353,10 +357,10 @@ function EnhancedTableHead(props) {
         }
         <TableCell align={'center'} width='5%'>Show</TableCell>
         <TableCell align={'center'} width='5%'>CV</TableCell>
-        <TableCell align={'center'} width='15%'>Candidate</TableCell>
+        <TableCell align={'center'} width='35%'>Candidate</TableCell>
         <TableCell align={'center'}>Position</TableCell>
         <TableCell align={'center'}>Recommend</TableCell>
-        <TableCell align={'center'}>status</TableCell>
+        <TableCell align={'center'} width='10%'>status</TableCell>
       </TableRow>
     </TableHead>
   );
@@ -365,7 +369,6 @@ function EnhancedTableHead(props) {
 function EnhancedTableToolbar(props) {
   const currentUser = useSelector((state) => state.auth.login.currentUser)
   const { numSelected, listSelected } = props;
-  const confirm = useConfirm();
   const [openModalInvite, setOpenModalInvite] = useState(false);
   const [isInviting, setIsInviting] = useState(false);
 

@@ -16,7 +16,7 @@ import { departmentName, responseStatus } from '../../../utils/constants';
 import { useConfirm } from "material-ui-confirm";
 
 const ListCandidate = ({ listCandidate }) => {
-  console.log(listCandidate);
+
   const currentUser = useSelector((state) => state.auth.login.currentUser);
   const confirm = useConfirm();
   const [openCVModal, setOpenCVModal] = useState(false);

@@ -1,20 +1,16 @@
 import axiosConfig from "../configs/axiosConfig";
 import { editFailed, editStart, editSuccess } from "../redux/authSlice";
 
-export const getEmployeeByDepartment = async (token, id, pageNo, pageSize) => {
+export const getEmployeeByDepartment = async (id, pageNo, pageSize) => {
   return await axiosConfig
-    .get(`employee/getEmployeesByDepartment?departmentId=${id}&pageNo=${pageNo}&pageSize=${pageSize}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(`employee/getEmployeesByDepartment?departmentId=${id}&pageNo=${pageNo}&pageSize=${pageSize}`)
     .then((response) => response.data)
     .catch((error) => error);
 };
 
-export const getEmployeeByRecruitmentRequest = async (token, id) => {
+export const getEmployeeByRecruitmentRequest = async (id) => {
   return await axiosConfig
-    .get(`employee/getEmployeeByRequest?requestId=${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(`employee/getEmployeeByRequest?requestId=${id}`)
     .then((response) => response.data)
     .catch((error) => error);
 };

@@ -7,7 +7,7 @@ import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux'
 import RequestIcon from '../../../../assets/icon/recruitment-requestImage.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
-import ExpiredRequest from '../../../../assets/icon/expired-request.png'
+import ExpiredRequest from '../../../../assets/icon/expiredRequest.png'
 import AddIcon from '../../../../assets/icon/plus.png'
 import { NumericFormat } from 'react-number-format';
 import { useFormik } from 'formik'
@@ -122,6 +122,7 @@ const RecruitmentRequestPage = () => {
           onError: (error) => {
             if (error) {
               if (error.message.includes('expiry date')) formikCreate.errors.expiryDate = error.message
+              if (error.message.includes('amount')) formikCreate.errors.amount = error.message
             }
             toast.error('Create fail')
           },
@@ -318,13 +319,15 @@ const ChoosePlanTab = ({ formikCreate }) => {
 
   return (
     <React.Fragment>
+
       <Autocomplete
         options={listDepartment}
         size={'small'}
         sx={{ width: '100%', marginTop: '1rem' }}
         getOptionLabel={option => option.name}
         renderInput={(params) => <TextField {...params} label="Department" />}
-        onChange={(event, value) => { setCurrentDepartment(value.id) }} />
+        onChange={(event, value) => { setCurrentDepartment(value.id) }}
+      />
 
       <div>
         <Autocomplete
@@ -350,22 +353,20 @@ const ChoosePlanTab = ({ formikCreate }) => {
 const FillInformationTab = ({ formikCreate }) => {
 
   const categoryData = useSelector((state) => state.categoryData.data);
-
-  const [isLoading, setIsLoading] = useState(true)
   const [isSalaryNegotiable, setIsSalaryNegotiable] = useState(false)
-  const [planDetailData, setPlanDetailData] = useState({})
+  // const [planDetailData, setPlanDetailData] = useState({})
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      const response = await getPlanDetailById(formikCreate.values.planDetailId);
-      if (response) {
-        setPlanDetailData(response.data)
-        setIsLoading(false)
-      }
-    }
-    fetchData();
-  }, [formikCreate.values.planDetailId])
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setIsLoading(true)
+  //     const response = await getPlanDetailById(formikCreate.values.planDetailId);
+  //     if (response) {
+  //       setPlanDetailData(response.data)
+  //       setIsLoading(false)
+  //     }
+  //   }
+  //   fetchData();
+  // }, [formikCreate.values.planDetailId])
 
   useEffect(() => {
     if (isSalaryNegotiable) {
@@ -377,32 +378,26 @@ const FillInformationTab = ({ formikCreate }) => {
     }
   }, [isSalaryNegotiable])
 
-  if (!isLoading) {
-    formikCreate.values.amount = planDetailData.amount
-    formikCreate.values.positionName = planDetailData.position.name
-  }
-
   return (
     <React.Fragment>
-      {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
+      <div>
         <div>
-          <div>
-            <TextField
-              label="Recruitment name"
-              name='name'
-              value={formikCreate.values.name}
-              variant="outlined"
-              size='small'
-              style={{ width: '100%', marginTop: '1rem' }}
-              onChange={formikCreate.handleChange}
-            />
-            {formikCreate.errors.name && formikCreate.touched.name && (
-              <div className='text-[#ec5555]'>{formikCreate.errors.name}</div>
-            )}
-          </div>
+          <TextField
+            label="Recruitment name"
+            name='name'
+            value={formikCreate.values.name}
+            variant="outlined"
+            size='small'
+            style={{ width: '100%', marginTop: '1rem' }}
+            onChange={formikCreate.handleChange}
+          />
+          {formikCreate.errors.name && formikCreate.touched.name && (
+            <div className='text-[#ec5555]'>{formikCreate.errors.name}</div>
+          )}
+        </div>
 
-          <div className='grid grid-cols-2 px-1'>
-            <div>
+        <div className='grid grid-cols-2 px-1'>
+          {/* <div>
               <TextField
                 label="Position"
                 name='positionName'
@@ -415,211 +410,222 @@ const FillInformationTab = ({ formikCreate }) => {
               {formikCreate.errors.positionName && formikCreate.touched.positionName && (
                 <div classpositionName='text-[#ec5555]'>{formikCreate.errors.name}</div>
               )}
-            </div>
-
-            <div>
-              <TextField
-                label="Job level"
-                name='jobLevel'
-                value={formikCreate.values.jobLevel}
-                variant="outlined" size='small'
-                style={{ width: '100%', marginTop: '1rem' }}
-                onChange={formikCreate.handleChange}
-              />
-              {formikCreate.errors.jobLevel && formikCreate.touched.jobLevel && (
-                <div className='text-[#ec5555]'>{formikCreate.errors.jobLevel}</div>
-              )}
-            </div>
-          </div>
-
-          <div className='grid grid-cols-2 px-1'>
-            <div>
-              <Autocomplete
-                options={experienceData()}
-                size={'small'}
-                sx={{ width: '85%', marginTop: '1rem' }}
-                renderInput={(params) => <TextField {...params} label="Experience" />}
-                onChange={(event, value) => { formikCreate.setFieldValue('experience', value) }}
-              />
-              {formikCreate.errors.experience && formikCreate.touched.experience && (
-                <div className='text-[#ec5555]'>{formikCreate.errors.experience}</div>
-              )}
-            </div>
-            <div>
-              <Autocomplete
-                options={typeOfWorkData()}
-                size={'small'}
-                sx={{ width: '100%', marginTop: '1rem' }}
-                renderInput={(params) => <TextField {...params} label="Type of work" />}
-                onChange={(event, value) => { formikCreate.setFieldValue('typeOfWork', value) }}
-              />
-              {formikCreate.errors.typeOfWork && formikCreate.touched.typeOfWork && (
-                <div className='text-[#ec5555]'>{formikCreate.errors.typeOfWork}</div>
-              )}
-            </div>
-          </div>
-
-          <div className='grid grid-cols-2 px-1'>
-            <div>
-              <Autocomplete
-                options={educationLevelData()}
-                size={'small'}
-                sx={{ width: '85%', marginTop: '1rem' }}
-                renderInput={(params) => <TextField {...params} label="Education level" />}
-                onChange={(event, value) => { formikCreate.setFieldValue('educationLevel', value) }}
-              />
-              {formikCreate.errors.educationLevel && formikCreate.touched.educationLevel && (
-                <div className='text-[#ec5555]'>{formikCreate.errors.educationLevel}</div>
-              )}
-            </div>
-            <div>
-              <Autocomplete
-                options={foreignLanguageData()}
-                size={'small'}
-                sx={{ marginTop: '1rem' }}
-                renderInput={(params) => <TextField {...params} label="Foreign language" />}
-                onChange={(event, value) => { formikCreate.setFieldValue('foreignLanguage', value) }}
-              />
-              {formikCreate.errors.foreignLanguage && formikCreate.touched.foreignLanguage && (
-                <div className='text-[#ec5555]'>{formikCreate.errors.foreignLanguage}</div>
-              )}
-            </div>
-          </div>
-
-          <div className='grid grid-cols-2 px-1'>
-            <div>
-              <TextField
-                label='industry'
-                name='industry'
-                value={formikCreate.values.industry}
-                variant="outlined"
-                size='small'
-                style={{ width: '85%', marginTop: '1rem' }}
-                onChange={formikCreate.handleChange}
-              />
-              {formikCreate.errors.industry && formikCreate.touched.industry && (
-                <div className='text-[#ec5555]'>{formikCreate.errors.industry}</div>
-              )}
-            </div>
-            <div>
-              <TextField
-                label="Amount"
-                name='amount'
-                value={formikCreate.values.amount}
-                variant="outlined" size='small'
-                sx={{ marginTop: '1rem', width: '100%' }}
-                onChange={formikCreate.handleChange}
-              />
-              {formikCreate.errors.amount && formikCreate.touched.amount && (
-                <div className='text-[#ec5555]'>{formikCreate.errors.amount}</div>
-              )}
-            </div>
-          </div>
-
-
-          <div className='mt-3 ml-14 font-semibold'>Expired date</div>
-          <div className='flex justify-center'>
-            <TextField
-              type={'date'}
-              name='expiryDate'
-              value={formikCreate.values.expiryDate}
-              variant="outlined"
-              size='small'
-              style={{ width: '80%' }}
-              onChange={formikCreate.handleChange}
+            </div> */}
+          <div>
+            <Autocomplete
+              options={categoryData.position}
+              size={'small'}
+              sx={{ width: '85%', marginTop: '1rem' }}
+              renderInput={(params) => <TextField {...params} label="Position" />}
+              onChange={(event, value) => { formikCreate.setFieldValue('positionName', value) }}
             />
+            {formikCreate.errors.positionName && formikCreate.touched.positionName && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.positionName}</div>
+            )}
           </div>
-          {formikCreate.errors.expiryDate && formikCreate.touched.expiryDate && (
-            <div className='text-[#ec5555] w-[80%] ml-12'>{formikCreate.errors.expiryDate}</div>
-          )}
+          <div>
+          <Autocomplete
+              options={jobLevelData()}
+              size={'small'}
+              sx={{ width: '85%', marginTop: '1rem' }}
+              renderInput={(params) => <TextField {...params} label="Job level" />}
+              onChange={(event, value) => { formikCreate.setFieldValue('jobLevel', value) }}
+            />
+            {formikCreate.errors.jobLevel && formikCreate.touched.jobLevel && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.jobLevel}</div>
+            )}
+          </div>
+        </div>
 
-          <div className='mt-3 ml-2 font-semibold text-lg'>Salary</div>
-          <div className='inline-flex'>
-            <div className='w-[40%]'>
-              <div>from</div>
-              <NumericFormat thousandSeparator=',' suffix={' VNĐ'} name='salaryFrom' placeholder='1,000,000 VNĐ' value={formikCreate.values.salaryFrom} onChange={formikCreate.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '90%' }} disabled={isSalaryNegotiable} />
-              {formikCreate.errors.salaryFrom && formikCreate.touched.salaryFrom && (
-                <div className='text-[#ec5555]'>{formikCreate.errors.salaryFrom}</div>
-              )}
-            </div>
-            <div className='w-[40%]'>
-              <div>to</div>
-              <NumericFormat thousandSeparator=',' suffix={' VNĐ'} name='salaryTo' placeholder='1,000,000 VNĐ' value={formikCreate.values.salaryTo} onChange={formikCreate.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '90%' }} disabled={isSalaryNegotiable} />
-              {formikCreate.errors.salaryTo && formikCreate.touched.salaryTo && (
-                <div className='text-[#ec5555]'>{formikCreate.errors.salaryTo}</div>
-              )}
-            </div>
-            <FormControlLabel
-              sx={{ marginTop: '1.2rem', display: 'flex', justifyContent: 'end' }}
-              control={<Checkbox onChange={(event) => setIsSalaryNegotiable(event.target.checked)} />} label="Negotiable" />
+        <div className='grid grid-cols-2 px-1'>
+          <div>
+            <Autocomplete
+              options={experienceData()}
+              size={'small'}
+              sx={{ width: '85%', marginTop: '1rem' }}
+              renderInput={(params) => <TextField {...params} label="Experience" />}
+              onChange={(event, value) => { formikCreate.setFieldValue('experience', value) }}
+            />
+            {formikCreate.errors.experience && formikCreate.touched.experience && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.experience}</div>
+            )}
+          </div>
+          <div>
+            <Autocomplete
+              options={typeOfWorkData()}
+              size={'small'}
+              sx={{ width: '100%', marginTop: '1rem' }}
+              renderInput={(params) => <TextField {...params} label="Type of work" />}
+              onChange={(event, value) => { formikCreate.setFieldValue('typeOfWork', value) }}
+            />
+            {formikCreate.errors.typeOfWork && formikCreate.touched.typeOfWork && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.typeOfWork}</div>
+            )}
+          </div>
+        </div>
+
+        <div className='grid grid-cols-2 px-1'>
+          <div>
+            <Autocomplete
+              options={educationLevelData()}
+              size={'small'}
+              sx={{ width: '85%', marginTop: '1rem' }}
+              renderInput={(params) => <TextField {...params} label="Education level" />}
+              onChange={(event, value) => { formikCreate.setFieldValue('educationLevel', value) }}
+            />
+            {formikCreate.errors.educationLevel && formikCreate.touched.educationLevel && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.educationLevel}</div>
+            )}
           </div>
 
           <div>
             <Autocomplete
-              options={categoryData.province}
+              options={foreignLanguageData()}
               size={'small'}
-              sx={{ width: '100%', marginTop: '1rem' }}
-              renderInput={(params) => <TextField {...params} label="City name" />}
-              onChange={(event, value) => { formikCreate.setFieldValue('cityName', value) }} />
-            {formikCreate.errors.cityName && formikCreate.touched.cityName && (
-              <div className='text-[#ec5555]'>{formikCreate.errors.cityName}</div>
+              sx={{ marginTop: '1rem' }}
+              renderInput={(params) => <TextField {...params} label="Foreign language" />}
+              onChange={(event, value) => { formikCreate.setFieldValue('foreignLanguage', value) }}
+            />
+            {formikCreate.errors.foreignLanguage && formikCreate.touched.foreignLanguage && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.foreignLanguage}</div>
             )}
           </div>
+        </div>
 
+        <div className='grid grid-cols-2 px-1'>
           <div>
             <TextField
-              label="Address"
-              name='address'
-              value={formikCreate.values.address}
+              label='Industry'
+              name='industry'
+              value={formikCreate.values.industry}
               variant="outlined"
               size='small'
-              style={{ width: '100%', marginTop: '1rem' }}
-              onChange={formikCreate.handleChange} />
-            {formikCreate.errors.address && formikCreate.touched.address && (
-              <div className='text-[#ec5555]'>{formikCreate.errors.address}</div>
+              style={{ width: '85%', marginTop: '1rem' }}
+              onChange={formikCreate.handleChange}
+            />
+            {formikCreate.errors.industry && formikCreate.touched.industry && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.industry}</div>
             )}
           </div>
+          <div>
+            <TextField
+              label="Amount"
+              name='amount'
+              value={formikCreate.values.amount}
+              variant="outlined" size='small'
+              sx={{ marginTop: '1rem', width: '100%' }}
+              onChange={formikCreate.handleChange}
+            />
+            {formikCreate.errors.amount && formikCreate.touched.amount && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.amount}</div>
+            )}
+          </div>
+        </div>
 
-          <div className='mt-4'>Description</div>
-          <TextareaAutosize
-            name='description'
-            value={formikCreate.values.description}
-            minRows={2}
-            maxRows={5}
-            style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+
+        <div className='mt-3 ml-14 font-semibold'>Expired date</div>
+        <div className='flex justify-center'>
+          <TextField
+            type={'date'}
+            name='expiryDate'
+            value={formikCreate.values.expiryDate}
+            variant="outlined"
+            size='small'
+            style={{ width: '80%' }}
             onChange={formikCreate.handleChange}
           />
-          {formikCreate.errors.description && formikCreate.touched.description && (
-            <div className='text-[#ec5555]'>{formikCreate.errors.description}</div>
-          )}
+        </div>
+        {formikCreate.errors.expiryDate && formikCreate.touched.expiryDate && (
+          <div className='text-[#ec5555] w-[80%] ml-12'>{formikCreate.errors.expiryDate}</div>
+        )}
 
-          <div className='mt-4'>Requirement</div>
-          <TextareaAutosize
-            e name='requirement'
-            value={formikCreate.values.requirement}
-            minRows={2}
-            maxRows={5}
-            style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-            onChange={formikCreate.handleChange}
-          />
-          {formikCreate.errors.requirement && formikCreate.touched.requirement && (
-            <div className='text-[#ec5555]'>{formikCreate.errors.requirement}</div>
-          )}
+        <div className='mt-3 ml-2 font-semibold text-lg'>Salary</div>
+        <div className='inline-flex'>
+          <div className='w-[40%]'>
+            <div>from</div>
+            <NumericFormat thousandSeparator=',' suffix={' VNĐ'} name='salaryFrom' placeholder='1,000,000 VNĐ' value={formikCreate.values.salaryFrom} onChange={formikCreate.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '90%' }} disabled={isSalaryNegotiable} />
+            {formikCreate.errors.salaryFrom && formikCreate.touched.salaryFrom && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.salaryFrom}</div>
+            )}
+          </div>
+          <div className='w-[40%]'>
+            <div>to</div>
+            <NumericFormat thousandSeparator=',' suffix={' VNĐ'} name='salaryTo' placeholder='1,000,000 VNĐ' value={formikCreate.values.salaryTo} onChange={formikCreate.handleChange} className='focus:outline-none' style={{ border: '1px solid #116835', padding: '0.3rem 1rem', borderRadius: '0.5rem', width: '90%' }} disabled={isSalaryNegotiable} />
+            {formikCreate.errors.salaryTo && formikCreate.touched.salaryTo && (
+              <div className='text-[#ec5555]'>{formikCreate.errors.salaryTo}</div>
+            )}
+          </div>
+          <FormControlLabel
+            sx={{ marginTop: '1.2rem', display: 'flex', justifyContent: 'end' }}
+            control={<Checkbox onChange={(event) => setIsSalaryNegotiable(event.target.checked)} />} label="Negotiable" />
+        </div>
 
-          <div className='mt-4'>Benefit</div>
-          <TextareaAutosize
-            name='benefit'
-            value={formikCreate.values.benefit}
-            minRows={2}
-            maxRows={5}
-            style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
-            onChange={formikCreate.handleChange}
-          />
-          {formikCreate.errors.benefit && formikCreate.touched.benefit && (
-            <div className='text-[#ec5555]'>{formikCreate.errors.benefit}</div>
+        <div>
+          <Autocomplete
+            options={categoryData.province}
+            size={'small'}
+            sx={{ width: '100%', marginTop: '1rem' }}
+            renderInput={(params) => <TextField {...params} label="City name" />}
+            onChange={(event, value) => { formikCreate.setFieldValue('cityName', value) }} />
+          {formikCreate.errors.cityName && formikCreate.touched.cityName && (
+            <div className='text-[#ec5555]'>{formikCreate.errors.cityName}</div>
           )}
         </div>
-      }
+
+        <div>
+          <TextField
+            label="Address"
+            name='address'
+            value={formikCreate.values.address}
+            variant="outlined"
+            size='small'
+            style={{ width: '100%', marginTop: '1rem' }}
+            onChange={formikCreate.handleChange} />
+          {formikCreate.errors.address && formikCreate.touched.address && (
+            <div className='text-[#ec5555]'>{formikCreate.errors.address}</div>
+          )}
+        </div>
+
+        <div className='mt-4'>Description</div>
+        <TextareaAutosize
+          name='description'
+          value={formikCreate.values.description}
+          minRows={2}
+          maxRows={5}
+          style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+          onChange={formikCreate.handleChange}
+        />
+        {formikCreate.errors.description && formikCreate.touched.description && (
+          <div className='text-[#ec5555]'>{formikCreate.errors.description}</div>
+        )}
+
+        <div className='mt-4'>Requirement</div>
+        <TextareaAutosize
+          e name='requirement'
+          value={formikCreate.values.requirement}
+          minRows={2}
+          maxRows={5}
+          style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+          onChange={formikCreate.handleChange}
+        />
+        {formikCreate.errors.requirement && formikCreate.touched.requirement && (
+          <div className='text-[#ec5555]'>{formikCreate.errors.requirement}</div>
+        )}
+
+        <div className='mt-4'>Benefit</div>
+        <TextareaAutosize
+          name='benefit'
+          value={formikCreate.values.benefit}
+          minRows={2}
+          maxRows={5}
+          style={{ width: '100%', border: '1px solid #116835', padding: '0.3rem 0.7rem 1rem 1rem' }}
+          onChange={formikCreate.handleChange}
+        />
+        {formikCreate.errors.benefit && formikCreate.touched.benefit && (
+          <div className='text-[#ec5555]'>{formikCreate.errors.benefit}</div>
+        )}
+      </div>
+
     </React.Fragment>
   );
 }
@@ -627,15 +633,13 @@ const FillInformationTab = ({ formikCreate }) => {
 
 const ShowPlanDetailData = ({ planDetailId }) => {
 
-  const currentUser = useSelector((state) => state.auth.login.currentUser)
-
   const [planDatailData, setPlanDetailData] = useState({})
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getPlanDetailById(currentUser.token, planDetailId);
+      const response = await getPlanDetailById(planDetailId);
       if (response.data) {
         setPlanDetailData(response.data)
         setIsLoading(false)
@@ -644,7 +648,7 @@ const ShowPlanDetailData = ({ planDetailId }) => {
     fetchData();
   }, [planDetailId])
 
-  if (isLoading) return
+  if (isLoading) return;
 
   return (
     <React.Fragment>

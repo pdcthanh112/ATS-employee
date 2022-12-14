@@ -93,9 +93,9 @@ const ListPlanDetail = ({ listPlanDetail }) => {
             setOpenModalEdit(false)
           },
           onError: (error) => {
-            if(error) {
-              if(error.message.includes('amount')) formikEdit.errors.amount = error.message
-              if(error.message.includes('salary')) formikEdit.errors.salary = error.message
+            if (error) {
+              if (error.message.includes('amount')) formikEdit.errors.amount = error.message
+              if (error.message.includes('salary')) formikEdit.errors.salary = error.message
             }
             toast.error('Edit fail')
           },
@@ -146,13 +146,15 @@ const ListPlanDetail = ({ listPlanDetail }) => {
       <div className='listPlanDetail-container'>
         {listPlanDetail?.map((item) => (
           <Card key={item.id} className='planDetail-item'>
-            {item.status === statusName.PENDING ? <div className='flex'>
+            {item.status === statusName.PENDING ? <div className='flex justify-between'>
               <span className='process-buton text-[#FFA800] bg-[#FFF4DE]'>Pending</span>
               <div className='flex w-full justify-between'>
-                {currentUser.employee.jobLevel === jobLevelName.DIRECTOR || currentUser.employee.jobLevel === jobLevelName.MANAGER ? <div className='flex'>
-                  <span className='hover:cursor-pointer' onClick={() => { rejectPlanDetail(item.id) }}><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
-                  <span className='hover:cursor-pointer' onClick={() => { approvePlanDetail(item.id) }}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 0.5rem' }} /></span>
-                </div> : <></>}
+                <div className='flex'>
+                  {currentUser.employee.jobLevel === jobLevelName.DIRECTOR || currentUser.employee.jobLevel === jobLevelName.MANAGER ? <>
+                    <span className='hover:cursor-pointer' onClick={() => { rejectPlanDetail(item.id) }}><img src={RejectIcon} alt="" title='Reject this plan' width={'24rem'} style={{ margin: '0.5rem 0 0 1rem' }} /></span>
+                    <span className='hover:cursor-pointer' onClick={() => { approvePlanDetail(item.id) }}><img src={ApproveIcon} alt="" title='Approve this plan' width={'40rem'} style={{ margin: '0 0 0 0.5rem' }} /></span>
+                  </> : <></>}
+                </div> : <></>
                 <div className='hover:cursor-pointer' onClick={() => handleEditPlan(item)}><img src={EditIcon} alt="" title='Edit this plan' width={'30rem'} className='mr-2' /></div>
               </div>
             </div> : <div>
@@ -198,7 +200,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
         ))}
       </div>
 
-      <Modal open={openModalEdit} onClose={() => {setOpenModalEdit(false); formikEdit.handleReset()}}>
+      <Modal open={openModalEdit} onClose={() => { setOpenModalEdit(false); formikEdit.handleReset() }}>
         <Box sx={style}>
           <div className='modal-container'>
             <span className='font-medium text-3xl mr-3'>Edit plan detail</span>
@@ -233,7 +235,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
                       )}
                     </div>
                   </div>
-                  <Autocomplete    
+                  <Autocomplete
                     options={listApprovedRecruitmentPlan}
                     size={'small'}
                     sx={{ width: '100%', marginTop: '1rem' }}
