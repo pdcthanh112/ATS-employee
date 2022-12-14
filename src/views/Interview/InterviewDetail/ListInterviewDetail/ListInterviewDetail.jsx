@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ReactLoading from 'react-loading'
 import moment from 'moment'
 import { useEditInterviewDetail } from '../hooks/interviewDetailHook';
+import { useCreateInterviewSchedule } from '../../InterviewSchedule/hooks/interviewScheduleHook'
 import { getEmployeeByRecruitmentRequest } from '../../../../apis/employeeApi';
 
 const ListInterviewDetail = ({ listInterviewDetail }) => {
@@ -73,11 +74,13 @@ const Row = (props) => {
   const [openModalEditDetail, setOpenModalEditDetail] = useState(false)
   const [openModalCreateInterview, setOpenModalCreateInterview] = useState(false)
   const [isEditting, setIsEditting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [listEmployee, setListEmployee] = useState([])
 
   const [isOnline, setIsOnline] = useState(false)
   const [listEmpInterview, setListEmpInterview] = useState([])
 
+  const { mutate: createInterviewSchedule } = useCreateInterviewSchedule();
   const { mutate: editInterviewDetail } = useEditInterviewDetail();
 
   const style = {
@@ -138,7 +141,7 @@ const Row = (props) => {
             formikEditDetail.handleReset();
             setOpenModalEditDetail(false)
           },
-          onError: () => {
+          onError: (error) => {
             toast.error('Edit fail')
           },
           onSettled: () => {
@@ -197,20 +200,21 @@ const Row = (props) => {
       //type: Yup.string().required('Please choose type of interview'),
     }),
     onSubmit: (values) => {
-      console.log('MMMMMMMMMMMMMMMMM', values);
-      // setIsSubmitting(true)
-      // try {
-      //   createInterviewSchedule(values, {
-      //     onSuccess: () => {
-      //       toast.success('Create successfully')
-      //       setOpenModalCreate(false)
-      //     },
-      //     onError: () => toast.error('Create fail'),
-      //   })
-      // } catch (error) {
-      //   toast.error('Something error')
-      // }
-      // setIsSubmitting(false)
+      setIsSubmitting(true)
+      try {
+        createInterviewSchedule(values, {
+          onSuccess: () => {
+            toast.success('Create successfully')
+            setOpenModalCreateInterview(false)
+          },
+          onError: () => toast.error('Create fail'),
+          onSettled: () => {
+            setIsSubmitting(false)
+          }
+        })
+      } catch (error) {
+        toast.error('Something error')
+      }
     }
   })
 
@@ -527,7 +531,7 @@ const Row = (props) => {
               <div className='flex justify-evenly mt-5'>
                 <button type='button' onClick={() => setOpenModalCreateInterview(false)} className='btn-create bg-[#F64E60]'>Cancel</button>
                 <button className='btn-create bg-[#20D489]' onClick={formikCreateInterview.handleSubmit}>Save</button>
-                {isEditting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={32} height={32} />}
+                {isSubmitting && <ReactLoading className='ml-2' type='spin' color='#FF4444' width={32} height={32} />}
               </div>
             </form>
           </div>

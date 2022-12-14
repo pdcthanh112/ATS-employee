@@ -186,7 +186,7 @@ const Row = (props) => {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 550,
-    maxHeight: 600,
+    maxHeight: 800,
     overflow: 'scroll',
     bgcolor: 'background.paper',
     border: '1px solid #0F6B14',
@@ -196,7 +196,7 @@ const Row = (props) => {
   const formikInvite = useFormik({
     initialValues: {
       cvIds: '',
-      title: 'Thư mời ứng viên',
+      title: 'Invitation letter for candidates',
       content: 'Chào bạn \n Chúng tôi đang tuyển vị trí ..... \n Qua quá trình xem xét hồ sơ chúng tôi nhận thấy bạn phù hợp với công việc này, vì vậy chúng tôi mời bạn ứng tuyển vào vị trí này'
     },
     validationSchema: Yup.object({
@@ -378,7 +378,7 @@ function EnhancedTableToolbar(props) {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 550,
-    maxHeight: 600,
+    maxHeight: 800,
     overflow: 'scroll',
     bgcolor: 'background.paper',
     border: '1px solid #0F6B14',
@@ -387,7 +387,7 @@ function EnhancedTableToolbar(props) {
   const formikInvite = useFormik({
     initialValues: {
       cvIds: '',
-      title: 'Thư mời ứng viên',
+      title: 'Invitation letter for candidates',
       content: 'Chào bạn \n Chúng tôi đang tuyển vị trí ..... \n Qua quá trình xem xét hồ sơ chúng tôi nhận thấy bạn phù hợp với công việc này, vì vậy chúng tôi mời bạn ứng tuyển vào vị trí này'
     },
     validationSchema: Yup.object({

@@ -114,12 +114,19 @@ const InterviewPage = () => {
             toast.success('Create successfully')
             setOpenModalCreate(false)
           },
-          onError: () => toast.error('Create fail'),
+          onError: (error) => {
+            if(error) {
+              if(error.includes('pass')) formikCreate.errors.date = error.message 
+            }
+            toast.error('Create fail')
+          },
+          onSettled: () => {
+            setIsSubmitting(false)
+          }
         })
       } catch (error) {
         toast.error('Something error')
       }
-      setIsSubmitting(false)
     }
   })
 
