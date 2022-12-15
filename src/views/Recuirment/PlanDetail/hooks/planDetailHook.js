@@ -4,7 +4,7 @@ import { approvePlanDetail, cancelPlanDetail, createPlanDetail, editPlanDetail }
 export const useCreatePlanDetail = () => {
   const queryClient = useQueryClient();
   return useMutation("createPlanDetail",
-    async (data) => createPlanDetail(data),
+    async (data) => await createPlanDetail(data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries("listPlanDetail");
@@ -29,7 +29,7 @@ export const useHandleApprovePlanDetail = () => {
   const queryClient = useQueryClient();
   return useMutation("approvePlanDetail",
     async (data) => {
-      approvePlanDetail(data.empId, data.planId);
+      await approvePlanDetail(data.empId, data.planId);
     },
     {
       onSuccess: () => {
@@ -43,7 +43,7 @@ export const useHandleRejectPlanDetail = () => {
   const queryClient = useQueryClient();
   return useMutation("rejectPlanDetail",
     async (data) => {
-      cancelPlanDetail(data.empId, data.planId);
+      await cancelPlanDetail(data.empId, data.planId);
     },
     {
       onSuccess: () => {

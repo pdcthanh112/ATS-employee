@@ -79,7 +79,6 @@ const JobApplyPage = () => {
     }
   })
 
-
   return (
     <React.Fragment>
 
@@ -126,7 +125,7 @@ const JobApplyPage = () => {
               <div className='flex justify-evenly mb-3'>
                 <div>
                   <div className='flex'>
-                    <span>City: </span>
+                    <span className='font-medium'>City: </span>
                     <NumericFormat
                       //suffix={'%'}
                       name='city'
@@ -135,7 +134,7 @@ const JobApplyPage = () => {
                       className='change-param-field mx-2'
                       style={{ padding: '0.1rem 1rem', borderRadius: '0.2rem', width: '5rem' }}
                     />
-                    <span>%</span>
+                    <span className='font-medium'>%</span>
                   </div>
                   {formikChangeParam.errors.city && formikChangeParam.touched.city && (
                     <div className='text-[#ec5555]'>{formikChangeParam.errors.city}</div>
@@ -143,7 +142,7 @@ const JobApplyPage = () => {
                 </div>
                 <div>
                   <div className='flex'>
-                    <span>Education level: </span>
+                    <span className='font-medium'>Education level: </span>
                     <NumericFormat
                       //suffix={'%'}
                       name='educationLevel'
@@ -152,7 +151,7 @@ const JobApplyPage = () => {
                       className='change-param-field mx-2'
                       style={{ padding: '0.1rem 1rem', borderRadius: '0.2rem', width: '5rem' }}
                     />
-                    <span>%</span>
+                    <span className='font-medium'>%</span>
                   </div>
                   {formikChangeParam.errors.educationLevel && formikChangeParam.touched.educationLevel && (
                     <div className='text-[#ec5555]'>{formikChangeParam.errors.educationLevel}</div>
@@ -163,7 +162,7 @@ const JobApplyPage = () => {
               <div className='flex justify-evenly mb-3'>
                 <div>
                   <div className='flex'>
-                    <span>Experience: </span>
+                    <span className='font-medium'>Experience: </span>
                     <NumericFormat
                       //suffix={'%'}
                       name='experience'
@@ -172,7 +171,7 @@ const JobApplyPage = () => {
                       className='change-param-field mx-2'
                       style={{ padding: '0.1rem 1rem', borderRadius: '0.2rem', width: '5rem' }}
                     />
-                    <span>%</span>
+                    <span className='font-medium'>%</span>
                   </div>
                   {formikChangeParam.errors.experience && formikChangeParam.touched.experience && (
                     <div className='text-[#ec5555]'>{formikChangeParam.errors.experience}</div>
@@ -181,7 +180,7 @@ const JobApplyPage = () => {
 
                 <div>
                   <div className='flex justify-center'>
-                    <span>Foreign language: </span>
+                    <span className='font-medium'>Foreign language: </span>
                     <NumericFormat
                       //suffix={'%'}
                       name='foreignLanguage'
@@ -190,7 +189,7 @@ const JobApplyPage = () => {
                       className='change-param-field mx-2'
                       style={{ padding: '0.1rem 1rem', borderRadius: '0.2rem', width: '5rem' }}
                     />
-                    <span>%</span>
+                    <span className='font-medium'>%</span>
                   </div>
                   {formikChangeParam.errors.foreignLanguage && formikChangeParam.touched.foreignLanguage && (
                     <div className='text-[#ec5555]'>{formikChangeParam.errors.foreignLanguage}</div>
@@ -199,7 +198,7 @@ const JobApplyPage = () => {
               </div>
               <div className='w-[60%] mx-auto mb-5'>
                 <div className=''>
-                  <span>Matching percent: </span>
+                  <span className='font-medium'>Matching percent: </span>
                   <NumericFormat
                     //suffix={'%'}
                     name='percentRequired'
@@ -208,7 +207,7 @@ const JobApplyPage = () => {
                     className='change-param-field mx-2'
                     style={{ padding: '0.1rem 1rem', borderRadius: '0.2rem', width: '7rem' }}
                   />
-                  <span>%</span>
+                  <span className='font-medium'>%</span>
                 </div>
                 {formikChangeParam.errors.percentRequired && formikChangeParam.touched.percentRequired && (
                   <div className='text-[#ec5555]'>{formikChangeParam.errors.percentRequired}</div>

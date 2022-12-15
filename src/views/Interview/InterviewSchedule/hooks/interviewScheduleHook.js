@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from "react-query";
-import { createInterview, confirmInterview, rejectInterview, searchInterviewSchedule, cancelInterview, closeInterview } from "../../../../apis/interviewScheduleApi";
+import { createInterview, confirmInterview, rejectInterview, cancelInterview, closeInterview,} from "../../../../apis/interviewScheduleApi";
 
 export const useCreateInterviewSchedule = () => {
   const queryClient = useQueryClient();
-  return useMutation("createInterviewSchedule",
-    async (data) => createInterview(data),
+  return useMutation(
+    "createInterviewSchedule",
+    async (data) => await createInterview(data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries("listInterviewSchedule");
@@ -25,11 +26,12 @@ export const useCreateInterviewSchedule = () => {
 //   );
 // };
 
-export const useHandleApproveInterviewSchedule = () => { 
+export const useHandleApproveInterviewSchedule = () => {
   const queryClient = useQueryClient();
-  return useMutation("approveInterviewSchedule",
+  return useMutation(
+    "approveInterviewSchedule",
     async (data) => {
-      confirmInterview(data.idEmployee, data.idInterview);
+      await confirmInterview(data.idEmployee, data.idInterview);
     },
     {
       onSuccess: () => {
@@ -41,9 +43,10 @@ export const useHandleApproveInterviewSchedule = () => {
 
 export const useHandleRejectInterviewSchedule = () => {
   const queryClient = useQueryClient();
-  return useMutation("rejectInterviewSchedule",
+  return useMutation(
+    "rejectInterviewSchedule",
     async (data) => {
-      rejectInterview(data.idEmployee, data.idInterview);
+      await rejectInterview(data.idEmployee, data.idInterview);
     },
     {
       onSuccess: () => {
@@ -55,9 +58,10 @@ export const useHandleRejectInterviewSchedule = () => {
 
 export const useHandleCancelInterviewSchedule = () => {
   const queryClient = useQueryClient();
-  return useMutation("cancelInterviewSchedule",
+  return useMutation(
+    "cancelInterviewSchedule",
     async (data) => {
-      cancelInterview(data);
+      await cancelInterview(data);
     },
     {
       onSuccess: () => {
@@ -69,9 +73,10 @@ export const useHandleCancelInterviewSchedule = () => {
 
 export const useHandleCloseInterviewSchedule = () => {
   const queryClient = useQueryClient();
-  return useMutation("closeInterviewSchedule",
+  return useMutation(
+    "closeInterviewSchedule",
     async (data) => {
-      closeInterview(data);
+      await closeInterview(data);
     },
     {
       onSuccess: () => {

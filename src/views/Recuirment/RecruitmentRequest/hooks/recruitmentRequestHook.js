@@ -4,7 +4,7 @@ import { createRecruitmentRequest } from "../../../../apis/recruimentRequestApi"
 export const useCreateRecruitmentRequest = () => {
   const queryClient = useQueryClient();
   return useMutation("createRecruitmentRequest",
-    async (data) => createRecruitmentRequest(data),
+    async (data) => await createRecruitmentRequest(data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries("listRecruitmentRequest");

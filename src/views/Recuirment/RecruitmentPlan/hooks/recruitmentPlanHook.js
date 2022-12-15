@@ -4,7 +4,7 @@ import { approveRecruitmentPlan, createRecruitmentPlan, editRecruitmentPlan, rej
 export const useCreateRecruitmentPlan = () => {
   const queryClient = useQueryClient();
   return useMutation("createRecruitmentPlan",
-    async (data) => createRecruitmentPlan(data),
+    async (data) => await createRecruitmentPlan(data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries("listRecruitmentPlan");
@@ -16,7 +16,7 @@ export const useCreateRecruitmentPlan = () => {
 export const useEditRecruitmentPlan = () => {
   const queryClient = useQueryClient();
   return useMutation("editRecruitmentPlan",
-    async (data) => editRecruitmentPlan(data),
+    async (data) => await editRecruitmentPlan(data),
     {
       onSuccess: () => {
         queryClient.invalidateQueries("listRecruitmentPlan");
@@ -29,7 +29,7 @@ export const useHandleApproveRecruitmentPlan = () => {
   const queryClient = useQueryClient();
   return useMutation("approveRecruitmentPlan",
     async (data) => {
-      approveRecruitmentPlan(data.empId, data.planId);
+      await approveRecruitmentPlan(data.empId, data.planId);
     },
     {
       onSuccess: () => {
@@ -43,7 +43,7 @@ export const useHandleRejectRecruitmentPlan = () => {
   const queryClient = useQueryClient();
   return useMutation("rejectRecruitmentPlan",
     async (data) => {
-      rejectRecruitmentPlan(data.empId, data.planId);
+      await rejectRecruitmentPlan(data.empId, data.planId);
     },
     {
       onSuccess: () => {

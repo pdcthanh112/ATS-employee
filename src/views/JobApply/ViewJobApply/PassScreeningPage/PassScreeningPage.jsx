@@ -15,7 +15,7 @@ import RejectIcon from '../../../../assets/icon/close.png'
 import cvIcon from '../../../../assets/icon/cv.png'
 import ShowLessIcon from '../../../../assets/icon/viewLess.png'
 import ShowMoreIcon from '../../../../assets/icon/viewMore.png'
-import { useHandleApprovePassScreeningJobApply, useHandleRejectPassScreeningJobApply } from '../hooks'
+import {  useHandleApprovePassScreeningJobApply, useHandleRejectPassScreeningJobApply } from '../hooks'
 
 const PassScreeningPage = () => {
 

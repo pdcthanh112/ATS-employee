@@ -35,10 +35,9 @@ export const interviewTypeData = () => ['Online', 'Offline']
 
 export const interviewRoundData = () => ['1', '2', '3']
 
-export const interviewResultData = () => ['Pass', 'Fail']
+export const interviewResultData = () => ['PASS', 'FAILURE']
 
 export const durationData = () => [
-  {value: 10, title: '10 minutes'},
   {value: 20, title: '20 minutes'},
   {value: 30, title: '30 minutes'},
   {value: 45, title: '45 minutes'},

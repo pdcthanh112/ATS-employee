@@ -5,7 +5,7 @@ export const useHandleApprovePassScreeningJobApply = () => {
   const queryClient = useQueryClient();
   return useMutation("approvePassScreeningJobApply",
     async (data) => {
-      approveJobApply(data.jobApplyId, data.empId);
+      await approveJobApply(data.jobApplyId, data.empId);
     },
     {
       onSuccess: () => {
@@ -19,7 +19,7 @@ export const useHandleRejectPassScreeningJobApply = () => {
   const queryClient = useQueryClient();
   return useMutation("rejectPassScreeningJobApply",
     async (data) => {
-      rejectJobApply(data.jobApplyId, data.empId);
+      await rejectJobApply(data.jobApplyId, data.empId);
     },
     {
       onSuccess: () => {
@@ -33,7 +33,7 @@ export const useHandleApproveFailScreeningJobApply = () => {
   const queryClient = useQueryClient();
   return useMutation("approveFailScreeningJobApply",
     async (data) => {
-      approveJobApply(data.jobApplyId, data.empId);
+      await approveJobApply(data.jobApplyId, data.empId);
     },
     {
       onSuccess: () => {
@@ -47,7 +47,7 @@ export const useHandleRejectFailScreeningJobApply = () => {
   const queryClient = useQueryClient();
   return useMutation("rejectFailScreeningJobApply",
     async (data) => {
-      rejectJobApply(data.jobApplyId, data.empId);
+      await rejectJobApply(data.jobApplyId, data.empId);
     },
     {
       onSuccess: () => {
