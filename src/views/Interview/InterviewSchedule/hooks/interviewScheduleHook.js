@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "react-query";
-import { createInterview, confirmInterview, rejectInterview, searchInterviewSchedule, cancelInterview } from "../../../../apis/interviewScheduleApi";
+import { createInterview, confirmInterview, rejectInterview, searchInterviewSchedule, cancelInterview, closeInterview } from "../../../../apis/interviewScheduleApi";
 
 export const useCreateInterviewSchedule = () => {
   const queryClient = useQueryClient();
@@ -58,6 +58,20 @@ export const useHandleCancelInterviewSchedule = () => {
   return useMutation("cancelInterviewSchedule",
     async (data) => {
       cancelInterview(data);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("listInterviewSchedule");
+      },
+    }
+  );
+};
+
+export const useHandleCloseInterviewSchedule = () => {
+  const queryClient = useQueryClient();
+  return useMutation("closeInterviewSchedule",
+    async (data) => {
+      closeInterview(data);
     },
     {
       onSuccess: () => {

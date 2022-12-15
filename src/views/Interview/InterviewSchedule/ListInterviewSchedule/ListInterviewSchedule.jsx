@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import './ListInterviewSchedule.scss'
 
 import { useSelector } from 'react-redux'
-import InterviewIcon from '../../../../assets/icon/date-time-icon.png'
 import ApproveIcon from '../../../../assets/icon/check.png'
 import RejectIcon from '../../../../assets/icon/close.png'
 import DeleteIcon from '.././../../../assets/icon/trash.png'
@@ -14,7 +13,7 @@ import * as Yup from 'yup'
 import ReactLoading from 'react-loading'
 import { departmentName, interviewStatus, interviewType, responseStatus } from '../../../../utils/constants'
 import { cancelInterview, closeInterview } from '../../../../apis/interviewScheduleApi'
-import { Autocomplete, Box, Card, Collapse, IconButton, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField, Typography } from '@mui/material';
+import { Autocomplete, Box, Collapse, IconButton, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField, Typography } from '@mui/material';
 import ShowMoreIcon from '../../../../assets/icon/viewMore.png'
 import ShowLessIcon from '../../../../assets/icon/viewLess.png'
 import { ToastContainer, toast } from 'react-toastify';
@@ -23,28 +22,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { interviewResultData } from '../../../../utils/dropdownData';
 import { createInterviewDetail } from '../../../../apis/interviewDetailApi';
 import { useConfirm } from "material-ui-confirm";
-import { useHandleApproveInterviewSchedule, useHandleCancelInterviewSchedule, useHandleRejectInterviewSchedule } from '../hooks/interviewScheduleHook'
+import { useHandleApproveInterviewSchedule, useHandleCancelInterviewSchedule, useHandleCloseInterviewSchedule, useHandleRejectInterviewSchedule } from '../hooks/interviewScheduleHook'
 
 const ListInterviewSchedule = ({ listInterviewSchedule, currPage }) => {
-
-  const currentUser = useSelector((state) => state.auth.login.currentUser);
-  const categoryData = useSelector((state) => state.categoryData.data);
-  const confirm = useConfirm();
-
-
-  const style = {
-    position: 'absolute',
-    top: '45%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 600,
-    maxHeight: 600,
-    overflow: 'scroll',
-    bgcolor: 'background.paper',
-    border: '1px solid #0F6B14',
-    boxShadow: 24,
-  };
-
 
   return (
     <React.Fragment >
@@ -110,6 +90,7 @@ const Row = (props) => {
   const { mutate: handleApproveInterviewSchedule } = useHandleApproveInterviewSchedule();
   const { mutate: handleRejectInterviewSchedule } = useHandleRejectInterviewSchedule();
   const { mutate: handleCancelInterviewSchedule } = useHandleCancelInterviewSchedule();
+  const { mutate: handleCloseInterviewSchedule } = useHandleCloseInterviewSchedule();
 
   const style = {
     position: 'absolute',
@@ -194,17 +175,18 @@ const Row = (props) => {
     })
   }
 
-  const handleCancelInterview = async (interviewId) => {
+  const cancelInterview = async (interviewId) => {
     await confirm({ description: "Are you sure to cancel this interview?" }).then(() => {
       setOpenModalReason(true)
       formikCancel.values.interviewId = interviewId
     })
   }
 
-  const handleCloseInterview = async (interviewId) => {
+  const closeInterview = async (interviewId) => {
     await confirm({ description: "Are you sure to close this interview?" }).then(() => {
-      closeInterview(currentUser.token, interviewId).then(response => {
-        response.status === responseStatus.SUCCESS ? toast.success('Close interview successfully') : toast.error('Something error')
+      handleCloseInterviewSchedule(interviewId, {
+        onSuccess: () => toast.success('Close interview successfully'),
+        onError: () => toast.error('Somethings error')
       })
     })
   }
@@ -239,7 +221,7 @@ const Row = (props) => {
         <TableCell>{item.candidateName}</TableCell>
         <TableCell align='center'>{item.jobApply.recruitmentRequest.position.name}</TableCell>
         <TableCell align='center'>{item.type}</TableCell>
-        <TableCell>{item.type === 'ONLINE' ? <div>Link meeting: {item.linkMeeting}</div> :
+        <TableCell>{item.type === interviewType.ONLINE ? <div>Link meeting: {item.linkMeeting}</div> :
           <>
             <div className='concac' title={item.address}>- Address: {item.address}</div>
             <div>- Room: {item.room}</div>
@@ -251,7 +233,7 @@ const Row = (props) => {
         <TableCell align='center'>
           {item.status === interviewStatus.PENDING && <>
             {currentUser.employee.department.id === departmentName.HR_DEPARTMENT ?
-              <div className='flex justify-center' onClick={() => { handleCancelInterview(item.id) }}><img src={DeleteIcon} alt="" width={'25rem'} className='hover:cursor-pointer' title='Cancel this interview' /></div>
+              <div className='flex justify-center' onClick={() => { cancelInterview(item.id) }}><img src={DeleteIcon} alt="" width={'25rem'} className='hover:cursor-pointer' title='Cancel this interview' /></div>
               : <>
                 {item.employeeConfirm == null ? <div className='flex justify-center'>
                   <span onClick={() => { rejectInterviewByEmp(item.id) }}><img src={RejectIcon} alt="" width={'16rem'} className='mt-2 hover:cursor-pointer' title='Reject this interview' /></span>
@@ -260,7 +242,7 @@ const Row = (props) => {
               </>}
           </>}
 
-          {item.status === interviewStatus.APPROVED && currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='flex justify-center' onClick={() => handleCloseInterview(item.id)}><img src={CheckDoneIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Close this interview' /></div>}
+          {item.status === interviewStatus.APPROVED && currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='flex justify-center' onClick={() => closeInterview(item.id)}><img src={CheckDoneIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Close this interview' /></div>}
 
         </TableCell>
       </TableRow>

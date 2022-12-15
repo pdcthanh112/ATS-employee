@@ -13,7 +13,7 @@ import CurriculumVitae from "../../assets/icon/curriculum-vitaeNavbar.png";
 import IconUp from "../../assets/icon/caret-arrow-up.png";
 import IconDown from "../../assets/icon/caret-arrow-down.png";
 import Notification from "../../assets/icon/notification-iconNavbar.png"
-import Statistics from "../../assets/icon/statisticsSidebar.png"
+ import Statistics from "../../assets/icon/pie-chart.png"
 
 export const SidebarItem = [
   {

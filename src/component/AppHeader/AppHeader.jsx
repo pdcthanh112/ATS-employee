@@ -7,8 +7,6 @@ import { logoutUser } from '../../apis/authApi'
 import { Avatar } from '@mui/material'
 import logo from '../../assets/image/big-logo.png'
 import defaultUser from '../../assets/image/defaultUser.png'
-import NotificationIcon from '../../assets/icon/notification-icon.png'
-//import { Badge } from "@material-ui/core";
 
 const AppHeader = () => {
 

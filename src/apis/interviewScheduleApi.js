@@ -96,17 +96,13 @@ export const cancelInterview = async (data) => {
     });
 };
 
-export const closeInterview = async (token, id) => {
+export const closeInterview = async (id) => {
   return await axiosConfig
-    .put(
-      `interview/closeInterview?id=${id}`,
-      {},
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    .put(`interview/closeInterview?id=${id}`)
     .then((response) => response.data)
-    .catch((error) => error.response.data);
+    .catch((error) => {
+      throw error.response.data;
+    });
 };
 
 export const getStatusAndName = async (token, interviewId) => {
