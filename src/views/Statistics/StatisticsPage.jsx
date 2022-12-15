@@ -18,6 +18,7 @@ const StatisticsPage = () => {
       const response = await getReport();
       if (response && response.data) {
         setReport(response.data)
+        console.log(response.data);
         setIsLoading(false)
       }
     }
@@ -75,14 +76,31 @@ const Row = (props) => {
         <TableCell>
           <IconButton size="small" onClick={() => setOpen(!open)}>{open ? <img src={ShowLessIcon} alt="" width={'15rem'} /> : <img src={ShowMoreIcon} alt="" width={'15rem'} />}</IconButton>
         </TableCell>
-        <TableCell align='center'>{item.departmentName}</TableCell>
-        <TableCell align='center'>{item.planName}</TableCell>
-        <TableCell align='center'>{item.jobRequestName}</TableCell>
-        <TableCell align='center'>{item.totalCV}</TableCell>
-        <TableCell align='center'>{item.source}</TableCell>
-        <TableCell align='center'>{item.totalAcceptableCV}</TableCell>
-        <TableCell align='center'>{item.totalJoinInterview}</TableCell>
-        <TableCell align='center'>{item.totalPassInterview}</TableCell>
+        <TableCell align='center' rowSpan={item.recruitmentPlans.length}>{item.departmentName}</TableCell>
+        <TableCell align='center' rowSpan={5}>{item.recruitmentPlans.map((planItem) => (
+          <TableRow>
+            <TableCell align='center'>{planItem.recruitmentPlanName}</TableCell>
+            <TableCell align='center'>{planItem.planDetails.map((detailItem) => (
+              <TableRow>
+                <TableCell align='center'>{detailItem.planDetailName}</TableCell>
+                <TableCell align='center'>{detailItem.jobRequests.map((requestItem) => (
+                  <TableRow>
+                    <TableCell align='center'>{requestItem.source}</TableCell>
+                    <TableCell align='center'>{requestItem.details.map((item) => (
+                      <TableRow>
+                        <TableCell align='center'>{item.totalAcceptableCV}</TableCell>
+                        <TableCell align='center'>{item.totalJoinInterview}</TableCell>
+                        <TableCell align='center'>{item.totalPassInterview}</TableCell>
+                      </TableRow>
+                    ))}</TableCell>
+
+                  </TableRow>
+                ))}</TableCell>
+              </TableRow>
+            ))}</TableCell>
+          </TableRow>
+        ))}</TableCell>
+
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
