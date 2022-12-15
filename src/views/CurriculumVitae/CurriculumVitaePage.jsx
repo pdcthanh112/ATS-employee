@@ -21,7 +21,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { inviteReapply } from '../../apis/jobApplyApi';
 
 const CurriculumVitaePage = () => {
-  const currentUser = useSelector((state) => state.auth.login.currentUser)
+
   const categoryData = useSelector((state) => state.categoryData.data);
 
   const [listCV, setListCV] = useState([])
@@ -30,7 +30,7 @@ const CurriculumVitaePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      const response = await getCVStorage(currentUser.token);
+      const response = await getCVStorage();
       if (response && response.data) {
         setListCV(response.data)
         setIsLoading(false)
@@ -213,7 +213,6 @@ const Row = (props) => {
   })
 
   const handleInviteCandidate = (item) => {
-    console.log(item);
     formikInvite.values.email = item.candidate.email
     formikInvite.values.cvIds = [item.id]
     setOpenModalInvite(true)
@@ -237,7 +236,7 @@ const Row = (props) => {
         <TableCell>
           <IconButton size="small" onClick={() => setOpen(!open)}>{open ? <img src={ShowLessIcon} alt="" width={'15rem'} /> : <img src={ShowMoreIcon} alt="" width={'15rem'} />}</IconButton>
         </TableCell>
-        <TableCell><a href={item.linkCV} target='_blank' rel="noreferrer"><img src={FileIcon} alt="" style={{ width: '2rem' }} /></a></TableCell>
+        <TableCell><a href={item.linkCV} target='_blank' rel="noreferrer" className='flex justify-center'><img src={FileIcon} alt="" style={{ width: '2rem' }} /></a></TableCell>
         <TableCell align="left">{item.candidate.name}</TableCell>
         <TableCell align="center">{item.positionApplied}</TableCell>
         <TableCell align="center">{item.recommendPositions}</TableCell>
@@ -357,12 +356,12 @@ function EnhancedTableHead(props) {
             />
           </TableCell>
         }
-        <TableCell align={'center'} width='5%'>Show</TableCell>
-        <TableCell align={'center'} width='5%'>CV</TableCell>
-        <TableCell align={'center'} width='35%'>Candidate</TableCell>
-        <TableCell align={'center'}>Position</TableCell>
-        <TableCell align={'center'}>Recommend</TableCell>
-        <TableCell align={'center'} width='10%'>status</TableCell>
+        <TableCell align={'center'} sx={{ fontSize: '1rem', fontWeight: '600', width: '5%' }}>Show</TableCell>
+        <TableCell align={'center'} sx={{ fontSize: '1.1rem', fontWeight: '600', width: '5%' }}>CV</TableCell>
+        <TableCell align={'center'} sx={{ fontSize: '1.1rem', fontWeight: '600', width: '35%' }}>Candidate</TableCell>
+        <TableCell align={'center'} sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }}>Position</TableCell>
+        <TableCell align={'center'} sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }}>Recommend</TableCell>
+        <TableCell align={'center'} sx={{ fontSize: '1.1rem', fontWeight: '600', width: '10%' }}>status</TableCell>
       </TableRow>
     </TableHead>
   );
@@ -398,15 +397,15 @@ function EnhancedTableToolbar(props) {
     }),
     onSubmit: async (values) => {
       setIsInviting(true)
-      await inviteReapply(currentUser.token, values).then((response) => {
+      await inviteReapply(values).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Invite successfully') : toast.error('Somethings error')
       })
       setIsInviting(false)
     }
   })
 
-  const handleInviteCandidate = (listEmail) => {
-    formikInvite.values.email = listEmail
+  const handleInviteCandidate = (listCVId) => {
+    formikInvite.values.cvIds = listCVId
     setOpenModalInvite(true)
   }
 

@@ -27,13 +27,13 @@ const ListInterviewDetail = ({ listInterviewDetail }) => {
             <TableHead>
               <TableRow>
                 <TableCell sx={{ width: '5%' }} />
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '500', width: '5%' }}>#</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '20%' }}>Candidate</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '25%' }} align='center'>Email</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '5%' }} align='center'>Round</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Result</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Date</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Edit</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '5%' }}>#</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '20%' }}>Candidate</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Email</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '5%' }} align='center'>Round</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '10%' }} align='center'>Result</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '10%' }} align='center'>Date</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '10%' }} align='center'>Edit</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -241,7 +241,7 @@ const Row = (props) => {
         <TableCell align="center">{item.interview.round}</TableCell>
         <TableCell align='center'>{item.result}</TableCell>
         <TableCell align='center'>{moment(item.end).format('DD/MM/YYYY')}</TableCell>
-        {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <TableCell align='center'><img src={EditIcon} alt="" width={'30rem'} className='mx-auto hover:cursor-pointer' onClick={() => { handleEditPlanDetail(item) }} /></TableCell>}
+        {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <TableCell align='center'><img src={EditIcon} alt="" width={'24rem'} className='mx-auto hover:cursor-pointer' onClick={() => { handleEditPlanDetail(item) }} /></TableCell>}
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>

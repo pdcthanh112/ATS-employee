@@ -96,7 +96,7 @@ export const inviteReapply = async (data) => {
       title: data.title,
     })
     .then((response) => response.data)
-    .catch((error) => {
-      throw error.data.message
-    });
+    .catch((error) => 
+       error.data.message
+    );
 };

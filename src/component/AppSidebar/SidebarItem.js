@@ -13,6 +13,7 @@ import CurriculumVitae from "../../assets/icon/curriculum-vitaeNavbar.png";
 import IconUp from "../../assets/icon/caret-arrow-up.png";
 import IconDown from "../../assets/icon/caret-arrow-down.png";
 import Notification from "../../assets/icon/notification-iconNavbar.png"
+import Statistics from "../../assets/icon/statisticsSidebar.png"
 
 export const SidebarItem = [
   {
@@ -91,6 +92,12 @@ export const SidebarItem = [
     title: "Curriculum vitae",
     path: "/curriculum-vitae",
     icon: <img src={CurriculumVitae} alt="" width={"30rem"} />,
+    onlyHR: true,
+  },
+  {
+    title: "Statistics",
+    path: "/statistics",
+    icon: <img src={Statistics} alt="" width={"30rem"} />,   
     onlyHR: true,
   },
   {

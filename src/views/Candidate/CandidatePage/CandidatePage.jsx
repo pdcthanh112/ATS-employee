@@ -26,7 +26,7 @@ const CandidatePage = () => {
   const currentUser = useSelector((state) => state.auth.login.currentUser);
   const categoryData = useSelector((state) => state.categoryData.data);
 
-  const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
+  const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
   const [openModalCreateCandidate, setOpenModalCreateCandidate] = useState(false)
   const [openModalCreateJobApply, setOpenModalCreateJobApply] = useState(false)
   const [isApplying, setIsApplying] = useState(false)
