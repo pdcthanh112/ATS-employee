@@ -213,7 +213,7 @@ const RecruitmentRequestPage = () => {
               onInputChange={(event, value) => { formikSearch.setFieldValue('city', value) }}
             />
 
-            <img src={SearchIcon} alt="" width={'50rem'} title='Search' onClick={() => formikSearch.handleSubmit} />
+            <img src={SearchIcon} alt="" width={'40rem'} title='Search' onClick={() => formikSearch.handleSubmit} />
           </div>
         </form>
 

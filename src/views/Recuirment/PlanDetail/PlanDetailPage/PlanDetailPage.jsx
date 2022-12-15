@@ -105,7 +105,7 @@ const PlanDetailPage = () => {
               if (error.message.includes('amount')) formik.errors.amount = error.message
               if (error.message.includes('salary')) formik.errors.salary = error.message
             }
-            toast.error('Edit fail')
+            toast.error('Create fail')
           },
           onSettled: () => {
             setIsCreating(false)

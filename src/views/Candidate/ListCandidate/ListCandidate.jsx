@@ -85,7 +85,7 @@ const ListCandidate = ({ listCandidate }) => {
                     {item.status === 'ACTIVATE' ? <div className='status-label bg-[#CCFFCC] text-[#00CA0E]'>Active</div> : <div className='status-label bg-[#FFB1B1] text-[#FF0000]'>Disable</div>}
                   </div>
                 </td>
-                {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <td><img src={DeleteIcon} alt='' title='Disable' width={'25rem'} className='m-auto hover:cursor-pointer' onClick={() => handleDisableCandidate(item.id)} /></td>}
+                <td><img src={DeleteIcon} alt='' title='Disable' width={'25rem'} className='m-auto hover:cursor-pointer' onClick={() => handleDisableCandidate(item.id)} /></td>
               </tr>
             ))}
           </tbody>

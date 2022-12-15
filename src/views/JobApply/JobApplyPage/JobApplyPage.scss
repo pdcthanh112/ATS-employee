@@ -3,7 +3,6 @@
     display: inline-flex;
     padding: 2rem 5rem 0 2rem;
     width: 100%;
-    margin-bottom: 2rem;
   }
 
   .jobApply-content {
@@ -18,11 +17,22 @@
   }
 }
 
-.aa{
+.aa {
   overflow: hidden;
-   text-overflow: ellipsis;
-   display: -webkit-box;
-   -webkit-line-clamp: 1; /* number of lines to show */
-           line-clamp: 1; 
-   -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.btn-create {
+  border-radius: 8px;
+  width: 7rem;
+  height: 2.5rem;
+  color: #f5fef9;
+}
+
+.change-param-field:focus {
+  outline: 1px solid #c0c0c0;
 }

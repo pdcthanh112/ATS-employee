@@ -12,7 +12,6 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import ReactLoading from 'react-loading'
 import { departmentName, interviewStatus, interviewType, responseStatus } from '../../../../utils/constants'
-import { cancelInterview, closeInterview } from '../../../../apis/interviewScheduleApi'
 import { Autocomplete, Box, Collapse, IconButton, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField, Typography } from '@mui/material';
 import ShowMoreIcon from '../../../../assets/icon/viewMore.png'
 import ShowLessIcon from '../../../../assets/icon/viewLess.png'
@@ -275,7 +274,7 @@ const Row = (props) => {
                   <TableBody>
                     <TableRow>
                       <TableCell align='right'>
-                        <div className='hover:cursor-pointer bg-[#1daf5a] flex rounded-lg px-3 h-9 w-[20%]' onClick={() => handleCreateInterviewDetail(item.id)}>
+                        <div className='hover:cursor-pointer bg-[#1daf5a] flex rounded-lg px-3 h-9 w-[16%]' onClick={() => handleCreateInterviewDetail(item.id)}>
                           <img src={AddResultIcon} alt='' style={{ width: '1.4rem', height: '1.4rem', margin: 'auto 0.2rem auto 0', padding: 0 }} />
                           <div className='text-[#FFF] my-auto'>Add result</div>
                         </div>

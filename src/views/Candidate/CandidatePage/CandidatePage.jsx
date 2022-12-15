@@ -46,6 +46,7 @@ const CandidatePage = () => {
     border: '1px solid #0F6B14',
     boxShadow: 24,
   };
+  
   const styleModalCreateJobApply = {
     position: 'absolute',
     top: '22rem',

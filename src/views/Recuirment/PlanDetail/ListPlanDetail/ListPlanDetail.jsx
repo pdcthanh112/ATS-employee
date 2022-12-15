@@ -42,7 +42,7 @@ const ListPlanDetail = ({ listPlanDetail }) => {
       }
     }
     fetchData();
-  }, [currentUser.employee.department.id, currentUser.token])
+  }, [currentUser.employee.department.id])
 
   const style = {
     position: 'absolute',

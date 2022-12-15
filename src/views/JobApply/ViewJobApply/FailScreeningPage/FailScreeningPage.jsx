@@ -1,45 +1,33 @@
 import React, { useState } from 'react'
 
+import { Box, Collapse, IconButton, Pagination, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import { useConfirm } from "material-ui-confirm"
+import moment from 'moment'
+import ReactLoading from 'react-loading'
+import { useQuery } from 'react-query'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { approveJobApply, getJobApplyFailScreening, rejectJobApply } from '../../../../apis/jobApplyApi'
-import ReactLoading from 'react-loading'
-import { Box, Collapse, IconButton, Pagination, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import ShowMoreIcon from '../../../../assets/icon/viewMore.png'
-import ShowLessIcon from '../../../../assets/icon/viewLess.png'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { getJobApplyFailScreening } from '../../../../apis/jobApplyApi'
+import ApproveIcon from '../../../../assets/icon/check.png'
+import RejectIcon from '../../../../assets/icon/close.png'
 import cvIcon from '../../../../assets/icon/cv.png'
-import ApproveIcon from '../../../../assets/icon/approve.png'
-import RejectIcon from '../../../../assets/icon/reject.png'
-import { useConfirm } from "material-ui-confirm";
-import { departmentName, responseStatus, statusName } from '../../../../utils/constants'
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useEffect } from 'react'
+import ShowLessIcon from '../../../../assets/icon/viewLess.png'
+import ShowMoreIcon from '../../../../assets/icon/viewMore.png'
+import { useHandleApproveFailScreeningJobApply, useHandleRejectFailScreeningJobApply } from '../hooks'
 
 const FailScreeningPage = () => {
 
-  const currentUser = useSelector((state) => state.auth.login.currentUser)
   const recruimentId = useParams().id
 
-  const [listJobApply, setListJobApply] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
   const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      const response = await getJobApplyFailScreening(currentUser.token, recruimentId, pagination.currentPage - 1, 5);
-      if (response && response.data) {
-        setListJobApply(response.data.responseList)
-        setPagination({ ...pagination, totalPage: response.data.totalPage })
-      }
-      else {
-        setListJobApply([])
-      }
-      setIsLoading(false)
-    }
-    fetchData();
-  }, [pagination.currentPage])
+
+  const { data: listJobApply, isLoading } = useQuery(['jobApplyFailScreening', pagination], async () => await getJobApplyFailScreening(recruimentId, pagination.currentPage - 1, 5).then((response) => {
+    setPagination({ ...pagination, totalPage: response.data.totalPage })
+    return response.data.responseList
+  }));
 
   return (
     <React.Fragment>
@@ -51,8 +39,8 @@ const FailScreeningPage = () => {
                 <TableRow>
                   <TableCell sx={{ width: '5%' }} />
                   <TableCell sx={{ fontSize: '1.2rem', fontWeight: '500', width: '5%' }}>#</TableCell>
-                  <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '20%' }}>Candidate</TableCell>
-                  <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '25%' }} align='center'>Email</TableCell>
+                  <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '25%' }}>Candidate</TableCell>
+                  <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '20%' }} align='center'>Email</TableCell>
                   <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '15%' }} align='center'>Date apply</TableCell>
                   <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '8%' }} align='center'>CV</TableCell>
                   <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Status</TableCell>
@@ -60,7 +48,7 @@ const FailScreeningPage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {listJobApply.map((item, id) => (
+                {listJobApply?.map((item, id) => (
                   <Row key={id} ordinalNumbers={id} item={item} />
                 ))}
               </TableBody>
@@ -87,25 +75,31 @@ const Row = (props) => {
   const [open, setOpen] = useState(false);
   const confirm = useConfirm();
 
-  const handleApproveJobApply = async (id) => {
+  const { mutate: handleApproveJobApply } = useHandleApproveFailScreeningJobApply();
+  const { mutate: handleRejectJobApply } = useHandleRejectFailScreeningJobApply();
+
+  const approveJobApply = async (id) => {
     await confirm({ description: "Are you sure to aprrove this candidate?" }).then(() => {
-      approveJobApply(currentUser.token, id, currentUser.employee.id).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Approved successfully') : toast.error('Something error')
+      handleApproveJobApply({ jobApplyId: id, empId: currentUser.employee.id }, {
+        onSuccess: () => toast.success('Approved successfully'),
+        onError: () => toast.error('Something error')
       })
     })
   }
 
-  const handleRejectJobApply = async (id) => {
+  const rejectJobApply = async (id) => {
     await confirm({ description: "Are you sure to reject this candidate?" }).then(() => {
-      rejectJobApply(currentUser.token, id, currentUser.employee.id).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Rejected successfully') : toast.error('Something error')
+      handleRejectJobApply({ jobApplyId: id, empId: currentUser.employee.id }, {
+        onSuccess: () => toast.success('Approved successfully'),
+        onError: () => toast.error('Something error')
       })
     })
   }
+
   const showStatusLabel = (status) => {
     if (status === 'APPROVED') {
       return <span className='bg-[#C9F7F5] text-[#1BC5BD] text-sm h-[2.4rem] flex justify-center items-center rounded-md'>APPROVED</span>
-    } else if (status === 'REJECTED') {
+    } else if (status === 'REJECTED' || status === 'CANCELED') {
       return <span className='bg-[#FFE2E5] text-[#F64E60] text-sm h-[2.4rem] flex justify-center items-center rounded-md'>Rejected</span>
     } else {
       return <span className='bg-[#FFF4DE] text-[#FFA800] text-sm h-[2.4rem] flex justify-center items-center rounded-md'>Pending</span>
@@ -121,14 +115,14 @@ const Row = (props) => {
         <TableCell>{ordinalNumbers + 1}</TableCell>
         <TableCell>{item.candidate.name}</TableCell>
         <TableCell>{item.candidate.email}</TableCell>
-        <TableCell align='center'>{item.date}</TableCell>
-        <TableCell align="center"><a href={item.cv.linkCV} target='_blank' title='View CV' className='flex justify-center' rel="noreferrer"><img src={cvIcon} alt="" width={'40rem'} /></a></TableCell>
+        <TableCell align='center'>{moment(item.date).format('DD/MM/YYYY')}</TableCell>
+        <TableCell align="center"><a href={item.cv.linkCV} target='_blank' title='View CV' className='flex justify-center' rel="noreferrer"><img src={cvIcon} alt="" width={'30rem'} /></a></TableCell>
         <TableCell align='center'>{showStatusLabel(item.status)}</TableCell>
-        <TableCell align='center' style={{ display: 'flex', justifyContent: 'space-around' }}>
-          {currentUser.employee.department.id === departmentName.HR_DEPARTMENT && item.status === statusName.PENDING ? <React.Fragment>
-            <img src={ApproveIcon} alt="" width={'40rem'} title='Approve this candidate' className='hover:cursor-pointer' onClick={() => handleApproveJobApply(item.id)} />
-            <img src={RejectIcon} alt="" width={'40rem'} title='Reject this candidate' className='hover:cursor-pointer' onClick={() => handleRejectJobApply(item.id)} />
-          </React.Fragment> : <></>}
+        <TableCell align='center' style={{ display: 'flex', justifyContent: 'center' }}>
+          {item.status === 'PENDING' && <>    
+            <img src={RejectIcon} alt="" style={{ width: '1rem', height: '1rem' }} title='Reject this candidate' className='hover:cursor-pointer mt-2' onClick={() => rejectJobApply(item.id)} />
+            <img src={ApproveIcon} alt="" style={{ width: '2rem' }} title='Approve this candidate' className='hover:cursor-pointer ml-2' onClick={() => approveJobApply(item.id)} />
+          </>}
         </TableCell>
       </TableRow>
       <TableRow>
