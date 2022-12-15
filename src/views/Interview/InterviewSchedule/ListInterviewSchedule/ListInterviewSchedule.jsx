@@ -301,16 +301,20 @@ const Row = (props) => {
                 <div className='text-[#ec5555]'>{formikCreateDetail.errors.result}</div>
               )}
 
-              <Autocomplete
-                multiple
-                options={categoryData.position}
-                size={'small'}
-                sx={{ width: '100%', marginRight: '2rem', marginTop: '2rem' }}
-                renderInput={(params) => <TextField {...params} label="Recommend position" />}
-                onChange={(event, value) => { formikCreateDetail.setFieldValue('recommendPositions', value) }} />
-              {formikCreateDetail.errors.recommendPositions && formikCreateDetail.touched.recommendPositions && (
-                <div className='text-[#ec5555]'>{formikCreateDetail.errors.recommendPositions}</div>
-              )}
+              {formikCreateDetail.values.result === 'FAILURE' &&
+                <div>
+                  <Autocomplete
+                    multiple
+                    options={categoryData.position}
+                    size={'small'}
+                    sx={{ width: '100%', marginRight: '2rem', marginTop: '2rem' }}
+                    renderInput={(params) => <TextField {...params} label="Recommend position" />}
+                    onChange={(event, value) => { formikCreateDetail.setFieldValue('recommendPositions', value) }} />
+                  {formikCreateDetail.errors.recommendPositions && formikCreateDetail.touched.recommendPositions && (
+                    <div className='text-[#ec5555]'>{formikCreateDetail.errors.recommendPositions}</div>
+                  )}
+                </div>
+              }
 
               <div className='mt-4'>
                 <TextField label='Record meeting' variant="outlined" size='small' style={{ width: '100%' }} name='recordMeeting' value={formikCreateDetail.values.recordMeeting} onChange={formikCreateDetail.handleChange} />

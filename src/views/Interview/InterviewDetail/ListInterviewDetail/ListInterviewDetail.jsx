@@ -250,7 +250,7 @@ const Row = (props) => {
               <Typography variant="h6" gutterBottom component="div">
                 <div className='flex justify-between'>
                   <div>Detail</div>
-                  {item.result.toUpperCase() === 'PASS' && <div className='bg-[#20D489] text-[#FFF] text-sm flex justify-center items-center px-2 rounded hover:cursor-pointer' onClick={() => getEmployeeByDepartment(item)}>Create next round interview</div>}
+                  {item.result.toUpperCase().includes('PASS') && <div className='bg-[#20D489] text-[#FFF] text-sm flex justify-center items-center px-2 rounded hover:cursor-pointer' onClick={() => getEmployeeByDepartment(item)}>Create next round interview</div>}
                 </div>
               </Typography>
               <Table size="small">

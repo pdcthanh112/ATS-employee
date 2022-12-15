@@ -33,9 +33,9 @@ export const interviewStatusData = () => ['Pending', 'Approved', 'Canceled', 'Do
 
 export const interviewTypeData = () => ['Online', 'Offline']
 
-export const interviewRoundData = () => ['1', '2', '3']
+export const interviewRoundData = () => [ '2', '3', '4']
 
-export const interviewResultData = () => ['PASS', 'FAILURE']
+export const interviewResultData = () => ['PASSED', 'FAILURE']
 
 export const durationData = () => [
   {value: 20, title: '20 minutes'},

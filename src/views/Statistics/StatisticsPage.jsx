@@ -41,6 +41,7 @@ const StatisticsPage = () => {
                   <TableCell sx={{ width: '10%' }} />
                   <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10%' }}>Department</TableCell>
                   <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Recruitment plan</TableCell>
+                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Plan detail</TableCell>
                   <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Job request</TableCell>
                   <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Total apply</TableCell>
                   <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Source</TableCell>
@@ -77,28 +78,33 @@ const Row = (props) => {
           <IconButton size="small" onClick={() => setOpen(!open)}>{open ? <img src={ShowLessIcon} alt="" width={'15rem'} /> : <img src={ShowMoreIcon} alt="" width={'15rem'} />}</IconButton>
         </TableCell>
         <TableCell align='center' rowSpan={item.recruitmentPlans.length}>{item.departmentName}</TableCell>
-        <TableCell align='center' rowSpan={5}>{item.recruitmentPlans.map((planItem) => (
-          <TableRow>
-            <TableCell align='center'>{planItem.recruitmentPlanName}</TableCell>
-            <TableCell align='center'>{planItem.planDetails.map((detailItem) => (
-              <TableRow>
-                <TableCell align='center'>{detailItem.planDetailName}</TableCell>
-                <TableCell align='center'>{detailItem.jobRequests.map((requestItem) => (
+        <TableCell align='center'>{item.recruitmentPlans.map((planItem) => (
+          <>
+            <TableRow>
+              <TableCell align='center' rowSpan={planItem.planDetails.length}>{planItem.recruitmentPlanName}</TableCell>
+              {planItem.planDetails.map((detailItem) => (
+                <>
                   <TableRow>
-                    <TableCell align='center'>{requestItem.source}</TableCell>
-                    <TableCell align='center'>{requestItem.details.map((item) => (
-                      <TableRow>
-                        <TableCell align='center'>{item.totalAcceptableCV}</TableCell>
-                        <TableCell align='center'>{item.totalJoinInterview}</TableCell>
-                        <TableCell align='center'>{item.totalPassInterview}</TableCell>
-                      </TableRow>
-                    ))}</TableCell>
-
+                    <TableCell align='center' rowSpan={detailItem.jobRequests.length}>{detailItem.planDetailName}</TableCell>
+                    {detailItem.jobRequests.map((requestItem) => (
+                      <>
+                        <TableRow>
+                          <TableCell align='center' rowSpan={requestItem.details.length}>{requestItem.source}</TableCell>
+                          {requestItem.details.map((item) => (
+                            <TableRow>
+                              <TableCell align='center'>{item.totalAcceptableCV}</TableCell>
+                              <TableCell align='center'>{item.totalJoinInterview}</TableCell>
+                              <TableCell align='center'>{item.totalPassInterview}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableRow>
+                      </>
+                    ))}
                   </TableRow>
-                ))}</TableCell>
-              </TableRow>
-            ))}</TableCell>
-          </TableRow>
+                </>
+              ))}
+            </TableRow>
+          </>
         ))}</TableCell>
 
       </TableRow>
