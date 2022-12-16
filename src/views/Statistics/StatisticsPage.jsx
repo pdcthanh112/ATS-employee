@@ -38,8 +38,7 @@ const StatisticsPage = () => {
             <Table sx={{}} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ width: '10%' }} />
-                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10%' }}>Department</TableCell>
+                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '30%' }}>Department</TableCell>
                   <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Recruitment plan</TableCell>
                   <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Plan detail</TableCell>
                   <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Job request</TableCell>
@@ -51,8 +50,42 @@ const StatisticsPage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {report?.map((item, id) => (
-                  <Row key={id} item={item} />
+                {report.map(departmentItem => (
+                  <>
+                    <TableRow>
+                      <TableCell rowSpan={departmentItem.totalDetailByDepartment + 4}>{departmentItem.departmentName}</TableCell>
+                    </TableRow>
+                    {departmentItem.recruitmentPlans?.map(recruitmentPlanItem => (
+                      <>
+                        <TableRow>
+                          <TableCell rowSpan={recruitmentPlanItem.totalDetailByPlan + 3}>PLAN:{recruitmentPlanItem.recruitmentPlanName}</TableCell>
+                        </TableRow>
+                        {recruitmentPlanItem.planDetails?.map((planDetailItem) => (
+                          <>
+                            <TableRow>
+                              <TableCell rowSpan={planDetailItem.totalDetailByPlanDetail + 2}>DETAIL:{planDetailItem.planDetailName}</TableCell>
+                            </TableRow>
+                            {planDetailItem.jobRequests?.map((requestItem) => (
+                              <>
+                                <TableRow>
+                                  <TableCell rowSpan={requestItem.totalDetailByJobRequest + 1}>REQUEST:{requestItem.recruitmentRequestName}</TableCell>
+                                </TableRow>
+                                {requestItem.details.map((detailItem) => (
+                                  <TableRow>
+                                    <TableCell align='center'>{detailItem.totalCV}</TableCell>
+                                    <TableCell align='center'>{detailItem.source}</TableCell>
+                                    <TableCell align='center'>{detailItem.totalAcceptableCV}</TableCell>
+                                    <TableCell align='center'>{detailItem.totalJoinInterview}</TableCell>
+                                    <TableCell align='center'>{detailItem.totalPassInterview}</TableCell>
+                                  </TableRow>
+                                ))}
+                              </>
+                            ))}
+                          </>
+                        ))}
+                      </>
+                    ))}
+                  </>
                 ))}
               </TableBody>
             </Table>
@@ -65,72 +98,3 @@ const StatisticsPage = () => {
 
 export default StatisticsPage
 
-
-const Row = (props) => {
-
-  const { item } = props;
-  const [open, setOpen] = useState(false);
-
-  return (
-    <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell>
-          <IconButton size="small" onClick={() => setOpen(!open)}>{open ? <img src={ShowLessIcon} alt="" width={'15rem'} /> : <img src={ShowMoreIcon} alt="" width={'15rem'} />}</IconButton>
-        </TableCell>
-        <TableCell align='center' rowSpan={item.recruitmentPlans.length}>{item.departmentName}</TableCell>
-        <TableCell align='center'>{item.recruitmentPlans.map((planItem) => (
-          <>
-            <TableRow>
-              <TableCell align='center' rowSpan={planItem.planDetails.length}>{planItem.recruitmentPlanName}</TableCell>
-              {planItem.planDetails.map((detailItem) => (
-                <>
-                  <TableRow>
-                    <TableCell align='center' rowSpan={detailItem.jobRequests.length}>{detailItem.planDetailName}</TableCell>
-                    {detailItem.jobRequests.map((requestItem) => (
-                      <>
-                        <TableRow>
-                          <TableCell align='center' rowSpan={requestItem.details.length}>{requestItem.source}</TableCell>
-                          {requestItem.details.map((item) => (
-                            <TableRow>
-                              <TableCell align='center'>{item.totalAcceptableCV}</TableCell>
-                              <TableCell align='center'>{item.totalJoinInterview}</TableCell>
-                              <TableCell align='center'>{item.totalPassInterview}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableRow>
-                      </>
-                    ))}
-                  </TableRow>
-                </>
-              ))}
-            </TableRow>
-          </>
-        ))}</TableCell>
-
-      </TableRow>
-      <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">Detail</Typography>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '25%' }} align='center'>Percentage of candidates passing the screening</TableCell>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '15%' }} align='center'>Percentage of candidates passing the interview</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell align='center'>{(item.totalAcceptableCV / item.totalCV).toFixed(2) * 100}%</TableCell>
-                    <TableCell align='center'>{(item.totalPassInterview / item.totalJoinInterview).toFixed(2) * 100}%</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </React.Fragment>
-  )
-}

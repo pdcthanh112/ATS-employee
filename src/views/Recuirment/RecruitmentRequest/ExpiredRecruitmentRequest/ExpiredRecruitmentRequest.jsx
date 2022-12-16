@@ -167,13 +167,13 @@ function EnhancedTableHead(props) {
 }
 
 function EnhancedTableToolbar(props) {
-  const currentUser = useSelector((state) => state.auth.login.currentUser)
+
   const { numSelected, listSelected } = props;
   const confirm = useConfirm();
 
   const handleCloseRecruitment = async (listRequestId) => {
     await confirm({ description: "Are you sure to close this recruitment request?" }).then(() => {
-      closeRecruimentRequest(currentUser.token, listRequestId).then((response) => {
+      closeRecruimentRequest(listRequestId).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Delete successfully') : toast.error('Something error')
       })
     })

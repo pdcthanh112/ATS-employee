@@ -9,7 +9,9 @@ export const getAllCandidate = async (pageNo, pageSize) => {
 
 export const getAllActivateCandidate = async (pageNo, pageSize) => {
   return await axiosConfig
-    .get(`candidate/getAllActivateCandidates?pageNo=${pageNo}&pageSize=${pageSize}`)
+    .get(
+      `candidate/getAllActivateCandidates?pageNo=${pageNo}&pageSize=${pageSize}`
+    )
     .then((response) => response.data)
     .catch((error) => error);
 };
@@ -43,13 +45,10 @@ export const updateProfileCandidate = async (id, token, data) => {
     .catch((error) => error);
 };
 
-export const getCVByCandidate = async (token, id, pageNo, pageSize) => {
+export const getCVByCandidate = async (id, pageNo, pageSize) => {
   return await axiosConfig
     .get(
-      `cv/getAllCvByCandidate?id=${id}&pageNo=${pageNo}&pageSize=${pageSize}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
+      `cv/getAllCvByCandidate?id=${id}&pageNo=${pageNo}&pageSize=${pageSize}`
     )
     .then((response) => response.data)
     .catch((error) => error);
@@ -87,11 +86,9 @@ export const getIdAndNameAcitveCandidate = async (token) => {
     .catch((error) => error);
 };
 
-export const disableCandidate = async (token, candidateId) => {
+export const disableCandidate = async (candidateId) => {
   return await axiosConfig
-    .delete(`candidate/delete/{id}?id=${candidateId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .delete(`candidate/delete/{id}?id=${candidateId}`)
     .then((response) => response.data)
     .catch((error) => error);
 };

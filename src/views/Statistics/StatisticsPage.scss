@@ -2,3 +2,10 @@
   width: 95%;
   margin: 1rem auto;
 }
+
+.khongchoxuonghang {
+  width: 20rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

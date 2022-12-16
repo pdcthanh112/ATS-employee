@@ -46,7 +46,7 @@ const CandidatePage = () => {
     border: '1px solid #0F6B14',
     boxShadow: 24,
   };
-  
+
   const styleModalCreateJobApply = {
     position: 'absolute',
     top: '22rem',
@@ -121,7 +121,7 @@ const CandidatePage = () => {
     }),
     onSubmit: async (values) => {
       setIsApplying(true)
-      await applyJob(currentUser.token, values).then((response) => {
+      await applyJob(values).then((response) => {
         if (response.status === responseStatus.SUCCESS) {
           setOpenModalCreateJobApply(false)
           toast.success('Create successfully')
@@ -148,7 +148,7 @@ const CandidatePage = () => {
   })
 
   const handleCreateJobApply = async () => {
-    await getIdAndNameActiveRequest(currentUser.token).then(response => setListRecruitmentRequestData(response.data))
+    await getIdAndNameActiveRequest().then(response => setListRecruitmentRequestData(response.data))
     setOpenModalCreateJobApply(true)
   }
 

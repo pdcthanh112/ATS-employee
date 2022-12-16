@@ -36,7 +36,7 @@ const ListCandidate = ({ listCandidate }) => {
 
   const getCandidateCV = async (candidateId) => {
     setIsLoading(true)
-    const response = await getCVByCandidate(currentUser.token, candidateId, pagination.currentPage - 1, 5);
+    const response = await getCVByCandidate(candidateId, pagination.currentPage - 1, 5);
     if (response.status === responseStatus.SUCCESS) {
       if (response.data === null || response.data.length < 1) {
         setListCV(null)
@@ -53,7 +53,7 @@ const ListCandidate = ({ listCandidate }) => {
 
   const handleDisableCandidate = async (candidateId) => {
     await confirm({ description: "Are you sure to disable this candidate?" }).then(() => {
-      disableCandidate(currentUser.token, candidateId).then((response) => {
+      disableCandidate(candidateId).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Confirm successfully') : toast.error('Something error')
       })
     })

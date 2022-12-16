@@ -3,7 +3,9 @@ import { editFailed, editStart, editSuccess } from "../redux/authSlice";
 
 export const getEmployeeByDepartment = async (id, pageNo, pageSize) => {
   return await axiosConfig
-    .get(`employee/getEmployeesByDepartment?departmentId=${id}&pageNo=${pageNo}&pageSize=${pageSize}`)
+    .get(
+      `employee/getEmployeesByDepartment?departmentId=${id}&pageNo=${pageNo}&pageSize=${pageSize}`
+    )
     .then((response) => response.data)
     .catch((error) => error);
 };
@@ -15,22 +17,16 @@ export const getEmployeeByRecruitmentRequest = async (id) => {
     .catch((error) => error);
 };
 
-export const editProfileEmployee = async (id, token, data, dispatch) => {
+export const editProfileEmployee = async (id, data, dispatch) => {
   return await axiosConfig
-    .put(
-      `employee/update/{id}?id=${id}`,
-      {
-        address: data.address,
-        dob: data.dateOfBirth,
-        gender: data.gender,
-        image: data.image,
-        name: data.fullname,
-        phone: data.phone,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    .put(`employee/update/{id}?id=${id}`, {
+      address: data.address,
+      dob: data.dateOfBirth,
+      gender: data.gender,
+      image: data.image,
+      name: data.fullname,
+      phone: data.phone,
+    })
     .then((response) => response.data)
     .catch((error) => dispatch(editFailed()));
 };

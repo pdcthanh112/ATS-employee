@@ -51,7 +51,7 @@ const EditInformation = () => {
           })
         })
       }      
-      await editProfileEmployee(currentUser.employee.id, currentUser.token, values, dispatch, navigate).then((response) => {
+      await editProfileEmployee(currentUser.employee.id, values, dispatch, navigate).then((response) => {
         if (response.data) {
           toast.success('Edit profile successfully')
           dispatch(editSuccess(response.data))

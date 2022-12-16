@@ -31,11 +31,9 @@ export const getRecruimentRequestById = async (id) => {
     .catch((error) => error);
 };
 
-export const getListRecruimentRequestByDepartment = async (token, id) => {
+export const getListRecruimentRequestByDepartment = async (id) => {
   return await axiosConfig
-    .get(`recruitmentRequest/getIdAndNameByDepartment?department_id=${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(`recruitmentRequest/getIdAndNameByDepartment?department_id=${id}`)
     .then((response) => response.data)
     .catch((error) => error);
 };
@@ -91,26 +89,20 @@ export const createRecruitmentRequest = async (data) => {
     });
 };
 
-export const getIdAndNameActiveRequest = async (token) => {
+export const getIdAndNameActiveRequest = async () => {
   return await axiosConfig
-    .get("recruitmentRequest/getAllActiveRequest", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get("recruitmentRequest/getAllActiveRequest")
     .then((response) => response.data)
     .catch((error) => error);
 };
 
-export const closeRecruimentRequest = async (token, listRequestID) => {
+export const closeRecruimentRequest = async (listRequestID) => {
   return await axiosConfig
-    .put(
-      "recruitmentRequest/closeListRequest",
-      {
-        listId: listRequestID,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    .put("recruitmentRequest/closeListRequest", {
+      listId: listRequestID,
+    })
     .then((response) => response.data)
-    .catch((error) => error);
+    .catch((error) => {
+      throw error.response.data;
+    });
 };

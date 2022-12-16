@@ -105,24 +105,16 @@ export const closeInterview = async (id) => {
     });
 };
 
-export const getStatusAndName = async (token, interviewId) => {
+export const getStatusAndName = async (interviewId) => {
   return await axiosConfig
-    .get(`interview/getNameAndStatus?interviewId=${interviewId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    .get(`interview/getNameAndStatus?interviewId=${interviewId}`)
     .then((response) => response.data)
     .catch((error) => error);
 };
 
-export const confirmByManager = async (token, interviewId) => {
+export const confirmByManager = async (interviewId) => {
   return await axiosConfig
-    .patch(
-      `interview/confirmByManager?idInterview=${interviewId}`,
-      {},
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    .patch(`interview/confirmByManager?idInterview=${interviewId}`)
     .then((response) => response.data)
     .catch((error) => error.response.data);
 };

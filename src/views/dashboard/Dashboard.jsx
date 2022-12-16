@@ -32,7 +32,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
-      await getTotalStatusDetail(currentUser.token).then((response) => {
+      await getTotalStatusDetail().then((response) => {
         if (response.data) {
           setRecruitmentPlanData(response.data.countStatusPlan)
           setPlanDetailData(response.data.countStatusDetail)

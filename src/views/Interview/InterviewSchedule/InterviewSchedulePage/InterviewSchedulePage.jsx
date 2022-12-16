@@ -306,7 +306,7 @@ const ChooseRecruitmentRequestTab = ({ formikCreate }) => {
   useEffect(() => {
     if (currentDepartment) {
       const fetchData = async () => {
-        const response = await getListRecruimentRequestByDepartment(currentUser.token, currentDepartment);
+        const response = await getListRecruimentRequestByDepartment(currentDepartment);
         if (response.data && response.data.length > 0) {
           setListRecruitmentRequest(response.data)
         } else {

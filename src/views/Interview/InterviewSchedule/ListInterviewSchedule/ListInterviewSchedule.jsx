@@ -120,7 +120,7 @@ const Row = (props) => {
     onSubmit: async (values) => {
       formikCreateDetail.values.recommendPositions = formikCreateDetail.values.recommendPositions.toString();
       setIsCreating(true)
-      await createInterviewDetail(currentUser.token, values).then((response) => {
+      await createInterviewDetail(values).then((response) => {
         response.status === responseStatus.SUCCESS ? toast.success('Save successfully') : toast.error('Something error')
         setIsCreating(false)
       })
@@ -222,7 +222,7 @@ const Row = (props) => {
         <TableCell align='center'>{item.type}</TableCell>
         <TableCell>{item.type === interviewType.ONLINE ? <div>Link meeting: {item.linkMeeting}</div> :
           <>
-            <div className='concac' title={item.address}>- Address: {item.address}</div>
+            <div className='khongchoxuonghang' title={item.address}>- Address: {item.address}</div>
             <div>- Room: {item.room}</div>
           </>}
         </TableCell>

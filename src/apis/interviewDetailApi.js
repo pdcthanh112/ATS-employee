@@ -22,7 +22,7 @@ export const getInterviewDetailByDepartment = async (
     .catch((error) => error);
 };
 
-export const createInterviewDetail = async (token, data) => {
+export const createInterviewDetail = async (data) => {
   return await axiosConfig
     .post(
       "interview-detail/createInterviewDetail",
@@ -34,9 +34,6 @@ export const createInterviewDetail = async (token, data) => {
         recommendPositions: data.recommendPositions,
         recordMeeting: data.recordMeeting,
         result: data.result,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
       }
     )
     .then((response) => response.data)

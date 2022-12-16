@@ -47,19 +47,13 @@ export const rejectJobApply = async (id, empId) => {
     });
 };
 
-export const applyJob = async (token, data) => {
+export const applyJob = async (data) => {
   return await axiosConfig
-    .post(
-      "/jobApply/createJobApplyByEmployee",
-      {
-        employeeId: data.employeeId,
-        listJobApplyByEmployee: data.listJobApplyByEmployee,
-        requestId: data.requestId,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    .post("/jobApply/createJobApplyByEmployee", {
+      employeeId: data.employeeId,
+      listJobApplyByEmployee: data.listJobApplyByEmployee,
+      requestId: data.requestId,
+    })
     .then((response) => response.data)
     .catch((error) => error);
 };
