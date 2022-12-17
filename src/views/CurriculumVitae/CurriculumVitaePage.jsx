@@ -33,8 +33,9 @@ const CurriculumVitaePage = () => {
       const response = await getCVStorage();
       if (response && response.data) {
         setListCV(response.data)
-        setIsLoading(false)
+
       }
+      setIsLoading(false)
     }
     fetchData();
   }, [])

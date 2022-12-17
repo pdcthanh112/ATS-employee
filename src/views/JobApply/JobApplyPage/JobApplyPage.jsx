@@ -69,11 +69,9 @@ const JobApplyPage = () => {
       percentRequired: Yup.number().positive('Invalid value').integer().min(0, 'This parameter must be greater than 0').max(100, 'This parameter must be less than 100'),
     }),
     onSubmit: async (values) => {
-      console.log(values);
       setIsSubmitting(true)
       await screeningSetting(values).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Create successfully') : toast.error('Create fail')
-
+        response.status === responseStatus.SUCCESS ? toast.success('Change parameter successfully') : toast.error('Change parameter fail')
       })
       setIsSubmitting(false)
     }
