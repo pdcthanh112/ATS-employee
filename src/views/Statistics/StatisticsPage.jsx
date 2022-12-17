@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import './StatisticsPage.scss'
-import StatisticsIcon from '../../assets/icon/monitor.png'
-import { getReport } from '../../apis/statisticsApi'
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import ReactLoading from 'react-loading'
-import { Box, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import ShowMoreIcon from '../../assets/icon/viewMore.png'
-import ShowLessIcon from '../../assets/icon/viewLess.png'
+import { getReport } from '../../apis/statisticsApi'
+import StatisticsIcon from '../../assets/icon/monitor.png'
+import './StatisticsPage.scss'
 
 const StatisticsPage = () => {
 
@@ -38,32 +36,32 @@ const StatisticsPage = () => {
             <Table sx={{}} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '30%' }}>Department</TableCell>
-                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Recruitment plan</TableCell>
-                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Plan detail</TableCell>
-                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Job request</TableCell>
-                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Total apply</TableCell>
-                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Source</TableCell>
-                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Total acceptable CV</TableCell>
-                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Total join interview</TableCell>
-                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '50%' }}>Total pass interview</TableCell>
+                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '3rem' }}>Department</TableCell>
+                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Recruitment plan</TableCell>
+                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Plan detail</TableCell>
+                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Job request</TableCell>
+                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Source</TableCell>
+                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Total apply</TableCell>
+                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Total acceptable CV</TableCell>
+                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Total join interview</TableCell>
+                  <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Total pass interview</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {report.map(departmentItem => (
                   <>
                     <TableRow>
-                      <TableCell rowSpan={departmentItem.totalDetailByDepartment + 4}>{departmentItem.departmentName}</TableCell>
+                      <TableCell rowSpan={departmentItem.totalRowByDepartment}>{departmentItem.departmentName}</TableCell>
                     </TableRow>
                     {departmentItem.recruitmentPlans?.map(recruitmentPlanItem => (
                       <>
                         <TableRow>
-                          <TableCell rowSpan={recruitmentPlanItem.totalDetailByPlan + 3}>PLAN:{recruitmentPlanItem.recruitmentPlanName}</TableCell>
+                          <TableCell rowSpan={recruitmentPlanItem.totalRowByPlan}>PLAN:{recruitmentPlanItem.recruitmentPlanName}</TableCell>
                         </TableRow>
                         {recruitmentPlanItem.planDetails?.map((planDetailItem) => (
                           <>
                             <TableRow>
-                              <TableCell rowSpan={planDetailItem.totalDetailByPlanDetail + 2}>DETAIL:{planDetailItem.planDetailName}</TableCell>
+                              <TableCell rowSpan={planDetailItem.totalRowByPlanDetail}>DETAIL:{planDetailItem.planDetailName}</TableCell>
                             </TableRow>
                             {planDetailItem.jobRequests?.map((requestItem) => (
                               <>
