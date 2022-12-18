@@ -219,7 +219,7 @@ const PlanDetailPage = () => {
                   {formik.values.recruitmentPlanId && currentRemainingSalary &&
                     <div className='flex justify-end mt-3'>
                       <div className='flex bg-[#FFE2E5] text-[#F64E60] w-[60%] justify-center py-2 rounded'>
-                        <span>Remaining salary:&nbsp;</span>
+                        <span>Remaining budget:&nbsp;</span>
                         <NumericFormat
                           thousandSeparator=','
                           suffix={' VNĐ'}

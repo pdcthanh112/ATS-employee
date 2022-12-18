@@ -287,8 +287,6 @@ export default InterviewPage
 
 const ChooseRecruitmentRequestTab = ({ formikCreate }) => {
 
-  const currentUser = useSelector((state) => state.auth.login.currentUser)
-
   const [listDepartment, setListDepartment] = useState([])
   const [currentDepartment, setCurrentDepartment] = useState()
   const [listRecruitmentRequest, setListRecruitmentRequest] = useState([])
@@ -335,7 +333,7 @@ const ChooseRecruitmentRequestTab = ({ formikCreate }) => {
           sx={{ width: '100%', marginTop: '1rem' }}
           disabled={currentDepartment === undefined}
           getOptionLabel={option => option.name}
-          renderInput={(params) => <TextField {...params} label="Recruitment request" />}
+          renderInput={(params) => <TextField {...params} label="Job request" />}
           onChange={(event, value) => { formikCreate.setFieldValue('recruitmentRequestId', value.id) }}
         />
         {formikCreate.errors.recruitmentRequestId && formikCreate.touched.recruitmentRequestId && (

@@ -207,7 +207,12 @@ const Row = (props) => {
     onSubmit: async (values) => {
       setIsInviting(true)
       await inviteReapply(values).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Invite successfully') : toast.error('Somethings error')
+        if (response.status === responseStatus.SUCCESS) {
+          toast.success('Invite successfully')
+          setOpenModalInvite(false)
+        } else {
+          toast.error('Somethings error')
+        }
       })
       setIsInviting(false)
     }
@@ -312,7 +317,7 @@ const Row = (props) => {
                 )}
               </div>
 
-              <div className='mt-4'>Content</div>
+            <div className='mt-4'>Content</div>
               <TextareaAutosize
                 name='content'
                 value={formikInvite.values.content}
@@ -386,7 +391,7 @@ function EnhancedTableToolbar(props) {
     border: '1px solid #0F6B14',
     boxShadow: 24,
   };
-  
+
   const formikInvite = useFormik({
     initialValues: {
       cvIds: '',
@@ -400,7 +405,12 @@ function EnhancedTableToolbar(props) {
     onSubmit: async (values) => {
       setIsInviting(true)
       await inviteReapply(values).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Invite successfully') : toast.error('Somethings error')
+        if (response.status === responseStatus.SUCCESS) {
+          toast.success('Invite successfully')
+          setOpenModalInvite(false)
+        } else {
+          toast.error('Somethings error')
+        }
       })
       setIsInviting(false)
     }
