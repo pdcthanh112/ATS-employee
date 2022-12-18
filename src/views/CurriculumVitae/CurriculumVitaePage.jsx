@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react'
-import './CurriculumVitaePage.scss'
-import { useSelector } from 'react-redux'
-import { Box, Modal, Collapse, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, TextField, TextareaAutosize, Autocomplete, TablePagination, Checkbox, Toolbar, Tooltip } from '@mui/material';
-import { getCVStorage } from '../../apis/CVApi'
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
-import ShowMoreIcon from '../../assets/icon/viewMore.png'
-import ShowLessIcon from '../../assets/icon/viewLess.png'
-import SendMailIcon from '../../assets/icon/send-mail.png'
-import ReactLoading from 'react-loading'
-import FileIcon from '../../assets/icon/file-icon.png'
-import SearchIcon from '../../assets/icon/filter.png'
+import React, { useEffect, useState } from 'react';
+import { Autocomplete, Box, Checkbox, Collapse, IconButton, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextareaAutosize, TextField, Toolbar, Tooltip, Typography } from '@mui/material';
+import { useFormik } from 'formik';
+import ReactLoading from 'react-loading';
+import { useSelector } from 'react-redux';
+import * as Yup from 'yup';
+import { getCVStorage } from '../../apis/CVApi';
+import FileIcon from '../../assets/icon/file-icon.png';
+import SearchIcon from '../../assets/icon/filter.png';
+import SendMailIcon from '../../assets/icon/send-mail.png';
+import ShowLessIcon from '../../assets/icon/viewLess.png';
+import ShowMoreIcon from '../../assets/icon/viewMore.png';
+import './CurriculumVitaePage.scss';
 
-import MarkunreadIcon from '@mui/icons-material/Markunread';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import MarkunreadIcon from '@mui/icons-material/Markunread';
 
-import { departmentName, responseStatus } from '../../utils/constants';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { inviteReapply } from '../../apis/jobApplyApi';
+import { departmentName, responseStatus } from '../../utils/constants';
 
 const CurriculumVitaePage = () => {
 
@@ -33,7 +33,6 @@ const CurriculumVitaePage = () => {
       const response = await getCVStorage();
       if (response && response.data) {
         setListCV(response.data)
-
       }
       setIsLoading(false)
     }
@@ -317,7 +316,7 @@ const Row = (props) => {
                 )}
               </div>
 
-            <div className='mt-4'>Content</div>
+              <div className='mt-4'>Content</div>
               <TextareaAutosize
                 name='content'
                 value={formikInvite.values.content}

@@ -4,26 +4,26 @@ import './InterviewSchedulePage.scss'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
+import { Autocomplete, Box, FormControlLabel, Modal, Pagination, Stack, Switch, TextareaAutosize, TextField } from '@mui/material'
+import ReactLoading from 'react-loading'
+import { useQuery } from 'react-query'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux';
-import ReactLoading from 'react-loading';
-import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize, Switch, FormControlLabel } from '@mui/material';
-import { useQuery } from 'react-query';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { getAllInterview, getInterviewByEmployee, searchInterviewSchedule } from '../../../../apis/interviewScheduleApi';
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { getCandidateAppliedByRecruitmentRequest } from '../../../../apis/candidateApi'
+import { getIdAndNameActiveDepartment } from '../../../../apis/departmentApi'
+import { getEmployeeByRecruitmentRequest } from '../../../../apis/employeeApi'
+import { getAllInterview, getInterviewByEmployee } from '../../../../apis/interviewScheduleApi'
+import { getListRecruimentRequestByDepartment, getRecruimentRequestById } from '../../../../apis/recruimentRequestApi'
 import InterviewIcon from '../../../../assets/icon/calendar.png'
+import DepartmentInterviewIcon from '../../../../assets/icon/department-interview.png'
 import SearchIcon from '../../../../assets/icon/filter.png'
 import AddIcon from '../../../../assets/icon/plus.png'
-import DepartmentInterviewIcon from '../../../../assets/icon/department-interview.png'
-import ListInterviewSchedule from '../ListInterviewSchedule/ListInterviewSchedule';
-import { departmentName, interviewType, jobLevelName } from '../../../../utils/constants';
-import { getIdAndNameActiveDepartment } from '../../../../apis/departmentApi';
-import { getListRecruimentRequestByDepartment, getRecruimentRequestById } from '../../../../apis/recruimentRequestApi';
-import { getCandidateAppliedByRecruitmentRequest } from '../../../../apis/candidateApi';
-import { getEmployeeByRecruitmentRequest } from '../../../../apis/employeeApi';
-import { durationData, interviewRoundData, interviewStatusData, interviewTypeData } from '../../../../utils/dropdownData';
-import { useCreateInterviewSchedule, useSearchInterviewSchedule } from '../hooks/interviewScheduleHook'
+import { departmentName, interviewType, jobLevelName } from '../../../../utils/constants'
+import { durationData, interviewRoundData, interviewStatusData, interviewTypeData } from '../../../../utils/dropdownData'
+import { useCreateInterviewSchedule } from '../hooks/interviewScheduleHook'
+import ListInterviewSchedule from '../ListInterviewSchedule/ListInterviewSchedule'
 
 const InterviewPage = () => {
 
@@ -349,8 +349,6 @@ const ChooseRecruitmentRequestTab = ({ formikCreate }) => {
 
 
 const ChoosePaticipantsTab = ({ formikCreate }) => {
-
-  const currentUser = useSelector((state) => state.auth.login.currentUser)
 
   const [isLoading, setIsLoading] = useState(true)
   const [listEmployee, setListEmployee] = useState([])
