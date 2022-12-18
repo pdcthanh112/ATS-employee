@@ -5,7 +5,6 @@ import { useConfirm } from "material-ui-confirm";
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import ReactLoading from 'react-loading';
-import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { closeRecruimentRequest, getExpiryDateRecruitmentRequest } from '../../../../apis/recruimentRequestApi';

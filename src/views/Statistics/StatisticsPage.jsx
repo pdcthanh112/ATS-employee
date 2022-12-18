@@ -53,7 +53,6 @@ const StatisticsPage = () => {
     },
     onSubmit: async (values) => {
       await searchReport(values).then((response) => {
-        console.log(response);
         if (response && response.data) {
           setReport(response.data)
         } else {

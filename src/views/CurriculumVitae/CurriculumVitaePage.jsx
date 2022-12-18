@@ -369,7 +369,7 @@ function EnhancedTableHead(props) {
 }
 
 function EnhancedTableToolbar(props) {
-  const currentUser = useSelector((state) => state.auth.login.currentUser)
+
   const { numSelected, listSelected } = props;
   const [openModalInvite, setOpenModalInvite] = useState(false);
   const [isInviting, setIsInviting] = useState(false);
@@ -386,6 +386,7 @@ function EnhancedTableToolbar(props) {
     border: '1px solid #0F6B14',
     boxShadow: 24,
   };
+  
   const formikInvite = useFormik({
     initialValues: {
       cvIds: '',

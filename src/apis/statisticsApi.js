@@ -19,7 +19,6 @@ export const getYearFromPlan = async () => {
 };
 
 export const searchReport = async (data) => {
-  console.log(data);
   return await axiosConfig
     .put("report/search", {
       departmentName: data.departmentName,

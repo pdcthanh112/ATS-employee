@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import './DepartmentInterview.scss'
-import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { cancelInterview, confirmByManager, getInterviewByDepartment, getStatusAndName } from '../../../apis/interviewScheduleApi'
 import InterviewIcon from '../../../assets/icon/date-time-icon.png'
@@ -16,7 +15,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const DepartmentInterview = () => {
 
-  const currentUser = useSelector((state) => state.auth.login.currentUser)
   const departmentId = useParams().id
   const confirm = useConfirm();
 

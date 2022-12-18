@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import './PlanDetailPage.scss'
 
 import ReactLoading from 'react-loading'
@@ -7,19 +7,19 @@ import { useSelector } from 'react-redux'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useQuery } from 'react-query';
+import { useQuery } from 'react-query'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import PlanDetailIcon from '../../../../assets/icon/plan-detailImage.png'
 import CreateIcon from '../../../../assets/icon/plus.png'
 
-import { Box, Modal, Pagination, Stack, TextField, Autocomplete, TextareaAutosize } from '@mui/material';
-import { NumericFormat } from 'react-number-format';
+import { Autocomplete, Box, Modal, Pagination, Stack, TextareaAutosize, TextField } from '@mui/material'
+import { NumericFormat } from 'react-number-format'
 import { getAllPlanDetail, getPlanDetailByDepartment } from '../../../../apis/planDetailApi'
-import ListPlanDetail from '../ListPlanDetail/ListPlanDetail'
-import { departmentName, jobLevelName } from '../../../../utils/constants'
 import { getPlanApprovedByDepartment, getRemainingSalary } from '../../../../apis/recruitmentPlanApi'
+import { departmentName } from '../../../../utils/constants'
 import { useCreatePlanDetail } from '../hooks/planDetailHook'
+import ListPlanDetail from '../ListPlanDetail/ListPlanDetail'
 
 const PlanDetailPage = () => {
 
