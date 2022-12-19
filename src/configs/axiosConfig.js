@@ -2,7 +2,8 @@ import axios from "axios";
 import { store } from "../redux/store";
 
 const axiosConfig = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: "https://ats-fu-be.azurewebsites.net/",
+  // baseURL: process.env.REACT_APP_API_URL,
   headers: {
     "Content-Type": "application/json",
   },

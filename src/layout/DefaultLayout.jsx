@@ -4,9 +4,6 @@ import AppContent from '../component/AppContent/AppContent'
 import AppHeader from '../component/AppHeader/AppHeader'
 import AppSidebar from '../component/AppSidebar/AppSidebar'
 //import AppFooter from '../component/AppFooter/AppFooter'
-import { store } from "../redux/store";
-
-// const currentUser = store.getState().auth.login.currentUser;
 
 function DefaultLayout() {
 

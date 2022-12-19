@@ -8,7 +8,7 @@ const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
 
   return (
     <React.Fragment>
-      {listRecruitmentRequest.map((item) => (
+      {listRecruitmentRequest?.map((item) => (
         <Card key={item.id} className='recruitmentRequest-container'>
           <div className='flex justify-between'>
             <div>

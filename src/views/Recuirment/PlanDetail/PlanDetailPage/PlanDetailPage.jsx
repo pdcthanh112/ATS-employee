@@ -103,7 +103,8 @@ const PlanDetailPage = () => {
           onError: (error) => {
             if (error) {
               if (error.message.includes('amount')) formik.errors.amount = error.message
-              if (error.message.includes('salary')) formik.errors.salary = error.message
+              if (error.message.includes('salary') || error.message.includes('Salary')) formik.errors.salary = error.message
+              if (error.message.includes('Exceed the time allowed by')) formik.errors.periodFrom = error.message
             }
             toast.error('Create fail')
           },
