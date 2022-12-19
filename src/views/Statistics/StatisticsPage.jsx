@@ -105,7 +105,7 @@ const StatisticsPage = () => {
                     <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Source</TableCell>
                     <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Total apply</TableCell>
                     <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Total acceptable CV</TableCell>
-                    <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Pass screening rate</TableCell>
+                    <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Approved CV rate</TableCell>
                     <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Total join interview</TableCell>
                     <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Total pass interview</TableCell>
                     <TableCell align='center' sx={{ fontSize: '1rem', fontWeight: '600', width: '10rem' }}>Pass interview rate</TableCell>
