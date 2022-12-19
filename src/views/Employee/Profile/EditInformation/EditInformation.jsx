@@ -78,7 +78,7 @@ const EditInformation = () => {
               )}
             </div>
             <div className='w-[30%]'>
-              <label className='text-lg'>Họ tên: </label>
+              <label className='text-lg'>Fullname: </label>
               <div className='field-input'>
                 <input type={'text'} className={`input-tag focus:outline-none ${formik.errors.fullname && formik.touched.fullname && 'input-error'}`} name='fullname' placeholder='Nhập tên của bạn' value={formik.values.fullname} onChange={formik.handleChange} />
               </div>
@@ -93,7 +93,7 @@ const EditInformation = () => {
           </div>
           <div className='flex my-3 mx-2 justify-between'>
             <div className='w-[20%]'>
-              <label className='text-lg'>Ngày sinh</label>
+              <label className='text-lg'>Date of birth</label>
               <div className='field-input'>
                 <input type={'date'} className={`input-tag focus:outline-none ${formik.errors.dateOfBirth && formik.touched.dateOfBirth && 'input-error'}`} name='dateOfBirth' value={formik.values.dateOfBirth} onChange={formik.handleChange} />
               </div>
@@ -102,7 +102,7 @@ const EditInformation = () => {
               )}
             </div>
             <div className='w-[30%]'>
-              <label className='text-lg'>Số điện thoại</label>
+              <label className='text-lg'>Phone number</label>
               <div className='field-input'>
                 <input type={'text'} className={`input-tag focus:outline-none ${formik.errors.phone && formik.touched.phone && 'input-error'}`} name='phone' placeholder='Nhập số điện thoại của bạn' value={formik.values.phone} onChange={formik.handleChange} /><br />
               </div>
@@ -117,13 +117,13 @@ const EditInformation = () => {
                 value={formik.values.gender}
                 size={'small'}
                 sx={{ width: 135, marginRight: 2 }}
-                renderInput={(params) => <TextField {...params} label="Giới tính" />}
+                renderInput={(params) => <TextField {...params} label="Gender" />}
                 onChange={(event, value) => { formik.setFieldValue('gender', value) }}
               />
             </div>
           </div>
           <div className='my-3 mx-2'>
-            <label className='text-lg'>Địa chỉ</label>
+            <label className='text-lg'>Address</label>
             <div className='field-input'>
               <input type={'text'} className={`input-tag focus:outline-none ${formik.errors.address && formik.touched.address && 'input-error'}`} name='address' placeholder='Nhập địa chỉ của bạn' value={formik.values.address} onChange={formik.handleChange} />
             </div>

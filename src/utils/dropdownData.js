@@ -1,4 +1,4 @@
-export const typeOfWorkData = () => ['Fulltime',  'Part Time', 'Work from home'];
+export const typeOfWorkData = () => ['Full time',  'Part time', 'Work from home'];
 
 export const jobLevelData = () => [
   "Nhân viên",
@@ -27,7 +27,7 @@ export const educationLevelData = () => ['Tốt nghiệp THPT', 'Trung cấp', '
 
 export const foreignLanguageData = () => ['Tiếng Việt', 'Tiếng Anh','Tiếng Nhật', 'Tiếng Hoa', 'Tiếng Hàn', 'Tiếng Pháp', 'Tiếng Đức', 'Tiếng Tây Ban Nha', 'Tiếng Nga'];
 
-export const genderData = () => ['Nam', 'Nữ', 'Khác'];
+export const genderData = () => ['Male', 'Female', 'Other'];
 
 export const interviewStatusData = () => ['Pending', 'Approved', 'Canceled', 'Done']
 

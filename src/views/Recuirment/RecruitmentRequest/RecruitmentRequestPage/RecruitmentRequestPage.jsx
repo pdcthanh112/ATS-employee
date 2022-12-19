@@ -19,14 +19,12 @@ import { educationLevelData, experienceData, foreignLanguageData, jobLevelData, 
 import { departmentName } from '../../../../utils/constants'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import moment from 'moment'
 import { getIdAndNameActiveDepartment } from '../../../../apis/departmentApi'
-import { getPlanDetailApprovedByDepartment, getPlanDetailById } from '../../../../apis/planDetailApi'
+import { getActivePositionByDepartment, getPlanDetailApprovedByDepartment, getPlanDetailById } from '../../../../apis/planDetailApi'
 import CalendarIcon from './../../../../assets/icon/calendar.png'
 import ShowMoreComponent from '../../ShowMoreComponent/ShowMoreComponent'
-import { createFilterOptions } from '@mui/material/Autocomplete';
 import { useCreateRecruitmentRequest } from '../hooks/recruitmentRequestHook';
-
-const filter = createFilterOptions();
 
 const RecruitmentRequestPage = () => {
 
@@ -88,7 +86,8 @@ const RecruitmentRequestPage = () => {
       requirement: '',
       salaryFrom: '',
       salaryTo: '',
-      typeOfWork: ''
+      typeOfWork: '',
+      departmentId: ''
     },
     validationSchema: Yup.object({
       address: Yup.string().required('Please input address'),
@@ -135,7 +134,7 @@ const RecruitmentRequestPage = () => {
       }
     }
   })
-  
+
   const formikSearch = useFormik({
     initialValues: {
       city: '',
@@ -292,7 +291,6 @@ const ChoosePlanTab = ({ formikCreate }) => {
 
   const [listDepartment, setListDepartment] = useState([])
   const [listPlanDetail, setListPlanDetail] = useState([])
-  const [currentDepartment, setCurrentDepartment] = useState()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -305,9 +303,9 @@ const ChoosePlanTab = ({ formikCreate }) => {
   }, [])
 
   useEffect(() => {
-    if (currentDepartment) {
+    if (formikCreate.values.departmentId) {
       const fetchData = async () => {
-        const response = await getPlanDetailApprovedByDepartment(currentDepartment);
+        const response = await getPlanDetailApprovedByDepartment(formikCreate.values.departmentId);
         if (response.data && response.data.length > 0) {
           setListPlanDetail(response.data)
         } else {
@@ -316,7 +314,7 @@ const ChoosePlanTab = ({ formikCreate }) => {
       }
       fetchData();
     }
-  }, [currentDepartment])
+  }, [formikCreate.values.departmentId])
 
   return (
     <React.Fragment>
@@ -327,7 +325,7 @@ const ChoosePlanTab = ({ formikCreate }) => {
         sx={{ width: '100%', marginTop: '1rem' }}
         getOptionLabel={option => option.name}
         renderInput={(params) => <TextField {...params} label="Department" />}
-        onChange={(event, value) => { setCurrentDepartment(value.id) }}
+        onChange={(event, value) => { formikCreate.setFieldValue('departmentId', value.id) }}
       />
 
       <div>
@@ -335,7 +333,7 @@ const ChoosePlanTab = ({ formikCreate }) => {
           options={listPlanDetail}
           size={'small'}
           sx={{ width: '100%', marginTop: '1rem' }}
-          disabled={currentDepartment === undefined}
+          disabled={formikCreate.values.departmentId === ''}
           getOptionLabel={option => option.name}
           renderInput={(params) => <TextField {...params} label="Plan detail" />}
           onChange={(event, value) => { formikCreate.setFieldValue('planDetailId', value.id) }} />
@@ -355,19 +353,17 @@ const FillInformationTab = ({ formikCreate }) => {
 
   const categoryData = useSelector((state) => state.categoryData.data);
   const [isSalaryNegotiable, setIsSalaryNegotiable] = useState(false)
-  // const [planDetailData, setPlanDetailData] = useState({})
+  const [listPosition, setListPosition] = useState([])
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setIsLoading(true)
-  //     const response = await getPlanDetailById(formikCreate.values.planDetailId);
-  //     if (response) {
-  //       setPlanDetailData(response.data)
-  //       setIsLoading(false)
-  //     }
-  //   }
-  //   fetchData();
-  // }, [formikCreate.values.planDetailId])
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getActivePositionByDepartment(formikCreate.values.departmentId);
+      if (response) {
+        setListPosition(response.data)
+      }
+    }
+    fetchData();
+  }, [formikCreate.values.departmentId])
 
   useEffect(() => {
     if (isSalaryNegotiable) {
@@ -414,7 +410,7 @@ const FillInformationTab = ({ formikCreate }) => {
             </div> */}
           <div>
             <Autocomplete
-              options={categoryData.position}
+              options={listPosition}
               size={'small'}
               sx={{ width: '85%', marginTop: '1rem' }}
               renderInput={(params) => <TextField {...params} label="Position" />}
@@ -425,7 +421,7 @@ const FillInformationTab = ({ formikCreate }) => {
             )}
           </div>
           <div>
-          <Autocomplete
+            <Autocomplete
               options={jobLevelData()}
               size={'small'}
               sx={{ width: '85%', marginTop: '1rem' }}
@@ -659,11 +655,11 @@ const ShowPlanDetailData = ({ planDetailId }) => {
           <div className='grid grid-cols-2 px-1'>
             <div>
               <div className='font-medium text-base'>from</div>
-              <div className='item-value w-[80%] justify-between'>{planDatailData.periodFrom}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
+              <div className='item-value w-[80%] justify-between'>{moment(planDatailData.periodFrom).format('DD-MMM-YYYY')}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
             </div>
             <div>
               <div className='font-medium text-base'>to</div>
-              <div className='item-value w-[80%] justify-between'>{planDatailData.periodTo}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
+              <div className='item-value w-[80%] justify-between'>{moment(planDatailData.periodTo).format('DD-MMM-YYYY')}<img src={CalendarIcon} alt='' width={'18rem'} /></div>
             </div>
           </div>
           <div className='grid grid-cols-2 mt-3'>

@@ -15,7 +15,7 @@ import CreateIcon from '../../../../assets/icon/plus.png'
 
 import { Autocomplete, Box, Modal, Pagination, Stack, TextareaAutosize, TextField } from '@mui/material'
 import { NumericFormat } from 'react-number-format'
-import { getAllPlanDetail, getPlanDetailByDepartment } from '../../../../apis/planDetailApi'
+import { getActivePositionByDepartment, getAllPlanDetail, getPlanDetailByDepartment } from '../../../../apis/planDetailApi'
 import { getPlanApprovedByDepartment, getRemainingSalary } from '../../../../apis/recruitmentPlanApi'
 import { departmentName } from '../../../../utils/constants'
 import { useCreatePlanDetail } from '../hooks/planDetailHook'
@@ -24,11 +24,11 @@ import ListPlanDetail from '../ListPlanDetail/ListPlanDetail'
 const PlanDetailPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
-  const categoryData = useSelector((state) => state.categoryData.data);
 
   const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
   const [openModalCreate, setOpenModalCreate] = useState(false)
   const [listApprovedRecruitmentPlan, setListApprovedRecruitmentPlan] = useState([])
+  const [listPosition, setListPosition] = useState([])
   const [isCreating, setIsCreating] = useState(false)
   const [currentRemainingSalary, setCurrentRemainingSalary] = useState()
 
@@ -59,10 +59,16 @@ const PlanDetailPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getPlanApprovedByDepartment(currentUser.employee.department.id);
-      if (response) {
-        setListApprovedRecruitmentPlan(response.data)
-      }
+      await getPlanApprovedByDepartment(currentUser.employee.department.id).then((response) => {
+        if (response && response.data) {
+          setListApprovedRecruitmentPlan(response.data)
+        }
+      })
+      await getActivePositionByDepartment(currentUser.employee.department.id).then((response) => {
+        if (response && response.data) {
+          setListPosition(response.data)
+        }
+      })
     }
     fetchData();
   }, [])
@@ -140,7 +146,7 @@ const PlanDetailPage = () => {
         </div>
 
         <div className='create-request' onClick={() => setOpenModalCreate(true)} title='Create a new recruitment request'>
-          <span className='mr-1'>Create recruitment plan detail</span>
+          <span className='mr-1'>Create plan detail</span>
           <span style={{ width: '1.2rem', height: '1.2rem', margin: 'auto 0' }}><img src={CreateIcon} alt='' /></span>
         </div>
 
@@ -264,7 +270,7 @@ const PlanDetailPage = () => {
 
                     <div className='w-[34%]' >
                       <Autocomplete
-                        options={categoryData.position}
+                        options={listPosition}
                         size={'small'}
                         sx={{ marginTop: '1rem' }}
                         renderInput={(params) => <TextField {...params} label="Position" />}

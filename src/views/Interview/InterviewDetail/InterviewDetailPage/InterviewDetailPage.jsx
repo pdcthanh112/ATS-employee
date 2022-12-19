@@ -15,6 +15,7 @@ import { departmentName } from '../../../../utils/constants';
 const InterviewDetailPage = () => {
 
   const currentUser = useSelector((state) => state.auth.login.currentUser)
+  console.log(currentUser);
 
   const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
 

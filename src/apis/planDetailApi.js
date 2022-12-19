@@ -27,7 +27,18 @@ export const getPlanDetailApprovedByDepartment = async (depId) => {
   return await axiosConfig
     .get(`planDetail/getApprovedByDepartment?departmentId=${depId}`)
     .then((response) => response.data)
-    .catch((error) => error);
+    .catch((error) => {
+      throw error.response.data
+    });
+};
+
+export const getActivePositionByDepartment = async (depId) => {
+  return await axiosConfig
+    .get(`position/getPositionNameByDepartment?id=${depId}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error.response.data;
+    });
 };
 
 export const createPlanDetail = async (planData) => {

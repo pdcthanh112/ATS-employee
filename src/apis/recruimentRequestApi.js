@@ -5,7 +5,9 @@ export const getAllRecruimentRequest = async (pageNo, pageSize) => {
   return await axiosConfig
     .get(`recruitmentRequest/getAll?pageNo=${pageNo}&pageSize=${pageSize}`)
     .then((response) => response.data)
-    .catch((error) => error);
+    .catch((error) => {
+      throw error.response.data;
+    });
 };
 
 export const getOpeningRecruimentRequest = async (pageNo, pageSize) => {

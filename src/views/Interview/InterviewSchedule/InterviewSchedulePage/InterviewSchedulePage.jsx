@@ -409,9 +409,9 @@ const ChoosePaticipantsTab = ({ formikCreate }) => {
               multiple
               options={listCandidate}
               size={'small'}
-              sx={{ width: '85%', marginTop: '1rem' }}
+              sx={{ width: '95%', marginTop: '1rem' }}
               getOptionLabel={option => option.name}
-              renderInput={(params) => <TextField {...params} label="Candidate" />}
+              renderInput={(params) => <TextField {...params} label="Choose candidate" />}
               onChange={(event, value) => { setListCandidateInterview(value) }}
             />
             {formikCreate.errors.industry && formikCreate.touched.industry && (
@@ -424,9 +424,9 @@ const ChoosePaticipantsTab = ({ formikCreate }) => {
               multiple
               options={listEmployee}
               size={'small'}
-              sx={{ width: '85%', marginTop: '1rem' }}
+              sx={{ width: '95%', marginTop: '1rem' }}
               getOptionLabel={option => option.name}
-              renderInput={(params) => <TextField {...params} label="Employee" />}
+              renderInput={(params) => <TextField {...params} label="Choose employee" />}
               onChange={(event, value) => { setListEmpInterview(value) }}
             />
             {formikCreate.errors.employeeId && formikCreate.touched.employeeId && (
@@ -517,7 +517,7 @@ const FillInformationTab = ({ formikCreate }) => {
       <Autocomplete
         options={durationData()}
         size={'small'}
-        sx={{ width: '90%', marginTop: '1rem' }}
+        sx={{ width: '100%', marginTop: '1rem' }}
         getOptionLabel={option => option.title}
         renderInput={(params) => <TextField {...params} label="Duration" />}
         onChange={(event, value) => { formikCreate.setFieldValue('duration', value.value) }}

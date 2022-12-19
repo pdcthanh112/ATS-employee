@@ -87,7 +87,7 @@ export const approveRecruitmentPlan = async (empId, planId) => {
 export const rejectRecruitmentPlan = async (empId, planId) => {
   return await axiosConfig
     .put(
-      "recruitmentPlan/canceled",
+      "recruitmentPlan/rejected",
       {
         employeeId: empId,
         id: planId,

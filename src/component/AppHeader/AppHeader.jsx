@@ -31,7 +31,7 @@ const AppHeader = () => {
           <div className="dropdown">
             <a className="" href="/" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               <div className='inline-flex rounded-3xl px-2' style={{ border: '1px solid #60d860' }}>
-                <Avatar src={currentUser.image || defaultUser} alt='' className='my-auto' />
+                <Avatar src={currentUser.employee.image || defaultUser} alt='' className='my-auto' />
                 <div className='mx-2 py-2.5 font-medium text-lg' style={{ width: '13rem' }}>{currentUser.employee.name}</div>
                 <i className="fa-solid fa-chevron-down m-1.5 py-2.5 text-xs"></i>
               </div>

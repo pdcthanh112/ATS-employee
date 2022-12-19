@@ -380,7 +380,7 @@ const Row = (props) => {
                     multiple
                     options={listEmployee}
                     size={'small'}
-                    sx={{ width: '85%', marginTop: '1rem' }}
+                    sx={{ width: '100%', marginTop: '1rem' }}
                     getOptionLabel={option => option.name}
                     renderInput={(params) => <TextField {...params} label="Employee" />}
                     onChange={(event, value) => { setListEmpInterview(value) }}
@@ -451,7 +451,7 @@ const Row = (props) => {
                 <Autocomplete
                   options={durationData()}
                   size={'small'}
-                  sx={{ width: '90%', marginTop: '1rem' }}
+                  sx={{ width: '100%', marginTop: '1rem' }}
                   getOptionLabel={option => option.title}
                   renderInput={(params) => <TextField {...params} label="Duration" />}
                   onChange={(event, value) => { formikCreateInterview.setFieldValue('duration', value.value) }}
