@@ -10,9 +10,11 @@ const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
     <React.Fragment>
       {listRecruitmentRequest?.map((item) => (
         <Card key={item.id} className='recruitmentRequest-container'>
+          {console.log(item)}
           <div className='flex justify-between'>
             <div>
-              <span className='font-bold text-xl'>{item.industry}</span>
+              <span className='font-bold text-lg'>{item?.position?.name}</span>
+              {/* <span className='font-bold text-xl'>{item.industry}</span> */}
               <span className='font-light text-3xl mx-8'>|</span>
             </div>
             <div className='ml-20 mt-3 mr-5 font-medium text-lg'>{item.name}</div>

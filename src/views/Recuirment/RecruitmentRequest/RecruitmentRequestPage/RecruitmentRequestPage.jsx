@@ -424,7 +424,7 @@ const FillInformationTab = ({ formikCreate }) => {
             <Autocomplete
               options={jobLevelData()}
               size={'small'}
-              sx={{ width: '85%', marginTop: '1rem' }}
+              sx={{ width: '100%', marginTop: '1rem' }}
               renderInput={(params) => <TextField {...params} label="Job level" />}
               onChange={(event, value) => { formikCreate.setFieldValue('jobLevel', value) }}
             />

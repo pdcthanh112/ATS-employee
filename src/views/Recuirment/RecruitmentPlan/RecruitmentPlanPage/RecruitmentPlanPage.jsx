@@ -117,7 +117,7 @@ const RecruitmentPlanPage = () => {
       <Modal open={openModalCreate} onClose={() => setOpenModalCreate(false)}>
         <Box sx={style}>
           <div className='modal-container'>
-            <span className='font-medium text-3xl mr-3'>Create plan</span>
+            <span className='font-medium text-3xl mr-3'>Create recruitment plan</span>
             <form onSubmit={formikCreate.handleSubmit}>
               <div>
                 <div>
