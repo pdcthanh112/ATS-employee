@@ -39,5 +39,5 @@ export const interviewStatus = {
 }
 
 export const departmentName = {
-    HR_DEPARTMENT: 3
+    HR_DEPARTMENT: 2
 }
