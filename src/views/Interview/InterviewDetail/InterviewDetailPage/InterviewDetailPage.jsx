@@ -24,7 +24,7 @@ const InterviewDetailPage = () => {
       return response.data.responseList
     })
     :
-    await getInterviewDetailByDepartment(currentUser.employee.id, pagination.currentPage - 1, 10).then((response) => {
+    await getInterviewDetailByDepartment(currentUser.employee.department.name, pagination.currentPage - 1, 10).then((response) => {
       setPagination({ ...pagination, totalPage: response.data.totalPage })
       return response.data.responseList
     }))
