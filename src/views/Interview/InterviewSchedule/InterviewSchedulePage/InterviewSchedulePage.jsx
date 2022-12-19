@@ -200,7 +200,7 @@ const InterviewPage = () => {
             onInputChange={(event, value) => { formikSearch.setFieldValue('status', value.toUpperCase()) }}
           />
 
-          <img src={SearchIcon} alt="" width={'50rem'} title='Search' className='hover:cursor-pointer' onClick={formikSearch.handleSubmit} />
+          <img src={SearchIcon} alt="" style={{width: '2.5rem', height: '2.5rem'}} title='Search' className='hover:cursor-pointer' onClick={formikSearch.handleSubmit} />
         </div>
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> : <ListInterviewSchedule listInterviewSchedule={listInterviewSchedule} currPage={pagination.currentPage}/>}

@@ -32,16 +32,16 @@ const ListInterviewSchedule = ({ listInterviewSchedule, currPage }) => {
           <Table aria-label="collapsible table">
             <TableHead>
               <TableRow>
-                <TableCell sx={{ width: '15%' }} />
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '500', width: '3%' }}>#</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '20%' }}>Candidate</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Position</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '8%' }} align='center'>Type</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '20%' }} align='center'>Place</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Date</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '7%' }} align='center'>Time</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '10%' }} align='center'>Status</TableCell>
-                <TableCell sx={{ fontSize: '1.2rem', fontWeight: '600', width: '5%' }} align='center'>Action</TableCell>
+                <TableCell sx={{ width: '8%' }} />
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '500', width: '2%' }}>#</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '20%' }}>Candidate</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '10%' }} align='center'>Position</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '8%' }} align='center'>Type</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '20%' }} align='center'>Place</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '10%' }} align='center'>Date</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '7%' }} align='center'>Time</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '6%' }} align='center'>Status</TableCell>
+                <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '3%' }} align='center'>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -219,8 +219,8 @@ const Row = (props) => {
         <TableCell>{ordinalNumbers}</TableCell>
         <TableCell>{item.candidateName}</TableCell>
         <TableCell align='center'>{item.jobApply.recruitmentRequest.position.name}</TableCell>
-        <TableCell align='center'>{item.type}</TableCell>
-        <TableCell>{item.type === interviewType.ONLINE ? <div>Link meeting: {item.linkMeeting}</div> :
+        <TableCell align='center' sx={{fontSize: '0.8rem'}}>{item.type}</TableCell>
+        <TableCell>{item.type === interviewType.ONLINE ? <div>- Link meeting: {item.linkMeeting}</div> :
           <>
             <div className='khongchoxuonghang' title={item.address}>- Address: {item.address}</div>
             <div>- Room: {item.room}</div>
