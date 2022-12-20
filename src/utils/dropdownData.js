@@ -1,4 +1,4 @@
-export const typeOfWorkData = () => ['Full time',  'Part time', 'Work from home'];
+export const typeOfWorkData = () => ['Full time',  'Part time', 'Intern', 'Work from home'];
 
 export const jobLevelData = () => [
   "Nhân viên",

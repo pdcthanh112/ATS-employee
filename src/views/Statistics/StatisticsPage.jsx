@@ -52,13 +52,14 @@ const StatisticsPage = () => {
       year: ''
     },
     onSubmit: async (values) => {
-      await searchReport(values).then((response) => {
-        if (response && response.data) {
-          setReport(response.data)
-        } else {
-          toast.error('No data')
-        }
-      })
+      // await searchReport(values).then((response) => {
+      //   if (response && response.data) {
+      //     setReport(response.data)
+      //   } else {
+      //     toast.error('No data')
+      //   }
+      // })
+      console.log(values);
     }
   })
 
@@ -73,6 +74,7 @@ const StatisticsPage = () => {
 
         <div className='flex justify-end mr-16'>
           <Autocomplete
+            id={formikSearch.values.departmentName}
             options={listDepartment}
             size={'small'}
             sx={{ width: 220, marginRight: 2 }}
@@ -89,7 +91,7 @@ const StatisticsPage = () => {
             onChange={(event, value) => { formikSearch.setFieldValue('year', value) }}
           />
 
-          <img src={FilterIcon} alt="" style={{ width: '3rem' }} title='Search' className='hover:cursor-pointer' onClick={() => formikSearch.handleSubmit()} />
+          <img src={FilterIcon} alt="" style={{ width: '2.5rem' }} title='Search' className='hover:cursor-pointer' onClick={() => formikSearch.handleSubmit()} />
         </div>
 
         {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
