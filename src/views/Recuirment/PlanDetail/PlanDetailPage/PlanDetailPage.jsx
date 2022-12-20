@@ -111,6 +111,7 @@ const PlanDetailPage = () => {
               if (error.message.includes('amount')) formik.errors.amount = error.message
               if (error.message.includes('salary') || error.message.includes('Salary')) formik.errors.salary = error.message
               if (error.message.includes('Exceed the time allowed by')) formik.errors.periodFrom = error.message
+              if (error.message.includes(' expiry date must be after current date')) formik.errors.periodTo = error.message
             }
             toast.error('Create fail')
           },

@@ -70,7 +70,9 @@ export const approvePlanDetail = async (empId, planId) => {
       id: planId,
     })
     .then((response) => response.data)
-    .catch((error) => error);
+    .catch((error) => {
+      throw error.response.data;
+    });
 };
 
 export const cancelPlanDetail = async (empId, planId) => {

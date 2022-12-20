@@ -110,13 +110,20 @@ const ListPlanDetail = ({ listPlanDetail }) => {
   })
 
   const approvePlanDetail = async (planId) => {
-    await confirm({ description: "Are you sure to confirm this plan?" }).then(() => {
+    await confirm({ description: "Are you sure to confirm this plann?" }).then(() => {
       handleApprovePlanDetail({ empId: currentUser.employee.id, planId: planId }, {
         onSuccess: () => toast.success('Confirm successfully'),
-        onError: () => toast.error('Somethings error')
+        onError: (error) => {
+          if (error) {
+            if (error.message.includes('xceeded allowed amount ')) toast.error('Can not approve this plan detail because of exceeded amount')
+          } else {
+            toast.error('Somethings error')
+          }          
+        },
       })
     })
   }
+
   const rejectPlanDetail = async (planId) => {
     await confirm({ description: "Are you sure to reject this plan?" }).then(() => {
       handleRejectPlanDetail({ empId: currentUser.employee.id, planId: planId }, {

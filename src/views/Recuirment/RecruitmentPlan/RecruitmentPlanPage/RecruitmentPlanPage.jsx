@@ -80,7 +80,12 @@ const RecruitmentPlanPage = () => {
             formikCreate.handleReset();
             setOpenModalCreate(false)
           },
-          onError: () => toast.error('Create fail'),
+          onError: (error) => {
+            if(error) {
+              if(error.message.includes('expiry date')) formikCreate.errors.periodTo = error.message
+            }
+            toast.error('Create fail')
+          },
           onSettled: () => {
             setIsCreating(false)
           }

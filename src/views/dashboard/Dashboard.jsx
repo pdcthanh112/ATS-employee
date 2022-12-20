@@ -48,7 +48,7 @@ const Dashboard = () => {
         }
       })
 
-      getInterviewByEmployee(currentUser.employee.department.id, 0, 3).then((response) => {
+      getInterviewByEmployee(currentUser.employee.id, 0, 3).then((response) => {
         if (response && response.data) {
           setListInterview(response.data.responseList)
           setIsLoading(false)
