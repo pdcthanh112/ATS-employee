@@ -121,7 +121,12 @@ const Row = (props) => {
       formikCreateDetail.values.recommendPositions = formikCreateDetail.values.recommendPositions.toString();
       setIsCreating(true)
       await createInterviewDetail(values).then((response) => {
-        response.status === responseStatus.SUCCESS ? toast.success('Save successfully') : toast.error('Something error')
+        if (response.status === responseStatus.SUCCESS) {
+          toast.success('Save successfully')
+          setOpenModalInterviewDetail(false)
+        } else {
+          toast.error('Something error')
+        }
         setIsCreating(false)
       })
     }
@@ -219,7 +224,7 @@ const Row = (props) => {
         <TableCell>{ordinalNumbers}</TableCell>
         <TableCell>{item.candidateName}</TableCell>
         <TableCell align='center'>{item.jobApply.recruitmentRequest.position.name}</TableCell>
-        <TableCell align='center' sx={{fontSize: '0.8rem'}}>{item.type}</TableCell>
+        <TableCell align='center' sx={{ fontSize: '0.8rem' }}>{item.type}</TableCell>
         <TableCell>{item.type === interviewType.ONLINE ? <div>- Link meeting: {item.linkMeeting}</div> :
           <>
             <div className='khongchoxuonghang' title={item.address}>- Address: {item.address}</div>
@@ -241,7 +246,7 @@ const Row = (props) => {
               </>}
           </>}
 
-          {item.status === interviewStatus.APPROVED && item.candidateConfirm === 'ACCEPTABLE' &&currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='flex justify-center' onClick={() => closeInterview(item.id)}><img src={CheckDoneIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Close this interview' /></div>}
+          {item.status === interviewStatus.APPROVED && item.candidateConfirm === "ACCEPTABLE" && currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='flex justify-center' onClick={() => closeInterview(item.id)}><img src={CheckDoneIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Close this interview' /></div>}
 
         </TableCell>
       </TableRow>

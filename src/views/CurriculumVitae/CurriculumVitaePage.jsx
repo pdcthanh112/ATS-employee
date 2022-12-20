@@ -46,7 +46,6 @@ const CurriculumVitaePage = () => {
       recommendPositions: []
     },
     onSubmit: async (values) => {
-      console.log('search', values);
       // setIsLoading(true)
       // await searchInterviewSchedule(currentUser.token, values).then((response) => {
       //   if (response && response.data) {

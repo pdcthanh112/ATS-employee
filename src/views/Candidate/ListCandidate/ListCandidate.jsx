@@ -34,21 +34,9 @@ const ListCandidate = ({ listCandidate }) => {
     boxShadow: 24,
   };
 
-  const getCandidateCV = async (candidateId) => {
-    setIsLoading(true)
-    const response = await getCVByCandidate(candidateId, pagination.currentPage - 1, 5);
-    if (response.status === responseStatus.SUCCESS) {
-      if (response.data === null || response.data.length < 1) {
-        setListCV(null)
-      } else {
-        setListCV(response.data.responseList);
-        setPagination({ ...pagination, totalPage: response.data.totalPage })
-      }
-      setIsLoading(false)
-      setOpenCVModal(true)
-    } else {
-      toast.error('Somethings error')
-    }
+  const getCandidateCV = (cvs) => {
+    cvs.length > 0 ? setListCV(cvs) : setListCV(null)
+    setOpenCVModal(true)
   }
 
   const handleDisableCandidate = async (candidateId) => {
@@ -79,7 +67,7 @@ const ListCandidate = ({ listCandidate }) => {
                 <td className=''>{item.name}</td>
                 <td className='text-center'>{item.phone}</td>
                 <td className=''>{item.email}</td>
-                <td><img src={folderIcon} alt='' title='CV' width={'30rem'} className='m-auto hover:cursor-pointer' onClick={() => getCandidateCV(item.id)} /></td>
+                <td><img src={folderIcon} alt='' title='CV' width={'30rem'} className='m-auto hover:cursor-pointer' onClick={() => getCandidateCV(item.cvs)} /></td>
                 <td className='text-center'>
                   <div className='flex justify-center'>
                     {item.status === 'ACTIVATE' ? <div className='status-label bg-[#CCFFCC] text-[#00CA0E]'>Active</div> : <div className='status-label bg-[#FFB1B1] text-[#FF0000]'>Disable</div>}
@@ -104,7 +92,7 @@ const ListCandidate = ({ listCandidate }) => {
                 {listCV?.map((item) => (
                   <a href={`${item.linkCV}`} rel='noreferrer' target={'_blank'} key={item.id}>
                     <div className='flex py-3'>
-                      <img src={PDFImage} alt='' width={'30rem'} />
+                      <img src={PDFImage} alt='' style={{ width: '1.6rem', height: '1.6rem' }} className='mr-2'/>
                       {item.title}
                     </div>
                   </a>

@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { setCategoryData } from "./categoryDataSlice";
 
 const authSlice = createSlice({
   name: "auth",

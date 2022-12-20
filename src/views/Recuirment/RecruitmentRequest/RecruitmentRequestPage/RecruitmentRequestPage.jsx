@@ -148,7 +148,7 @@ const RecruitmentRequestPage = () => {
       typeOfWork: ''
     },
     onSubmit: async (values) => {
-      console.log('search', values);
+    
     }
   })
 

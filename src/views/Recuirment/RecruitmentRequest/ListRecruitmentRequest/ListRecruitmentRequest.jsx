@@ -31,7 +31,6 @@ const ListRecruitmentRequest = ({ listRecruitmentRequest }) => {
     <React.Fragment>
       {listRecruitmentRequest?.map((item) => (
         <Card key={item.id} className='recruitmentRequest-container'>
-          {console.log(item)}
           <div className='flex justify-between'>
             <div>
               <span className='font-bold text-lg'>{item?.position?.name}</span>

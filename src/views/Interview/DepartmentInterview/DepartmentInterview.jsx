@@ -7,7 +7,7 @@ import CheckedIcon from '../../../assets/icon/checked.png'
 
 import { interviewStatus, interviewType, responseStatus } from '../../../utils/constants'
 import ReactLoading from 'react-loading'
-import { Box, Modal, Pagination, Stack } from '@mui/material'
+import { Box, Modal, Pagination, Stack, Card } from '@mui/material'
 import { useConfirm } from "material-ui-confirm";
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -35,7 +35,6 @@ const DepartmentInterview = () => {
     maxHeight: 600,
     overflowY: 'scroll',
     bgcolor: 'background.paper',
-    border: '1px solid #0F6B14',
     boxShadow: 24,
   };
 
@@ -90,7 +89,7 @@ const DepartmentInterview = () => {
       {isLoading ? <ReactLoading className='mx-auto my-5' type='spinningBubbles' color='#bfbfbf' /> :
         <div className='listInterview-container'>
           {listInterview && listInterview.map((item) => (
-            <div key={item.id} className='listInterview-item'>
+            <Card key={item.id} className='listInterview-item'>
               <div className='inline-flex w-[100%]'>
                 <div className='flex'>
                   <div>
@@ -124,7 +123,7 @@ const DepartmentInterview = () => {
                 <div className='field-item w-[60%]'>{item.candidateName}</div>
                 <div className='field-item w-[30%]'>{item.jobApply.recruitmentRequest.position.name}</div>
               </div>
-              {item.type === interviewType.ONLINE ? <div className='mt-2'>
+              {item.type === interviewType.ONLINE ? <div className='mt-2'>            
                 <div className='font-semibold text-lg'>Google meet</div>
                 <div className='field-item'>{item?.linkMeeting}</div>
               </div> : <div className='mt-2'>
@@ -139,7 +138,7 @@ const DepartmentInterview = () => {
                 <div className='font-semibold text-lg'>Description</div>
                 <div className='field-item'>{item.description}</div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       }

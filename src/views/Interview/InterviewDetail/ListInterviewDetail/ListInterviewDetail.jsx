@@ -142,6 +142,9 @@ const Row = (props) => {
             setOpenModalEditDetail(false)
           },
           onError: (error) => {
+            if (error) {
+              if (error.message.includes('pass')) formikEditDetail.errors.date = error.message
+            }
             toast.error('Edit fail')
           },
           onSettled: () => {
@@ -207,7 +210,12 @@ const Row = (props) => {
             toast.success('Create successfully')
             setOpenModalCreateInterview(false)
           },
-          onError: () => toast.error('Create fail'),
+          onError: (error) => { 
+            if (error) {
+              if (error.message.includes('pass')) formikCreateInterview.errors.date = error.message
+            }
+            toast.error('Create fail') 
+          },
           onSettled: () => {
             setIsSubmitting(false)
           }
