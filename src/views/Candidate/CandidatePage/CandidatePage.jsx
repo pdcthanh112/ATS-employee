@@ -178,7 +178,7 @@ const CandidatePage = () => {
               <Autocomplete
                 options={categoryData.position}
                 size={'small'}
-                sx={{ width: 190, marginRight: 2 }}
+                sx={{ width: 190, marginRight: 2, backgroundColor: '#FFF' }}
                 renderInput={(params) => <TextField {...params} label="Position" />}
                 onChange={(event, value) => { formikSearch.setFieldValue('position', value.value) }}
               />
@@ -186,7 +186,7 @@ const CandidatePage = () => {
               <Autocomplete
                 options={categoryData.jobTitle}
                 size={'small'}
-                sx={{ width: 190, marginRight: 2 }}
+                sx={{ width: 190, marginRight: 2, backgroundColor: '#FFF' }}
                 renderInput={(params) => <TextField {...params} label="Job name" />}
                 onChange={(event, value) => { formikSearch.setFieldValue('typeOfWork', value.value) }}
               />
