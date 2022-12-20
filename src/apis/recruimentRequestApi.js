@@ -108,3 +108,12 @@ export const closeRecruimentRequest = async (listRequestID) => {
       throw error.response.data;
     });
 };
+
+export const closeRecruimentRequestById = async (requestID) => {
+  return await axiosConfig
+    .put(`recruitmentRequest/closeRecruitmentRequest/{id}?id=${requestID}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error.response.data;
+    });
+};

@@ -121,6 +121,7 @@ const RecruitmentRequestPage = () => {
           onError: (error) => {
             if (error) {
               if (error.message.includes('expiry date')) formikCreate.errors.expiryDate = error.message
+              if (error.message.includes('Exceed the period ')) formikCreate.errors.expiryDate = error.message
               if (error.message.includes('amount')) formikCreate.errors.amount = error.message
             }
             toast.error('Create fail')

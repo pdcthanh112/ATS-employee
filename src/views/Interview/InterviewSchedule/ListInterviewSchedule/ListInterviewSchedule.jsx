@@ -241,7 +241,7 @@ const Row = (props) => {
               </>}
           </>}
 
-          {item.status === interviewStatus.APPROVED && currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='flex justify-center' onClick={() => closeInterview(item.id)}><img src={CheckDoneIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Close this interview' /></div>}
+          {item.status === interviewStatus.APPROVED && item.candidateConfirm === 'ACCEPTABLE' &&currentUser.employee.department.id === departmentName.HR_DEPARTMENT && <div className='flex justify-center' onClick={() => closeInterview(item.id)}><img src={CheckDoneIcon} alt="" width={'30rem'} className='hover:cursor-pointer' title='Close this interview' /></div>}
 
         </TableCell>
       </TableRow>

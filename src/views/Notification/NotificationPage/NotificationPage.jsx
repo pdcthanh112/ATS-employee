@@ -9,14 +9,14 @@ import { Stack, Pagination } from '@mui/material'
 const NotificationPage = () => {
   const currentUser = useSelector((state) => state.auth.login.currentUser)
   const [listNotification, setListNotification] = useState([])
-  const [pagination, setPagination] = useState({ totalPage: 10, currentPage: 1 })
+  const [pagination, setPagination] = useState({ totalPage: 0, currentPage: 1 })
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
       const response = await getNotificationByEmployee(currentUser.employee.id, pagination.currentPage - 1, 8);
-      if (response) {
+      if (response && response.data) {
         setListNotification(response.data.responseList)
         setPagination({ ...pagination, totalPage: response.data.totalPage })       
       }

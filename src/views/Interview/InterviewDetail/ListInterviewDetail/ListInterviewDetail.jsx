@@ -275,9 +275,9 @@ const Row = (props) => {
                 <TableHead>
                   <TableRow>
                     <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '10%' }} align='center'>Type</TableCell>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '40%' }} align='center'>Recommend position</TableCell>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '30%' }} align='center'>Record meeting</TableCell>
-                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600' }} align='center'>Detail description</TableCell>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '20%' }} align='center'>Recommend position</TableCell>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '10%' }} align='center'>Record meeting</TableCell>
+                    <TableCell sx={{ fontSize: '1.1rem', fontWeight: '600', width: '50%' }} align='center'>Detail description</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

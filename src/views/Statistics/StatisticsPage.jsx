@@ -52,14 +52,13 @@ const StatisticsPage = () => {
       year: ''
     },
     onSubmit: async (values) => {
-      // await searchReport(values).then((response) => {
-      //   if (response && response.data) {
-      //     setReport(response.data)
-      //   } else {
-      //     toast.error('No data')
-      //   }
-      // })
-      console.log(values);
+      await searchReport(values).then((response) => {
+        if (response && response.data) {
+          setReport(response.data)
+        } else {
+          toast.error('No data')
+        }
+      })
     }
   })
 
