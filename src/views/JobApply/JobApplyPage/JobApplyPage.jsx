@@ -47,8 +47,7 @@ const JobApplyPage = () => {
     width: 600,
     minHeight: 300,
     maxHeight: 600,
-    overflow: 'scroll',
-    bgcolor: 'background.paper',
+    bgcolor: '#C0C0C0',
     border: '1px solid #0F6B14',
     boxShadow: 24,
   };
@@ -194,7 +193,8 @@ const JobApplyPage = () => {
                   )}
                 </div>
               </div>
-              <div className='w-[60%] mx-auto mb-5'>
+
+              <div className='w-[60%] mx-auto my-4'>
                 <div className=''>
                   <span className='font-medium'>Matching percent: </span>
                   <NumericFormat
